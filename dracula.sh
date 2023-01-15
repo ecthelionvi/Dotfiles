@@ -27,7 +27,7 @@ main()
   light_purple='#bd93f9'
   dark_purple='#16161e'
   cyan='#8be9fd'
-  green='#50fa7b'
+  #green='#50fa7b'
   orange='#ffb86c'
   red='#ff5555'
   pink='#ff79c6'

@@ -170,11 +170,9 @@ lvim.plugins = {
     "ThePrimeagen/harpoon",
     "zirrostig/vim-schlepp",
     "kdheepak/lazygit.nvim",
-    "vimpostor/vim-tpipeline",
     "ThePrimeagen/vim-be-good",
     "Vimjas/vim-python-pep8-indent",
     "christoomey/vim-tmux-navigator",
-    "stevearc/dressing.nvim",
 
     ------------------------------------ Trouble -------------------------------------
 

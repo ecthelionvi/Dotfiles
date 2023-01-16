@@ -36,3 +36,18 @@ vmap <silent><unique> <right> <Plug>SchleppRight
 noremap <expr> n 'Nn'[v:searchforward]
 noremap <expr> N 'nN'[v:searchforward]
 
+""================[ GF ]==================""
+      
+map gf :edit <cfile><cr>
+
+""==========[ Search-Replace ]============""
+
+nnoremap cn *``cgn
+nnoremap cN #``cgN
+vnoremap <expr> cn g:mc . "``cgn"
+vnoremap <expr> cN g:mc . "``cgN"
+let g:mc = "y/\\V\<C-r>=escape(@\", '/')\<CR>\<CR>"
+
+""===============[ Easy ]=================""
+      
+nnoremap ; :

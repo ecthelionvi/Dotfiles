@@ -61,14 +61,6 @@ lvim.keys.normal_mode["dd"] = "dd"
 lvim.keys.normal_mode["xx"] = "dd"
 lvim.keys.visual_block_mode["x"] = "d"
 
--- Swap O
-lvim.keys.normal_mode["<leader>o"] = "o"
-lvim.keys.normal_mode["<leader>O"] = "O"
-lvim.keys.normal_mode["o"] = "mzo<Esc>`z"
-lvim.keys.normal_mode["O"] = "mzO<Esc>`z"
-lvim.keys.normal_mode["<cr>"] = "mzo<Esc>`z"
-lvim.keys.normal_mode["<S-cr>"] = "mzO<Esc>`z"
-
 -- Disable Arrows
 lvim.keys.visual_block_mode["<Up>"] = ""
 lvim.keys.visual_block_mode["<Down>"] = ""
@@ -90,6 +82,14 @@ lvim.keys.visual_block_mode["aa"] = "VGo1G"
 -- Better Paste
 lvim.keys.visual_block_mode["p"] = [["_dP]]
 
+-- Swap O
+lvim.keys.normal_mode["<leader>o"] = "o"
+lvim.keys.normal_mode["<leader>O"] = "O"
+lvim.keys.normal_mode["o"] = "mzo<Esc>`z"
+lvim.keys.normal_mode["O"] = "mzO<Esc>`z"
+lvim.keys.normal_mode["<cr>"] = "mzo<Esc>`z"
+lvim.keys.normal_mode["<S-cr>"] = "mzO<Esc>`z"
+
 -- Trim
 lvim.keys.normal_mode["<BS><BS>"] = "<cmd>lua trim()<cr>"
 
@@ -100,14 +100,18 @@ lvim.keys.normal_mode["<esc>"] = [[<cmd>let @/ = ""<cr>]]
 lvim.keys.visual_mode["y"] = "myy`y", { noremap = true }
 lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
 
+-- Easy
+vim.api.nvim_set_keymap("n", ";", ":", { noremap = true})
+
+-- Search-Replace
+vim.api.nvim_set_keymap("n", "cn", "*``cgn", { noremap = true})
+vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true})
+
 -- Terminal Esc
 lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
 lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
 lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
 lvim.keys.term_mode["<leader>."] = [[<C-\><C-n>:RnvimrToggle<cr>]]
-
--- Chmod
-lvim.keys.normal_mode["<leader>x"] = "<cmd>!chmod +x %<cr>", { silent = true }
 
 -- Dial
 lvim.keys.normal_mode["<C-a>"] = "<Plug>(dial-increment)"
@@ -120,6 +124,12 @@ lvim.keys.visual_mode["g<C-x>"] = "g<Plug>(dial-decrement)"
 -- Switch Tabs
 lvim.keys.normal_mode["<M-l>"] = "<cmd>BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<M-h>"] = "<cmd>BufferLineCyclePrev<CR>"
+
+-- GF
+vim.api.nvim_set_keymap("n", "gf", "<cmd>e <cfile><cr>", { noremap = true})
+
+-- Chmod
+lvim.keys.normal_mode["<leader>x"] = "<cmd>!chmod +x %<cr>", { silent = true }
 
 -- N-Movement
 vim.api.nvim_set_keymap("n", "n", "'Nn'[v:searchforward]", {expr = true, noremap = true})
@@ -527,16 +537,16 @@ end
 
 --------------------------------- Jump Brackets ----------------------------------
 
-function moveToPrevPairs()
-  local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
+function moveToNextPairs()
+  local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
+  local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
   local lnum, col = search_result[1], search_result[2]
   vim.fn.setpos('.', { 0, lnum, col, 0 })
 end
 
-function moveToNextPairs()
-  local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
+function moveToPrevPairs()
+  local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
+  local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
   local lnum, col = search_result[1], search_result[2]
   vim.fn.setpos('.', { 0, lnum, col, 0 })
 end
@@ -569,18 +579,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
       vim.cmd [[
 
-      ""===============[ Easy ]=================""
-      
-      nnoremap ; :
-
-      ""================[ GF ]==================""
-      
-      map gf :edit <cfile><cr>
-
       ""==========[ Search-Replace ]============""
 
-      nnoremap cn *``cgn
-      nnoremap cN #``cgN
       vnoremap <expr> cn g:mc . "``cgn"
       vnoremap <expr> cN g:mc . "``cgN"
       let g:mc = "y/\\V\<C-r>=escape(@\", '/')\<CR>\<CR>"

@@ -51,10 +51,6 @@ lvim.keys.visual_mode["L"] = "$"
 -- Yank in Selection
 lvim.keys.normal_mode["Y"] = "yg$"
 
--- Search Navigation
-lvim.keys.normal_mode["n"] = "nzzzv"
-lvim.keys.normal_mode["N"] = "Nzzzv"
-
 -- Redo
 lvim.keys.normal_mode["U"] = "<C-r>"
 
@@ -70,6 +66,14 @@ lvim.keys.normal_mode["<leader>o"] = "o"
 lvim.keys.normal_mode["<leader>O"] = "O"
 lvim.keys.normal_mode["o"] = "mzo<Esc>`z"
 lvim.keys.normal_mode["O"] = "mzO<Esc>`z"
+lvim.keys.normal_mode["<cr>"] = "mzo<Esc>`z"
+lvim.keys.normal_mode["<S-cr>"] = "mzO<Esc>`z"
+
+-- Disable Arrows
+lvim.keys.visual_block_mode["<Up>"] = ""
+lvim.keys.visual_block_mode["<Down>"] = ""
+lvim.keys.visual_block_mode["<Left>"] = ""
+lvim.keys.visual_block_mode["<Right>"] = ""
 
 -- Better Backspace
 lvim.keys.normal_mode["<BS>"] = "x"
@@ -86,11 +90,6 @@ lvim.keys.visual_block_mode["aa"] = "VGo1G"
 -- Better Paste
 lvim.keys.visual_block_mode["p"] = [["_dP]]
 
--- Terminal Esc
-lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
-lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
-lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
-
 -- Trim
 lvim.keys.normal_mode["<BS><BS>"] = "<cmd>lua trim()<cr>"
 
@@ -100,6 +99,12 @@ lvim.keys.normal_mode["<esc>"] = [[<cmd>let @/ = ""<cr>]]
 -- Yank Preserve Cursor
 lvim.keys.visual_mode["y"] = "myy`y", { noremap = true }
 lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
+
+-- Terminal Esc
+lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
+lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
+lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
+lvim.keys.term_mode["<leader>."] = [[<C-\><C-n>:RnvimrToggle<cr>]]
 
 -- Chmod
 lvim.keys.normal_mode["<leader>x"] = "<cmd>!chmod +x %<cr>", { silent = true }
@@ -115,6 +120,10 @@ lvim.keys.visual_mode["g<C-x>"] = "g<Plug>(dial-decrement)"
 -- Switch Tabs
 lvim.keys.normal_mode["<M-l>"] = "<cmd>BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<M-h>"] = "<cmd>BufferLineCyclePrev<CR>"
+
+-- N-Movement
+vim.api.nvim_set_keymap("n", "n", "'Nn'[v:searchforward]", {expr = true, noremap = true})
+vim.api.nvim_set_keymap("n", "N", "'nN'[v:searchforward]", {expr = true, noremap = true})
 
 -- Jump Brackets
 lvim.keys.normal_mode["<Tab>"] = "<esc><cmd>lua moveToNextPairs()<cr>", { silent = true }
@@ -140,8 +149,8 @@ lvim.builtin.which_key.mappings.l.o = { "<cmd>LspStart<cr>", "Start" }
 lvim.builtin.which_key.mappings.g.d = { "<cmd>DiffviewOpen<cr>", "Diffview" }
 lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<cr>", "Projects" }
 lvim.builtin.which_key.mappings.s.y = { "<cmd>Telescope yank_history<cr>", "Yank History" }
-lvim.builtin.which_key.mappings.b.p = { "<cmd>BufferLinePick<cr>", "Pick which buffer to open" }
-lvim.builtin.which_key.mappings.b.k = { "<cmd>BufferLinePickClose<cr>", "Pick which buffer to close" }
+lvim.builtin.which_key.mappings.b.p = { "<cmd>BufferLinePick<cr>", "Pick Open" }
+lvim.builtin.which_key.mappings.b.k = { "<cmd>BufferLinePickClose<cr>", "Pick Close" }
 
 -- Yanky
 lvim.keys.normal_mode["P"] = "<Plug>(YankyPutAfter)"
@@ -168,7 +177,6 @@ lvim.plugins = {
     "github/copilot.vim",
     "kevinhwang91/rnvimr",
     "ThePrimeagen/harpoon",
-    "zirrostig/vim-schlepp",
     "kdheepak/lazygit.nvim",
     "ThePrimeagen/vim-be-good",
     "Vimjas/vim-python-pep8-indent",
@@ -208,7 +216,7 @@ lvim.plugins = {
       config = function()
         require("cutlass").setup({
           {
-            cut_key = x,
+            cut_key = "x",
             override_del = true,
             exclude = {},
           },
@@ -240,6 +248,27 @@ lvim.plugins = {
       "gbprod/stay-in-place.nvim",
       config = function()
         require("stay-in-place").setup()
+      end
+    },
+
+    -------------------------------------- Move --------------------------------------
+
+    {
+      "echasnovski/mini.nvim",
+      config = function()
+        require("mini.move").setup({
+          mappings = {
+            left = '<M-Left>',
+            right = '<M-Right>',
+            down = '<M-Down>',
+            up = '<M-Up>',
+
+            line_left = '<M-Left>',
+            line_right = '<M-Right>',
+            line_down = '<M-Down>',
+            line_up = '<M-Up>',
+          },
+        })
       end
     },
 
@@ -453,9 +482,9 @@ lvim.plugins = {
       "gbprod/substitute.nvim",
       config = function()
         require("substitute").setup({
-            on_substitute = function(event)
-    require("yanky").init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
-  end,
+          on_substitute = function(event)
+            require("yanky").init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
+          end,
         })
         vim.keymap.set("n", "cxx", "<cmd>lua require('substitute.exchange').line()<cr>", { noremap = true })
         vim.keymap.set("x", "X", "<cmd>lua require('substitute.exchange').visual()<cr>", { noremap = true })
@@ -544,12 +573,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
       
       nnoremap ; :
 
-      ""=============[ Schlepp ]================""
-
-      vmap <silent><unique> <up>    <Plug>SchleppUp
-      vmap <silent><unique> <down>  <Plug>SchleppDown
-      vmap <silent><unique> <left>  <Plug>SchleppLeft
-      vmap <silent><unique> <right> <Plug>SchleppRight
+      ""================[ GF ]==================""
+      
+      map gf :edit <cfile><cr>
 
       ""==========[ Search-Replace ]============""
 
@@ -563,11 +589,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
       cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
       cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
-
-      ""==========[ Search Movement ]===========""
-
-      nnoremap  <silent><expr> n  'Nn'[v:searchforward] . ":call HLNext()\<CR>"
-      nnoremap  <silent><expr> N  'nN'[v:searchforward] . ":call HLNext()\<CR>"
 
       ""===============[ Swap ]=================""
 

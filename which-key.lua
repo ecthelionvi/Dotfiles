@@ -54,12 +54,12 @@ M.config = function()
         height = { min = 4, max = 25 }, -- min and max height of the columns
         width = { min = 20, max = 50 }, -- min and max width of the columns
         spacing = 3, -- spacing between columns
-        align = "left", -- align columns left, center or right
+        align = "center", -- align columns left, center or right
       },
       ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
       hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
-      show_help = true, -- show help message on the command line when the popup is visible
-      show_keys = true, -- show the currently pressed key and its label as a message in the command line
+      show_help = false, -- show help message on the command line when the popup is visible
+      show_keys = false, -- show the currently pressed key and its label as a message in the command line
       triggers = "auto", -- automatically setup triggers
       -- triggers = {"<leader>"} -- or specify a list manually
       triggers_blacklist = {
@@ -102,7 +102,7 @@ M.config = function()
       [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
       ["w"] = { "<cmd>w!<CR>", "Save" },
       ["q"] = { "<cmd>q!<CR>", "Quit" },
-      ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment toggle current line" },
+      ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment" },
       ["c"] = { "<cmd>BufferKill<CR>", "Close Buffer" },
       ["f"] = {
         function()
@@ -118,16 +118,16 @@ M.config = function()
         f = { "<cmd>Telescope buffers previewer=false<cr>", "Find" },
         b = { "<cmd>BufferLineCyclePrev<cr>", "Previous" },
         n = { "<cmd>BufferLineCycleNext<cr>", "Next" },
-        W = { "<cmd>noautocmd w<cr>", "Save without formatting (noautocmd)" },
+        W = { "<cmd>noautocmd w<cr>", "Save" },
         -- w = { "<cmd>BufferWipeout<cr>", "Wipeout" }, -- TODO: implement this for bufferline
         e = {
           "<cmd>BufferLinePickClose<cr>",
-          "Pick which buffer to close",
+          "Pick Close",
         },
-        h = { "<cmd>BufferLineCloseLeft<cr>", "Close all to the left" },
+        h = { "<cmd>BufferLineCloseLeft<cr>", "Close All " },
         l = {
           "<cmd>BufferLineCloseRight<cr>",
-          "Close all to the right",
+          "Close All ",
         },
         D = {
           "<cmd>BufferLineSortByDirectory<cr>",
@@ -188,12 +188,12 @@ M.config = function()
           "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>",
           "Undo Stage Hunk",
         },
-        o = { "<cmd>Telescope git_status<cr>", "Open changed file" },
-        b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-        c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
+        o = { "<cmd>Telescope git_status<cr>", "Open Changed File" },
+        b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
+        c = { "<cmd>Telescope git_commits<cr>", "Commit" },
         C = {
           "<cmd>Telescope git_bcommits<cr>",
-          "Checkout commit(for current file)",
+          "Commit Current File",
         },
         d = {
           "<cmd>Gitsigns diffthis HEAD<cr>",
@@ -230,57 +230,57 @@ M.config = function()
         name = "+LunarVim",
         c = {
           "<cmd>edit " .. get_config_dir() .. "/config.lua<cr>",
-          "Edit config.lua",
+          "Edit Config",
         },
-        d = { "<cmd>LvimDocs<cr>", "View LunarVim's docs" },
+        d = { "<cmd>LvimDocs<cr>", "View LunarVim Docs" },
         f = {
           "<cmd>lua require('lvim.core.telescope.custom-finders').find_lunarvim_files()<cr>",
-          "Find LunarVim files",
+          "Find LunarVim Files",
         },
         g = {
           "<cmd>lua require('lvim.core.telescope.custom-finders').grep_lunarvim_files()<cr>",
-          "Grep LunarVim files",
+          "Grep LunarVim Files",
         },
-        k = { "<cmd>Telescope keymaps<cr>", "View LunarVim's keymappings" },
+        k = { "<cmd>Telescope keymaps<cr>", "View LunarVim Keymappings" },
         i = {
           "<cmd>lua require('lvim.core.info').toggle_popup(vim.bo.filetype)<cr>",
           "Toggle LunarVim Info",
         },
         I = {
           "<cmd>lua require('lvim.core.telescope.custom-finders').view_lunarvim_changelog()<cr>",
-          "View LunarVim's changelog",
+          "View LunarVim Changelog",
         },
         l = {
-          name = "+logs",
+          name = "+Logs",
           d = {
             "<cmd>lua require('lvim.core.terminal').toggle_log_view(require('lvim.core.log').get_path())<cr>",
-            "view default log",
+            "View Default Log",
           },
           D = {
             "<cmd>lua vim.fn.execute('edit ' .. require('lvim.core.log').get_path())<cr>",
-            "Open the default logfile",
+            "Open Default Logfile",
           },
           l = {
             "<cmd>lua require('lvim.core.terminal').toggle_log_view(vim.lsp.get_log_path())<cr>",
-            "view lsp log",
+            "View LSP Log",
           },
-          L = { "<cmd>lua vim.fn.execute('edit ' .. vim.lsp.get_log_path())<cr>", "Open the LSP logfile" },
+          L = { "<cmd>lua vim.fn.execute('edit ' .. vim.lsp.get_log_path())<cr>", "Open LSP Logfile" },
           n = {
             "<cmd>lua require('lvim.core.terminal').toggle_log_view(os.getenv('NVIM_LOG_FILE'))<cr>",
-            "view neovim log",
+            "View Neovim Log",
           },
-          N = { "<cmd>edit $NVIM_LOG_FILE<cr>", "Open the Neovim logfile" },
+          N = { "<cmd>edit $NVIM_LOG_FILE<cr>", "Open Neovim Logfile" },
         },
-        r = { "<cmd>LvimReload<cr>", "Reload LunarVim's configuration" },
+        r = { "<cmd>LvimReload<cr>", "Reload LunarVim Configuration" },
         u = { "<cmd>LvimUpdate<cr>", "Update LunarVim" },
       },
       s = {
         name = "Search",
-        b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
+        b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
         c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
         f = { "<cmd>Telescope find_files<cr>", "Find File" },
         h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
-        H = { "<cmd>Telescope highlights<cr>", "Find highlight groups" },
+        H = { "<cmd>Telescope highlights<cr>", "Find Highlight Groups" },
         M = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
         r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
         R = { "<cmd>Telescope registers<cr>", "Registers" },

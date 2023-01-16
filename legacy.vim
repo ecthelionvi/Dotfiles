@@ -23,3 +23,16 @@ nnoremap <silent><expr> <leader>r ((&buftype is# "terminal") ? ":RunClose<CR>" :
 
 nnoremap  <silent><expr> n  'Nn'[v:searchforward] . ":call HLNext()\<CR>"
 nnoremap  <silent><expr> N  'nN'[v:searchforward] . ":call HLNext()\<CR>"
+
+""=============[ Schlepp ]================""
+
+vmap <silent><unique> <up>    <Plug>SchleppUp
+vmap <silent><unique> <down>  <Plug>SchleppDown
+vmap <silent><unique> <left>  <Plug>SchleppLeft
+vmap <silent><unique> <right> <Plug>SchleppRight
+
+""==========[ Search Movement ]===========""
+
+noremap <expr> n 'Nn'[v:searchforward]
+noremap <expr> N 'nN'[v:searchforward]
+

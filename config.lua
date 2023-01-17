@@ -103,7 +103,6 @@ lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
 -- Easy
 vim.api.nvim_set_keymap("n", ";", ":", { noremap = true})
 
-
 -- Terminal Esc
 lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
 lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
@@ -165,9 +164,9 @@ vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true})
 vim.api.nvim_set_keymap('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn",{noremap=true,silent=true})
 vim.api.nvim_set_keymap('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",{noremap=true,silent=true})
 
+-- Wildmenu
 vim.api.nvim_set_keymap("c", "<up>", [[wildmenumode() ? "\<left>" : "\<up>"]], {expr = true, noremap = true})
 vim.api.nvim_set_keymap("c", "<down>", [[wildmenumode() ? "\<right>" : "\<down>"]], {expr = true, noremap = true})
-
 
 -- Yanky
 lvim.keys.normal_mode["P"] = "<Plug>(YankyPutAfter)"
@@ -424,7 +423,7 @@ lvim.plugins = {
       config = function()
         require('treesj').setup()
       end,
-      vim.keymap.set("n", "qq", "<cmd>TSJToggle<cr>", { silent = true }, { noremap = true })
+      vim.api.nvim_set_keymap("n", "qq", "<cmd>TSJToggle<cr>", { silent = true, noremap = true })
     },
 
     ------------------------------------ Undotree ------------------------------------
@@ -503,10 +502,10 @@ lvim.plugins = {
             require("yanky").init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
           end,
         })
-        vim.keymap.set("n", "cxx", "<cmd>lua require('substitute.exchange').line()<cr>", { noremap = true })
-        vim.keymap.set("x", "X", "<cmd>lua require('substitute.exchange').visual()<cr>", { noremap = true })
-        vim.keymap.set("n", "cxc", "<cmd>lua require('substitute.exchange').cancel()<cr>", { noremap = true })
-        vim.keymap.set("n", "cx", "<cmd>lua require('substitute.exchange').operator()<cr>", { noremap = true })
+        vim.api.nvim_set_keymap("n", "cxx", "<cmd>lua require('substitute.exchange').line()<cr>", { noremap = true })
+        vim.api.nvim_set_keymap("x", "X", "<cmd>lua require('substitute.exchange').visual()<cr>", { noremap = true })
+        vim.api.nvim_set_keymap("n", "cxc", "<cmd>lua require('substitute.exchange').cancel()<cr>", { noremap = true })
+        vim.api.nvim_set_keymap("n", "cx", "<cmd>lua require('substitute.exchange').operator()<cr>", { noremap = true })
       end
     },
   },

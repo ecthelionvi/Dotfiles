@@ -132,6 +132,7 @@ lvim.keys.normal_mode["<M-h>"] = "<cmd>BufferLineCyclePrev<CR>"
 lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
 lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
 lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
+lvim.keys.term_mode["<leader>gg"] = "<cmd>q!<cr>"
 lvim.keys.term_mode["<leader>."] = [[<C-\><C-n>:RnvimrToggle<cr>]]
 
 -- GF

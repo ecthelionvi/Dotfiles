@@ -100,18 +100,18 @@ lvim.keys.normal_mode["J"] = "}", { noremap = true }
 lvim.keys.normal_mode["H"] = "^", { noremap = true }
 lvim.keys.normal_mode["L"] = "$", { noremap = true }
 
--- Trim
-lvim.keys.normal_mode["<BS><BS>"] = "<cmd>lua trim()<cr>"
-
 -- Esc Highlighting
 lvim.keys.normal_mode["<esc>"] = [[<cmd>let @/ = ""<cr>]]
+
+-- Trim
+lvim.keys.normal_mode["<BS><BS>"] = "<cmd>lua trim()<cr>"
 
 -- Yank Preserve Cursor
 lvim.keys.visual_mode["y"] = "myy`y", { noremap = true }
 lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
 
 -- Easy
-vim.api.nvim_set_keymap("n", ";", ":", { noremap = true})
+vim.api.nvim_set_keymap("n", ";", ":", { noremap = true })
 
 -- Dial
 lvim.keys.normal_mode["<C-a>"] = "<Plug>(dial-increment)"
@@ -135,18 +135,18 @@ lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
 lvim.keys.term_mode["<leader>."] = [[<C-\><C-n>:RnvimrToggle<cr>]]
 
 -- GF
-vim.api.nvim_set_keymap("n", "gf", "<cmd>e <cfile><cr>", { noremap = true})
+vim.api.nvim_set_keymap("n", "gf", "<cmd>e <cfile><cr>", { noremap = true })
 
 -- Chmod
 lvim.keys.normal_mode["<leader>x"] = "<cmd>!chmod +x %<cr>", { silent = true }
 
--- N-Movement
-vim.api.nvim_set_keymap("n", "n", "'Nn'[v:searchforward]", {expr = true, noremap = true})
-vim.api.nvim_set_keymap("n", "N", "'nN'[v:searchforward]", {expr = true, noremap = true})
-
 -- Jump Brackets
 lvim.keys.normal_mode["<Tab>"] = "<esc><cmd>lua moveToNextPairs()<cr>", { silent = true }
 lvim.keys.normal_mode["<A-Tab>"] = "<esc><cmd>lua moveToPrevPairs()<cr>", { silent = true }
+
+-- N-Movement
+vim.api.nvim_set_keymap("n", "n", "'Nn'[v:searchforward]", { expr = true, noremap = true })
+vim.api.nvim_set_keymap("n", "N", "'nN'[v:searchforward]", { expr = true, noremap = true })
 
 -- Which Key
 lvim.builtin.which_key.mappings["t"] = {
@@ -178,14 +178,14 @@ lvim.keys.normal_mode["<leader>."] = "<cmd>RnvimrToggle<cr>", { noremap = true }
 lvim.keys.normal_mode["<leader>\\"] = "<cmd>ToggleTerm()<cr>", { noremap = true }, { silent = true }
 
 -- Search-Replace
-vim.api.nvim_set_keymap("n", "cn", "*``cgn", { noremap = true})
-vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true})
-vim.api.nvim_set_keymap('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn",{noremap=true,silent=true})
-vim.api.nvim_set_keymap('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",{noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "cn", "*``cgn", { noremap = true })
+vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true })
+vim.api.nvim_set_keymap('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn",{ noremap=true, silent=true })
+vim.api.nvim_set_keymap('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",{ noremap=true, silent=true })
 
 -- Wildmenu
-vim.api.nvim_set_keymap("c", "<up>", [[wildmenumode() ? "\<left>" : "\<up>"]], {expr = true, noremap = true})
-vim.api.nvim_set_keymap("c", "<down>", [[wildmenumode() ? "\<right>" : "\<down>"]], {expr = true, noremap = true})
+vim.api.nvim_set_keymap("c", "<up>", [[wildmenumode() ? "\<left>" : "\<up>"]], { expr = true, noremap = true })
+vim.api.nvim_set_keymap("c", "<down>", [[wildmenumode() ? "\<right>" : "\<down>"]], { expr = true, noremap = true })
 
 -- Yanky
 lvim.keys.normal_mode["P"] = "<Plug>(YankyPutAfter)"
@@ -474,7 +474,7 @@ lvim.plugins = {
             else
               return "<cmd>RunCode<cr>"
             end
-          end, { expr = true, silent = true, replace_keycodes = true })
+          end, { expr = true, silent = true })
         }
       end,
     },

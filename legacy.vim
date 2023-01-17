@@ -51,3 +51,8 @@ let g:mc = "y/\\V\<C-r>=escape(@\", '/')\<CR>\<CR>"
 ""===============[ Easy ]=================""
       
 nnoremap ; :
+
+""=============[ Wildmenu ]===============""
+
+cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
+cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"

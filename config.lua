@@ -165,6 +165,10 @@ vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true})
 vim.api.nvim_set_keymap('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn",{noremap=true,silent=true})
 vim.api.nvim_set_keymap('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",{noremap=true,silent=true})
 
+vim.api.nvim_set_keymap("c", "<up>", [[wildmenumode() ? "\<left>" : "\<up>"]], {expr = true, noremap = true})
+vim.api.nvim_set_keymap("c", "<down>", [[wildmenumode() ? "\<right>" : "\<down>"]], {expr = true, noremap = true})
+
+
 -- Yanky
 lvim.keys.normal_mode["P"] = "<Plug>(YankyPutAfter)"
 lvim.keys.normal_mode["p"] = "<Plug>(YankyPutBefore)"
@@ -581,11 +585,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.schedule(function()
 
       vim.cmd [[
-
-      ""=============[ Wildmenu ]===============""
-
-      cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
-      cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
 
       ""===============[ Swap ]=================""
 

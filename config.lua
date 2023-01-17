@@ -90,6 +90,16 @@ lvim.keys.normal_mode["O"] = "mzO<Esc>`z"
 lvim.keys.normal_mode["<cr>"] = "mzo<Esc>`z"
 lvim.keys.normal_mode["<S-cr>"] = "mzO<Esc>`z"
 
+-- HJKL
+lvim.keys.normal_mode["$"] = "", { noremap = true }
+lvim.keys.normal_mode["^"] = "", { noremap = true }
+lvim.keys.normal_mode["{"] = "", { noremap = true }
+lvim.keys.normal_mode["}"] = "", { noremap = true }
+lvim.keys.normal_mode["K"] = "{", { noremap = true }
+lvim.keys.normal_mode["J"] = "}", { noremap = true }
+lvim.keys.normal_mode["H"] = "^", { noremap = true }
+lvim.keys.normal_mode["L"] = "$", { noremap = true }
+
 -- Trim
 lvim.keys.normal_mode["<BS><BS>"] = "<cmd>lua trim()<cr>"
 
@@ -103,12 +113,6 @@ lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
 -- Easy
 vim.api.nvim_set_keymap("n", ";", ":", { noremap = true})
 
--- Terminal Esc
-lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
-lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
-lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
-lvim.keys.term_mode["<leader>."] = [[<C-\><C-n>:RnvimrToggle<cr>]]
-
 -- Dial
 lvim.keys.normal_mode["<C-a>"] = "<Plug>(dial-increment)"
 lvim.keys.normal_mode["<C-x>"] = "<Plug>(dial-decrement)"
@@ -117,9 +121,18 @@ lvim.keys.visual_mode["<C-x>"] = "<Plug>(dial-decrement)"
 lvim.keys.visual_mode["g<C-a>"] = "g<Plug>(dial-increment)"
 lvim.keys.visual_mode["g<C-x>"] = "g<Plug>(dial-decrement)"
 
+-- Append
+lvim.keys.normal_mode["<c-a>"] = "mzJ`z", { noremap = true }
+
 -- Switch Tabs
 lvim.keys.normal_mode["<M-l>"] = "<cmd>BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<M-h>"] = "<cmd>BufferLineCyclePrev<CR>"
+
+-- Terminal Esc
+lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
+lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
+lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
+lvim.keys.term_mode["<leader>."] = [[<C-\><C-n>:RnvimrToggle<cr>]]
 
 -- GF
 vim.api.nvim_set_keymap("n", "gf", "<cmd>e <cfile><cr>", { noremap = true})
@@ -158,6 +171,12 @@ lvim.builtin.which_key.mappings.s.y = { "<cmd>Telescope yank_history<cr>", "Yank
 lvim.builtin.which_key.mappings.b.p = { "<cmd>BufferLinePick<cr>", "Pick Open" }
 lvim.builtin.which_key.mappings.b.k = { "<cmd>BufferLinePickClose<cr>", "Pick Close" }
 
+-- Rnvimr
+lvim.keys.normal_mode["<leader>."] = "<cmd>RnvimrToggle<cr>", { noremap = true }, { silent = true }
+
+-- ToggleTerm
+lvim.keys.normal_mode["<leader>\\"] = "<cmd>ToggleTerm()<cr>", { noremap = true }, { silent = true }
+
 -- Search-Replace
 vim.api.nvim_set_keymap("n", "cn", "*``cgn", { noremap = true})
 vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true})
@@ -179,6 +198,10 @@ lvim.keys.normal_mode["<c-p>"] = "<Plug>(YankyCycleBackward)"
 lvim.keys.visual_block_mode["gP"] = "<Plug>(YankyGPutBefore)"
 lvim.keys.visual_block_mode["p"] = "<cmd>lua require('substitute').visual()<cr>", { noremap = true }, { silent = true }
 lvim.keys.visual_block_mode["P"] = "<cmd>lua require('substitute').visual()<cr>", { noremap = true }, { silent = true }
+
+-- Harpoon
+lvim.keys.normal_mode["m"] = "<cmd>lua require('harpoon.mark').add_file()<cr>", { noremap = true }, { silent = true }
+lvim.keys.normal_mode["\\"] = "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", { noremap = true }, { silent = true }
 
 -- Rename
 lvim.keys.normal_mode["<leader>rn"] = ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>"
@@ -385,8 +408,8 @@ lvim.plugins = {
       event = "BufRead",
       config = function()
         require("hop").setup()
-        vim.api.nvim_set_keymap("n", "s", "<cmd>HopChar2<cr>", { silent = true })
         vim.api.nvim_set_keymap("n", "S", "<cmd>HopWord<cr>", { silent = true })
+        vim.api.nvim_set_keymap("n", "s", "<cmd>HopChar2<cr>", { silent = true })
       end,
     },
 
@@ -413,17 +436,6 @@ lvim.plugins = {
         vim.api.nvim_set_keymap("n", "<C-s>", "<cmd>SymbolsOutline<cr>", { silent = true })
         vim.api.nvim_set_keymap("v", "<C-s>", "<cmd>SymbolsOutline<cr>", { silent = true })
       end
-    },
-
-    ------------------------------------ TreeSJ --------------------------------------
-
-    {
-      'Wansmer/treesj',
-      requires = { 'nvim-treesitter' },
-      config = function()
-        require('treesj').setup()
-      end,
-      vim.api.nvim_set_keymap("n", "qq", "<cmd>TSJToggle<cr>", { silent = true, noremap = true })
     },
 
     ------------------------------------ Undotree ------------------------------------
@@ -467,29 +479,15 @@ lvim.plugins = {
       end,
     },
 
-    ------------------------------------ Legendary -----------------------------------
+    ------------------------------------ TreeSJ --------------------------------------
 
     {
-      'mrjones2014/legendary.nvim',
+      'Wansmer/treesj',
+      requires = { 'nvim-treesitter' },
       config = function()
-        require('legendary').setup({
-          keymaps = {
-            { "$", "", opts = { noremap = true } },
-            { "^", "", opts = { noremap = true } },
-            { "{", "", opts = { noremap = true } },
-            { "}", "", opts = { noremap = true } },
-            { "K", "{", opts = { noremap = true } },
-            { "J", "}", opts = { noremap = true } },
-            { "H", "^", opts = { noremap = true } },
-            { "L", "$", opts = { noremap = true } },
-            { "<leader>.", "<cmd>RnvimrToggle<cr>", opts = { silent = true } },
-            { "<C-a>", "mzJ`z", opts = { silent = true }, { noremap = true } },
-            { "<leader>\\", "<cmd>ToggleTerm()<cr>", opts = { silent = true } },
-            { "m", "<cmd>lua require('harpoon.mark').add_file()<cr>", opts = { silent = true } },
-            { "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", opts = { silent = true } },
-          },
-        })
+        require('treesj').setup()
       end,
+      vim.api.nvim_set_keymap("n", "qq", "<cmd>TSJToggle<cr>", { silent = true, noremap = true })
     },
 
     ----------------------------------- Substitute ------------------------------------

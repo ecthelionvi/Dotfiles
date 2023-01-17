@@ -103,9 +103,6 @@ lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
 -- Easy
 vim.api.nvim_set_keymap("n", ";", ":", { noremap = true})
 
--- Search-Replace
-vim.api.nvim_set_keymap("n", "cn", "*``cgn", { noremap = true})
-vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true})
 
 -- Terminal Esc
 lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
@@ -161,6 +158,12 @@ lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<cr>", "Project
 lvim.builtin.which_key.mappings.s.y = { "<cmd>Telescope yank_history<cr>", "Yank History" }
 lvim.builtin.which_key.mappings.b.p = { "<cmd>BufferLinePick<cr>", "Pick Open" }
 lvim.builtin.which_key.mappings.b.k = { "<cmd>BufferLinePickClose<cr>", "Pick Close" }
+
+-- Search-Replace
+vim.api.nvim_set_keymap("n", "cn", "*``cgn", { noremap = true})
+vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true})
+vim.api.nvim_set_keymap('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn",{noremap=true,silent=true})
+vim.api.nvim_set_keymap('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",{noremap=true,silent=true})
 
 -- Yanky
 lvim.keys.normal_mode["P"] = "<Plug>(YankyPutAfter)"
@@ -578,12 +581,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.schedule(function()
 
       vim.cmd [[
-
-      ""==========[ Search-Replace ]============""
-
-      vnoremap <expr> cn g:mc . "``cgn"
-      vnoremap <expr> cN g:mc . "``cgN"
-      let g:mc = "y/\\V\<C-r>=escape(@\", '/')\<CR>\<CR>"
 
       ""=============[ Wildmenu ]===============""
 

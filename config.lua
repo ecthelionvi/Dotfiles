@@ -2,7 +2,7 @@
 
 local M = {}
 
--- Settings --
+-- Settings
 vim.opt.cmdheight = 0
 vim.opt.timeoutlen = 300
 vim.opt.relativenumber = true
@@ -34,11 +34,11 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- ||||||||||||||||||||||||||||||||| Keybinds ||||||||||||||||||||||||||||||||| --
 
--- Disable Q
+-- Disable-Q
 lvim.keys.normal_mode["Q"] = ""
 lvim.keys.visual_mode["Q"] = ""
 
--- Visual Movement
+-- Visual-Movement
 lvim.keys.visual_mode["J"] = ""
 lvim.keys.visual_mode["K"] = ""
 lvim.keys.visual_mode["J"] = "}"
@@ -48,41 +48,41 @@ lvim.keys.visual_mode["L"] = ""
 lvim.keys.visual_mode["H"] = "^"
 lvim.keys.visual_mode["L"] = "$"
 
--- Yank in Selection
+-- Yank-Selection
 lvim.keys.normal_mode["Y"] = "yg$"
 
 -- Redo
 lvim.keys.normal_mode["U"] = "<C-r>"
 
--- Better Delete
+-- Better-Delete
 lvim.keys.normal_mode["d"] = "d "
 lvim.keys.normal_mode["X"] = "D"
 lvim.keys.normal_mode["dd"] = "dd"
 lvim.keys.normal_mode["xx"] = "dd"
 lvim.keys.visual_block_mode["x"] = "d"
 
--- Disable Arrows
+-- Disable-Arrows
 lvim.keys.visual_block_mode["<Up>"] = ""
 lvim.keys.visual_block_mode["<Down>"] = ""
 lvim.keys.visual_block_mode["<Left>"] = ""
 lvim.keys.visual_block_mode["<Right>"] = ""
 
--- Better Backspace
+-- Better-Backspace
 lvim.keys.normal_mode["<BS>"] = "x"
 lvim.keys.visual_block_mode["<BS>"] = "x"
 
--- Vertal Movement
+-- Vertal-Movement
 lvim.keys.normal_mode["<C-d>"] = "<C-d>zz"
 lvim.keys.normal_mode["<C-u>"] = "<C-u>zz"
 
 -- Visual Highlight
-lvim.keys.normal_mode["aa"] = "VGo1G"
-lvim.keys.visual_block_mode["aa"] = "VGo1G"
+lvim.keys.normal_mode["<m-a>"] = "VGo1G"
+lvim.keys.visual_block_mode["<m-a>"] = "VGo1G"
 
--- Better Paste
+-- Better-Paste
 lvim.keys.visual_block_mode["p"] = [["_dP]]
 
--- Swap O
+-- Swap-O
 lvim.keys.normal_mode["<leader>o"] = "o"
 lvim.keys.normal_mode["<leader>O"] = "O"
 lvim.keys.normal_mode["o"] = "mzo<Esc>`z"
@@ -106,7 +106,7 @@ lvim.keys.normal_mode["<esc>"] = [[<cmd>let @/ = ""<cr>]]
 -- Trim
 lvim.keys.normal_mode["<BS><BS>"] = "<cmd>lua trim()<cr>"
 
--- Yank Preserve Cursor
+-- Yank-Preserve-Cursor
 lvim.keys.visual_mode["y"] = "myy`y", { noremap = true }
 lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
 
@@ -114,21 +114,21 @@ lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
 vim.api.nvim_set_keymap("n", ";", ":", { noremap = true })
 
 -- Dial
-lvim.keys.normal_mode["<C-a>"] = "<Plug>(dial-increment)"
-lvim.keys.normal_mode["<C-x>"] = "<Plug>(dial-decrement)"
-lvim.keys.visual_mode["<C-a>"] = "<Plug>(dial-increment)"
-lvim.keys.visual_mode["<C-x>"] = "<Plug>(dial-decrement)"
-lvim.keys.visual_mode["g<C-a>"] = "g<Plug>(dial-increment)"
-lvim.keys.visual_mode["g<C-x>"] = "g<Plug>(dial-decrement)"
+lvim.keys.normal_mode["<c-a>"] = "<Plug>(dial-increment)"
+lvim.keys.normal_mode["<c-x>"] = "<Plug>(dial-decrement)"
+lvim.keys.visual_mode["<c-a>"] = "<Plug>(dial-increment)"
+lvim.keys.visual_mode["<c-x>"] = "<Plug>(dial-decrement)"
+lvim.keys.visual_mode["g<c-a>"] = "g<Plug>(dial-increment)"
+lvim.keys.visual_mode["g<c-x>"] = "g<Plug>(dial-decrement)"
 
 -- Append
-lvim.keys.normal_mode["<c-a>"] = "mzJ`z", { noremap = true }
+lvim.keys.normal_mode["<c-j>"] = "mzJ`z", { noremap = true }
 
--- Switch Tabs
+-- Switch-Tabs
 lvim.keys.normal_mode["<M-l>"] = "<cmd>BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<M-h>"] = "<cmd>BufferLineCyclePrev<CR>"
 
--- Terminal Esc
+-- Terminal-Esc
 lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
 lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
 lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
@@ -141,7 +141,7 @@ vim.api.nvim_set_keymap("n", "gf", "<cmd>e <cfile><cr>", { noremap = true })
 -- Chmod
 lvim.keys.normal_mode["<leader>x"] = "<cmd>!chmod +x %<cr>", { silent = true }
 
--- Jump Brackets
+-- Jump-Brackets
 lvim.keys.normal_mode["<Tab>"] = "<esc><cmd>lua moveToNextPairs()<cr>", { silent = true }
 lvim.keys.normal_mode["<A-Tab>"] = "<esc><cmd>lua moveToPrevPairs()<cr>", { silent = true }
 
@@ -149,7 +149,7 @@ lvim.keys.normal_mode["<A-Tab>"] = "<esc><cmd>lua moveToPrevPairs()<cr>", { sile
 vim.api.nvim_set_keymap("n", "n", "'Nn'[v:searchforward]", { expr = true, noremap = true })
 vim.api.nvim_set_keymap("n", "N", "'nN'[v:searchforward]", { expr = true, noremap = true })
 
--- Which Key
+-- Which-Key
 lvim.builtin.which_key.mappings["t"] = {
   name = "+Trouble",
   q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
@@ -167,10 +167,16 @@ lvim.builtin.which_key.mappings['w'] = {}
 lvim.builtin.which_key.mappings.l.p = { "<cmd>LspStop<cr>", "Stop" }
 lvim.builtin.which_key.mappings.l.o = { "<cmd>LspStart<cr>", "Start" }
 lvim.builtin.which_key.mappings.g.d = { "<cmd>DiffviewOpen<cr>", "Diffview" }
-lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<cr>", "Projects" }
-lvim.builtin.which_key.mappings.s.y = { "<cmd>Telescope yank_history<cr>", "Yank History" }
 lvim.builtin.which_key.mappings.b.p = { "<cmd>BufferLinePick<cr>", "Pick Open" }
+lvim.builtin.which_key.mappings["f"] = {
+  function()
+    require("lvim.core.telescope.custom-finders").find_project_files {}
+  end,
+  "Find File",
+}
+lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<cr>", "Projects" }
 lvim.builtin.which_key.mappings.b.k = { "<cmd>BufferLinePickClose<cr>", "Pick Close" }
+lvim.builtin.which_key.mappings.s.y = { "<cmd>Telescope yank_history<cr>", "Yank History" }
 
 -- Rnvimr
 lvim.keys.normal_mode["<leader>."] = "<cmd>RnvimrToggle<cr>", { noremap = true }, { silent = true }
@@ -181,8 +187,8 @@ lvim.keys.normal_mode["<leader>\\"] = "<cmd>ToggleTerm()<cr>", { noremap = true 
 -- Search-Replace
 vim.api.nvim_set_keymap("n", "cn", "*``cgn", { noremap = true })
 vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true })
-vim.api.nvim_set_keymap('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn",{ noremap=true, silent=true })
-vim.api.nvim_set_keymap('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",{ noremap=true, silent=true })
+vim.api.nvim_set_keymap('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN", { noremap = true, silent = true })
 
 -- Wildmenu
 vim.api.nvim_set_keymap("c", "<up>", [[wildmenumode() ? "\<left>" : "\<up>"]], { expr = true, noremap = true })
@@ -202,7 +208,8 @@ lvim.keys.visual_block_mode["P"] = "<cmd>lua require('substitute').visual()<cr>"
 
 -- Harpoon
 lvim.keys.normal_mode["m"] = "<cmd>lua require('harpoon.mark').add_file()<cr>", { noremap = true }, { silent = true }
-lvim.keys.normal_mode["\\"] = "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", { noremap = true }, { silent = true }
+lvim.keys.normal_mode["\\"] = "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", { noremap = true },
+    { silent = true }
 
 -- Rename
 lvim.keys.normal_mode["<leader>rn"] = ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>"
@@ -221,23 +228,21 @@ lvim.plugins = {
     "ThePrimeagen/vim-be-good",
     "Vimjas/vim-python-pep8-indent",
     "christoomey/vim-tmux-navigator",
+    "nvim-treesitter/nvim-treesitter-context",
 
-    ------------------------------------ Trouble -------------------------------------
-
+    -- Trouble
     {
       "folke/trouble.nvim",
       cmd = "TroubleToggle",
     },
 
-    ------------------------------------ Diffview ------------------------------------
-
+    -- Diffview
     {
       "sindrets/diffview.nvim",
       event = "BufRead",
     },
 
-    -------------------------------------- Numb --------------------------------------
-
+    -- Numb
     {
       "nacro90/numb.nvim",
       event = "BufRead",
@@ -249,8 +254,7 @@ lvim.plugins = {
       end,
     },
 
-    ------------------------------------ Cutlass -------------------------------------
-
+    -- Cutlass
     {
       "gbprod/cutlass.nvim",
       config = function()
@@ -264,8 +268,7 @@ lvim.plugins = {
       end
     },
 
-    ------------------------------------ Auto-Save -----------------------------------
-
+    -- Auto-Save
     {
       "Pocco81/auto-save.nvim",
       config = function()
@@ -273,8 +276,7 @@ lvim.plugins = {
       end,
     },
 
-    --------------------------------- Better-Escape ----------------------------------
-
+    -- Better-Escape
     {
       "max397574/better-escape.nvim",
       config = function()
@@ -282,8 +284,7 @@ lvim.plugins = {
       end,
     },
 
-    ---------------------------------- Stay-In-Place ---------------------------------
-
+    -- Stay-In-Place
     {
       "gbprod/stay-in-place.nvim",
       config = function()
@@ -291,8 +292,7 @@ lvim.plugins = {
       end
     },
 
-    -------------------------------------- Move --------------------------------------
-
+    -- Move
     {
       "echasnovski/mini.nvim",
       config = function()
@@ -312,8 +312,7 @@ lvim.plugins = {
       end
     },
 
-    ------------------------------------- Yanky --------------------------------------
-
+    -- Yanky
     { "gbprod/yanky.nvim",
       config = function()
         require("yanky").setup({
@@ -346,8 +345,7 @@ lvim.plugins = {
       end
     },
 
-    ------------------------------------- Dial ---------------------------------------
-
+    -- Dial
     {
       "monaqa/dial.nvim",
       event = "BufRead",
@@ -385,8 +383,7 @@ lvim.plugins = {
       end
     },
 
-    --------------------------------- Nvim-Colorizer ---------------------------------
-
+    -- Nvim-Colorizer
     {
       "norcalli/nvim-colorizer.lua",
       config = function()
@@ -402,8 +399,7 @@ lvim.plugins = {
       end,
     },
 
-    -------------------------------------- Hop ---------------------------------------
-
+    -- Hop
     {
       "phaazon/hop.nvim",
       event = "BufRead",
@@ -414,8 +410,7 @@ lvim.plugins = {
       end,
     },
 
-    --------------------------------- Nvim-Lastplace ---------------------------------
-
+    -- Nvim-Lastplace
     {
       "ethanholz/nvim-lastplace",
       event = "BufRead",
@@ -428,19 +423,17 @@ lvim.plugins = {
       end,
     },
 
-    -------------------------------- Symbols-Outline ---------------------------------
-
+    -- Symbols-Outline
     {
       "simrat39/symbols-outline.nvim",
       config = function()
         require('symbols-outline').setup()
-        vim.api.nvim_set_keymap("n", "<C-s>", "<cmd>SymbolsOutline<cr>", { silent = true })
-        vim.api.nvim_set_keymap("v", "<C-s>", "<cmd>SymbolsOutline<cr>", { silent = true })
+        vim.api.nvim_set_keymap("n", "<M-s>", "<cmd>SymbolsOutline<cr>", { silent = true })
+        vim.api.nvim_set_keymap("v", "<M-s>", "<cmd>SymbolsOutline<cr>", { silent = true })
       end
     },
 
-    ------------------------------------ Undotree ------------------------------------
-
+    -- Undotree
     {
       "mbbill/undotree",
       config = function()
@@ -448,8 +441,7 @@ lvim.plugins = {
       end,
     },
 
-    ----------------------------------- Code_Runner ----------------------------------
-
+    -- Code-Runner
     {
       "CRAG666/code_runner.nvim",
       requires = "nvim-lua/plenary.nvim",
@@ -480,8 +472,7 @@ lvim.plugins = {
       end,
     },
 
-    ------------------------------------ TreeSJ --------------------------------------
-
+    -- TreeSJ
     {
       'Wansmer/treesj',
       requires = { 'nvim-treesitter' },
@@ -491,8 +482,7 @@ lvim.plugins = {
       vim.api.nvim_set_keymap("n", "qq", "<cmd>TSJToggle<cr>", { silent = true, noremap = true })
     },
 
-    ----------------------------------- Substitute ------------------------------------
-
+    -- Substitute
     {
       "gbprod/substitute.nvim",
       config = function()
@@ -532,16 +522,14 @@ formatters.setup {
 
 -- ||||||||||||||||||||||||||||||||| Functions |||||||||||||||||||||||||||||||| --
 
--------------------------------------- Trim --------------------------------------
-
+-- Trim
 function trim()
   local save = vim.fn.winsaveview()
   vim.cmd("keeppatterns %s/\\s\\+$//e")
   vim.fn.winrestview(save)
 end
 
---------------------------------- Jump Brackets ----------------------------------
-
+-- Jump-Brackets
 function moveToNextPairs()
   local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
   local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
@@ -556,8 +544,35 @@ function moveToPrevPairs()
   vim.fn.setpos('.', { 0, lnum, col, 0 })
 end
 
------------------------------------ LSP Popup ------------------------------------
+-- ||||||||||||||||||||||||||||||| Autocommands ||||||||||||||||||||||||||||||| --
 
+-- Highlight
+lvim.autocommands = {
+  {
+    "BufEnter", {
+      pattern = "*",
+      callback = function()
+        if vim.bo.filetype ~= "alpha" then
+          vim.cmd[[highlight ColorColumn guifg=#565f89 guibg=#565f89]]
+          return vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+        end
+      end,
+    }
+  },
+    {
+    "BufWinenter", {
+      pattern = "*",
+      callback = function()
+        if vim.bo.filetype ~= "alpha" then
+          vim.cmd[[highlight ColorColumn guifg=#565f89 guibg=#565f89]]
+          return vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+        end
+      end,
+    }
+  },
+}
+
+-- LSP-Popup
 lvim.lsp.on_attach_callback = function(client, bufnr)
   vim.api.nvim_create_autocmd("CursorHold", {
     buffer = bufnr,
@@ -575,15 +590,12 @@ lvim.lsp.on_attach_callback = function(client, bufnr)
   })
 end
 
------------------------------------- Startup -------------------------------------
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = vim.api.nvim_create_augroup("startup", { clear = true }),
+-- Legacy
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = vim.api.nvim_create_augroup("legacy", { clear = true }),
   callback = function()
     vim.schedule(function()
-
       vim.cmd [[
-
       ""===============[ Swap ]=================""
 
       let s:k_version = 201

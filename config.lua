@@ -121,6 +121,10 @@ lvim.keys.visual_mode["<c-x>"] = "<Plug>(dial-decrement)"
 lvim.keys.visual_mode["g<c-a>"] = "g<Plug>(dial-increment)"
 lvim.keys.visual_mode["g<c-x>"] = "g<Plug>(dial-decrement)"
 
+-- Color-Column
+lvim.keys.normal_mode["<CC>"] = "<cmd>lua toggle_color_column()<cr>"
+lvim.keys.visual_mode["<CC>"] = "<cmd>call toggle_color_column()<cr>"
+
 -- Append
 lvim.keys.normal_mode["<c-j>"] = "mzJ`z", { noremap = true }
 
@@ -529,6 +533,19 @@ function trim()
   vim.fn.winrestview(save)
 end
 
+-- Toggle-Color_Column
+flag = false
+function toggle_color_column()
+    if flag then
+        vim.cmd("silent! call clearmatches()")
+        flag = false
+    else
+        vim.cmd[[highlight ColorColumn guifg=#565f89 guibg=#565f89]]
+        vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+        flag = true
+    end
+end
+
 -- Jump-Brackets
 function moveToNextPairs()
   local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
@@ -545,32 +562,6 @@ function moveToPrevPairs()
 end
 
 -- ||||||||||||||||||||||||||||||| Autocommands ||||||||||||||||||||||||||||||| --
-
--- Highlight
-lvim.autocommands = {
-  {
-    "BufEnter", {
-      pattern = "*",
-      callback = function()
-        if vim.bo.filetype ~= "alpha" then
-          vim.cmd[[highlight ColorColumn guifg=#565f89 guibg=#565f89]]
-          return vim.fn.matchadd("ColorColumn", "\\%81v", 100)
-        end
-      end,
-    }
-  },
-    {
-    "BufWinenter", {
-      pattern = "*",
-      callback = function()
-        if vim.bo.filetype ~= "alpha" then
-          vim.cmd[[highlight ColorColumn guifg=#565f89 guibg=#565f89]]
-          return vim.fn.matchadd("ColorColumn", "\\%81v", 100)
-        end
-      end,
-    }
-  },
-}
 
 -- LSP-Popup
 lvim.lsp.on_attach_callback = function(client, bufnr)

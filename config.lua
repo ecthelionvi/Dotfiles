@@ -57,9 +57,9 @@ lvim.keys.normal_mode["U"] = "<C-r>"
 -- Better-Delete
 lvim.keys.normal_mode["d"] = "d "
 lvim.keys.normal_mode["X"] = "D"
-lvim.keys.normal_mode["dd"] = "dd"
 lvim.keys.normal_mode["xx"] = "dd"
 lvim.keys.visual_block_mode["x"] = "d"
+lvim.keys.normal_mode["dd"] = "<cmd>silent! normal! dd<cr>"
 
 -- Disable-Arrows
 lvim.keys.visual_block_mode["<Up>"] = ""

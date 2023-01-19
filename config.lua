@@ -29,6 +29,23 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- ||||||||||||||||||||||||||||||||| Keybinds ||||||||||||||||||||||||||||||||| --
 
+-- Wildmenu
+vim.keymap.set("c", "<up>", function()
+  if vim.fn.wildmenumode then
+    return "<left>"
+  else
+    return "<up>"
+  end
+end, { expr = true, noremap = true })
+
+vim.keymap.set("c", "<down>", function()
+  if vim.fn.wildmenumode then
+    return "<right>"
+  else
+    return "<down>"
+  end
+end, { expr = true, noremap = true })
+
 -- Easy
 vim.keymap.set("n", ";", ":", { noremap = true })
 
@@ -665,12 +682,6 @@ vim.api.nvim_create_autocmd("vimenter", {
   callback = function()
     vim.schedule(function()
       clear_registers()
-      vim.cmd [[
-      set wildcharm=<C-Z>
-      cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
-      cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
-      cnoremap <expr> <left> wildmenumode() ? "\<up>" : "\<left>"
-      cnoremap <expr> <right> wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"]]
     end)
   end
 })

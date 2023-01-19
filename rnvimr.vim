@@ -1,15 +1,20 @@
-#/Users/rob/.local/share/lunarvim/site/pack/packer/start/rnvimr/after/plugin/rnvimr.vim
-
 let s:rnvimr_path = expand('<sfile>:h:h')
 let s:confdir = s:rnvimr_path . '/ranger'
 let s:default_ranger_cmd = ['ranger']
-let s:default_action = {}
-let s:shadow_winblend = get(g:, 'rnvimr_shadow_winblend', 100)
+let s:default_action = {
+            \ '<C-t>': 'NvimEdit tabedit',
+            \ '<C-x>': 'NvimEdit split',
+            \ '<C-v>': 'NvimEdit vsplit',
+            \ '<C-o>': 'NvimEdit drop',
+            \ 'gw': 'JumpNvimCwd',
+            \ 'yw': 'EmitRangerCwd',
+            \ }
 
 let g:rnvimr_presets = [
             \ {'width': 0.800, 'height': 0.800},
             \ ]
 
+let s:shadow_winblend = get(g:, 'rnvimr_shadow_winblend', 100)
 
 " TODO rnvimr_picker_enable and rnvimr_bw_enable were deprecated.
 let g:rnvimr_enable_picker = get(g:, 'rnvimr_enable_picker', 0)
@@ -86,7 +91,7 @@ function! s:create_ranger(cmd, env, is_background) abort
     endif
     call rnvimr#context#winid(winid)
     let s:channel = termopen(a:cmd, {'on_exit': function('s:on_exit'), 'env': a:env})
-    setfiletype rnvimr
+    ""setfiletype rnvimr
     " TODO
     " double type <C-\> make ranger crash, this is ranger issue.
     tnoremap <buffer> <C-\><C-\> <Nop>

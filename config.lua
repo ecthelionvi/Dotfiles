@@ -13,15 +13,10 @@ lvim.builtin.telescope.theme = nil
 -- |||||||||||||||||||||||||||||||||| Defaults |||||||||||||||||||||||||||||||| --
 
 -- General
-lvim.log.level = "info"
-lvim.format_on_save = {
-  enabled = true,
-  pattern = "*.lua",
-  timeout = 1000,
-}
 vim.opt.tabstop = 2
 lvim.leader = "space"
 vim.opt.shiftwidth = 2
+lvim.log.level = "info"
 lvim.colorscheme = "lunar"
 vim.opt.relativenumber = true
 lvim.builtin.alpha.active = true

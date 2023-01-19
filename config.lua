@@ -3,6 +3,7 @@
 local M = {}
 
 -- Settings
+vim.g.mapleader = " "
 vim.opt.cmdheight = 0
 vim.opt.timeoutlen = 300
 vim.opt.relativenumber = true
@@ -27,130 +28,74 @@ lvim.builtin.alpha.active = true
 lvim.builtin.terminal.active = true
 lvim.format_on_save.enabled = false
 lvim.builtin.alpha.mode = "dashboard"
-lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.builtin.treesitter.auto_install = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- ||||||||||||||||||||||||||||||||| Keybinds ||||||||||||||||||||||||||||||||| --
 
--- Disable-Q
-lvim.keys.normal_mode["Q"] = ""
-lvim.keys.visual_mode["Q"] = ""
-
--- Visual-Movement
-lvim.keys.visual_mode["J"] = ""
-lvim.keys.visual_mode["K"] = ""
-lvim.keys.visual_mode["J"] = "}"
-lvim.keys.visual_mode["K"] = "{"
-lvim.keys.visual_mode["H"] = ""
-lvim.keys.visual_mode["L"] = ""
-lvim.keys.visual_mode["H"] = "^"
-lvim.keys.visual_mode["L"] = "$"
-
--- Yank-Selection
-lvim.keys.normal_mode["Y"] = "yg$"
+-- Easy
+vim.keymap.set("n", ";", ":", { noremap = true })
 
 -- Redo
-lvim.keys.normal_mode["U"] = "<c-r>"
-
--- Better-Delete
-lvim.keys.normal_mode["d"] = "d "
-lvim.keys.normal_mode["X"] = "D"
-lvim.keys.normal_mode["xx"] = "dd"
-lvim.keys.visual_block_mode["x"] = "d"
+vim.keymap.set("n", "U", "<c-r>", { noremap = true })
 
 -- Disable-Arrows
-lvim.keys.visual_block_mode["<up>"] = ""
-lvim.keys.visual_block_mode["<down>"] = ""
-lvim.keys.visual_block_mode["<left>"] = ""
-lvim.keys.visual_block_mode["<right>"] = ""
-
--- Better-Backspace
-lvim.keys.normal_mode["<BS>"] = "x"
-lvim.keys.visual_block_mode["<BS>"] = "x"
-
--- Vertal-Movement
-lvim.keys.normal_mode["<c-d>"] = "<c-d>zz"
-lvim.keys.normal_mode["<c-u>"] = "<c-u>zz"
-
--- Visual Highlight
-lvim.keys.normal_mode["<m-a>"] = "VGo1G"
-lvim.keys.visual_block_mode["<m-a>"] = "VGo1G"
-
--- Better-Paste
-lvim.keys.visual_block_mode["p"] = [["_dP]]
-
--- Swap-O
-lvim.keys.normal_mode["<leader>o"] = "o"
-lvim.keys.normal_mode["<leader>O"] = "O"
-lvim.keys.normal_mode["o"] = "mzo<Esc>`z"
-lvim.keys.normal_mode["O"] = "mzO<Esc>`z"
-lvim.keys.normal_mode["<cr>"] = "mzo<Esc>`z"
-lvim.keys.normal_mode["<s-cr>"] = "mzO<Esc>`z"
-
--- HJKL
-lvim.keys.normal_mode["$"] = "", { noremap = true }
-lvim.keys.normal_mode["^"] = "", { noremap = true }
-lvim.keys.normal_mode["{"] = "", { noremap = true }
-lvim.keys.normal_mode["}"] = "", { noremap = true }
-lvim.keys.normal_mode["K"] = "{", { noremap = true }
-lvim.keys.normal_mode["J"] = "}", { noremap = true }
-lvim.keys.normal_mode["H"] = "^", { noremap = true }
-lvim.keys.normal_mode["L"] = "$", { noremap = true }
-
--- Esc Highlighting
-lvim.keys.normal_mode["<esc>"] = [[<cmd>let @/ = ""<cr>]]
-
--- Trim
-lvim.keys.normal_mode["<c-bs>"] = "<cmd>lua trim()<cr>"
-
--- Yank-Preserve-Cursor
-lvim.keys.visual_mode["y"] = "myy`y", { noremap = true }
-lvim.keys.visual_mode["Y"] = "myY`y", { noremap = true }
-
--- Easy
-vim.api.nvim_set_keymap("n", ";", ":", { noremap = true })
-
--- Dial
-lvim.keys.normal_mode["<c-a>"] = "<plug>(dial-increment)"
-lvim.keys.normal_mode["<c-x>"] = "<plug>(dial-decrement)"
-lvim.keys.visual_mode["<c-a>"] = "<plug>(dial-increment)"
-lvim.keys.visual_mode["<c-x>"] = "<plug>(dial-decrement)"
-lvim.keys.visual_mode["g<c-a>"] = "g<plug>(dial-increment)"
-lvim.keys.visual_mode["g<c-x>"] = "g<plug>(dial-decrement)"
-
--- Color-Column
-lvim.keys.normal_mode["<m-t>"] = "<cmd>lua toggle_color_column()<cr>"
-lvim.keys.visual_mode["<m-t>"] = "<cmd>lua toggle_color_column()<cr>"
+vim.keymap.set("x", "<up>", "", { noremap = true })
+vim.keymap.set("x", "<down>", "", { noremap = true })
+vim.keymap.set("x", "<left>", "", { noremap = true })
+vim.keymap.set("x", "<right>", "", { noremap = true })
 
 -- Append
-lvim.keys.normal_mode["<c-j>"] = "mzJ`z", { noremap = true }
+vim.keymap.set("n", "<c-j>", "mzJ`z", { noremap = true })
 
--- Switch-Tabs
-lvim.keys.normal_mode["<m-l>"] = "<cmd>BufferLineCycleNext<CR>"
-lvim.keys.normal_mode["<m-h>"] = "<cmd>BufferLineCyclePrev<CR>"
+-- HJKL
+vim.keymap.set({ "n", "x" }, "J", "}", { noremap = true })
+vim.keymap.set({ "n", "x" }, "K", "{", { noremap = true })
+vim.keymap.set({ "n", "x" }, "H", "^", { noremap = true })
+vim.keymap.set({ "n", "x" }, "L", "$", { noremap = true })
 
--- Terminal-Esc
-lvim.keys.term_mode["<esc>"] = [[<C-\><C-n>]]
-lvim.keys.term_mode["<leader>q"] = "<cmd>q!<cr>"
-lvim.keys.term_mode["<leader>\\"] = "<cmd>q!<cr>"
-lvim.keys.term_mode["<leader>gg"] = "<cmd>q!<cr>"
-lvim.keys.term_mode["<leader>."] = [[<C-\><C-n>:RnvimrToggle<cr>]]
+-- Vertal-Movement
+vim.keymap.set("n", "<m-j>", "<c-d>zz", { noremap = true })
+vim.keymap.set("n", "<m-k>", "<c-u>zz", { noremap = true })
+
+-- Swap-O
+vim.keymap.set("n", "<leader>o", "o", { noremap = true })
+vim.keymap.set("n", "<leader>O", "O", { noremap = true })
+vim.keymap.set("n", "o", "mzo<Esc>`z", { noremap = true })
+vim.keymap.set("n", "O", "mzO<Esc>`z", { noremap = true })
+vim.keymap.set("n", "<cr>", "mzo<Esc>`z", { noremap = true })
+vim.keymap.set("n", "<s-cr>", "mzO<Esc>`z", { noremap = true })
+
+-- Better-Backspace
+vim.keymap.set({ "n", "x" }, "<bs>", [["_X]], { noremap = true })
+
+-- Visual Highlight
+vim.keymap.set({ "n", "x" }, "<m-a>", "VGo1G", { noremap = true })
+
+-- Save
+vim.keymap.set("n", "<c-s>", "<cmd>silent! w<cr>", { noremap = true })
 
 -- GF
-vim.api.nvim_set_keymap("n", "gf", "<cmd>e <cfile><cr>", { noremap = true })
-
--- Chmod
-lvim.keys.normal_mode["<leader>x"] = "<cmd>!chmod +x %<cr>", { silent = true }
-
--- Jump-Brackets
-lvim.keys.normal_mode["<tab>"] = "<esc><cmd>lua moveToNextPairs()<cr>", { silent = true }
-lvim.keys.normal_mode["<m-tab>"] = "<esc><cmd>lua moveToPrevPairs()<cr>", { silent = true }
+vim.keymap.set("n", "gf", "<cmd>e <cfile><cr>", { noremap = true, silent = true })
 
 -- N-Movement
-vim.api.nvim_set_keymap("n", "n", "'Nn'[v:searchforward]", { expr = true, noremap = true })
-vim.api.nvim_set_keymap("n", "N", "'nN'[v:searchforward]", { expr = true, noremap = true })
+vim.keymap.set("n", "n", "'Nn'[v:searchforward]", { expr = true, noremap = true })
+vim.keymap.set("n", "N", "'nN'[v:searchforward]", { expr = true, noremap = true })
+
+-- Terminal-Esc
+vim.keymap.set("t", "<esc>", [[<C-\><C-n>]], { noremap = true })
+vim.keymap.set("t", "<leader>q", "<cmd>q!<cr>", { noremap = true, silent = true })
+vim.keymap.set("t", "<leader>gg", "<cmd>q!<cr>", { noremap = true, silent = true })
+
+-- Esc Highlighting
+vim.keymap.set("n", "<esc>", "<cmd>nohlsearch<cr>", { noremap = true, silent = true })
+
+-- Trim
+vim.keymap.set("n", "<c-bs>", "<cmd>lua trim()<cr>", { noremap = true, silent = true })
+
+-- Clear Registers
+vim.keymap.set({ "n", "x" }, "Q", "<cmd>lua clear_registers()<cr>", { noremap = true })
 
 -- Which-Key
 lvim.builtin.which_key.mappings["t"] = {
@@ -181,48 +126,70 @@ lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<cr>", "Project
 lvim.builtin.which_key.mappings.b.k = { "<cmd>BufferLinePickClose<cr>", "Pick Close" }
 lvim.builtin.which_key.mappings.s.y = { "<cmd>Telescope yank_history<cr>", "Yank History" }
 
--- Rnvimr
-lvim.keys.normal_mode["<leader>."] = "<cmd>RnvimrToggle<cr>", { noremap = true }, { silent = true }
+-- Chmod
+vim.keymap.set("n", "<leader>x", [[<cmd>silent exec "!(chmod +x % &)"<cr>]], {noremap = true})
 
--- ToggleTerm
-lvim.keys.normal_mode["<leader>\\"] = "<cmd>ToggleTerm()<cr>", { noremap = true }, { silent = true }
+-- Switch-Tabs
+vim.keymap.set("n", "<m-h>", "<cmd>BufferLineCyclePrev<cr>", { noremap = true, silent = true })
+vim.keymap.set("n", "<m-l>", "<cmd>BufferLineCycleNext<cr>", { noremap = true, silent = true })
+
+-- Dial
+vim.keymap.set("n", "<c-a>", require("dial.map").inc_normal(), { noremap = true}, { silent = true })
+vim.keymap.set("n", "<c-x>", require("dial.map").dec_normal(), { noremap = true}, { silent = true })
+vim.keymap.set("x", "<c-a>", require("dial.map").inc_visual(), { noremap = true}, { silent = true })
+vim.keymap.set("x", "<c-x>", require("dial.map").dec_visual(), { noremap = true}, { silent = true })
+vim.keymap.set("x", "g<c-a>", require("dial.map").inc_gvisual(), { noremap = true}, { silent = true })
+vim.keymap.set("x", "g<c-x>", require("dial.map").dec_gvisual(), { noremap = true}, { silent = true })
 
 -- Search-Replace
-vim.api.nvim_set_keymap("n", "cn", "*``cgn", { noremap = true })
-vim.api.nvim_set_keymap("n", "cN", "#``cgN", { noremap = true })
-vim.api.nvim_set_keymap('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn", { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN", { noremap = true, silent = true })
+vim.keymap.set("n", "cn", "*``cgn", { noremap = true })
+vim.keymap.set("n", "cN", "#``cgN", { noremap = true })
+vim.keymap.set('x', "cn", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn", { noremap = true, silent = true })
+vim.keymap.set('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN", { noremap = true, silent = true })
+
+-- Rnvimr
+vim.keymap.set({ "n", "t" }, "<leader>.", "<cmd>RnvimrToggle<cr>", { noremap = true }, { silent = true })
+
+-- Toggleterm
+vim.keymap.set({ "n", "t" }, "<leader>\\", "<cmd>ToggleTerm()<cr>", { noremap = true }, { silent = true })
 
 -- Wildmenu
-vim.api.nvim_set_keymap("c", "<up>", [[wildmenumode() ? "\<left>" : "\<up>"]], { expr = true, noremap = true })
-vim.api.nvim_set_keymap("c", "<down>", [[wildmenumode() ? "\<right>" : "\<down>"]], { expr = true, noremap = true })
+vim.keymap.set("c", "<up>", [[wildmenumode() ? "\<left>" : "\<up>"]], { expr = true, noremap = true })
+vim.keymap.set("c", "<down>", [[wildmenumode() ? "\<right>" : "\<down>"]], { expr = true, noremap = true })
+
+-- Jump-Brackets
+vim.keymap.set("n", "<tab>", "<esc><cmd>lua moveToNextPairs()<cr>", { noremap = true}, { silent = true })
+vim.keymap.set("n", "<m-tab>", "<esc><cmd>lua moveToPrevPairs()<cr>", { noremap = true}, { silent = true })
 
 -- Yanky
-lvim.keys.normal_mode["P"] = "<plug>(YankyPutAfter)"
-lvim.keys.normal_mode["p"] = "<plug>(YankyPutBefore)"
-lvim.keys.normal_mode["gp"] = "<plug>(YankyGPutAfter)"
-lvim.keys.normal_mode["gP"] = "<plug>(YankyGPutBefore)"
-lvim.keys.visual_block_mode["gp"] = "<plug>(YankyGPutAfter)"
-lvim.keys.normal_mode["<c-n>"] = "<plug>(YankyCycleForward)"
-lvim.keys.normal_mode["<c-p>"] = "<plug>(YankyCycleBackward)"
-lvim.keys.visual_block_mode["gP"] = "<plug>(YankyGPutBefore)"
-lvim.keys.visual_block_mode["p"] = "<cmd>lua require('substitute').visual()<cr>", { noremap = true }, { silent = true }
-lvim.keys.visual_block_mode["P"] = "<cmd>lua require('substitute').visual()<cr>", { noremap = true }, { silent = true }
+vim.keymap.set("n", "p", "<Plug>(YankyPutAfter)", { noremap = true }, { silent = true })
+vim.keymap.set("n", "P", "<Plug>(YankyPutBefore)", { noremap = true }, { silent = true })
+vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)", { noremap = true }, { silent = true })
+vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)", { noremap = true }, { silent = true })
+vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)", { noremap = true }, { silent = true })
+vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)", { noremap = true }, { silent = true })
+vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)", { noremap = true }, { silent = true })
+vim.keymap.set("x", "P", "<cmd>lua require('substitute').visual()<cr>", {noremap = true }, { silent = true })
+vim.keymap.set("x", "p", "<cmd>lua require('substitute').visual()<cr>", {noremap = true } , { silent = true })
+
+-- Color-Column
+vim.keymap.set({ "n", "x" }, "<m-t>", "<cmd>lua toggle_color_column()<cr>", { noremap = true, silent = true })
 
 -- Harpoon
 vim.keymap.set("n", "dd", function()
   if vim.o.filetype ~= "harpoon" then
-    return "dd"
+    return [["_dd]]
   else
-    return "<cmd>silent! normal! dd<cr>"
+    return [[<cmd>silent! normal! "_dd<cr>]]
   end
-end, { expr = true, silent = true })
-lvim.keys.normal_mode["m"] = "<cmd>lua require('harpoon.mark').add_file()<cr>", { noremap = true }, { silent = true }
-lvim.keys.normal_mode["\\"] = "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", { noremap = true }, { silent = true }
+end, { expr = true, noremap = true, silent = true })
+vim.keymap.set("n", "m", "<cmd>lua require('harpoon.mark').add_file()<cr>", { noremap = true, silent = true })
+vim.keymap.set("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", { noremap = true, silent = true })
 
 -- Rename
-lvim.keys.normal_mode["<leader>rn"] = ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>"
-lvim.keys.visual_mode["<leader>rn"] = [[y:%s/<C-R>=escape(@",'/\') <CR>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]]
+vim.keymap.set("n", "<leader>rn", ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>", { noremap = true })
+vim.keymap.set("x", "<leader>rn", [[y:%s/<C-R>=escape(@",'/\') <CR>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]], { noremap = true })
+
 
 --|||||||||||||||||||||||||||||||||| Plugins ||||||||||||||||||||||||||||||||||--
 
@@ -243,6 +210,7 @@ lvim.plugins = {
     {
       "folke/trouble.nvim",
       cmd = "TroubleToggle",
+      lazy = true,
     },
 
     -- Diffview
@@ -260,20 +228,14 @@ lvim.plugins = {
           show_numbers = true,
           show_cursorline = true,
         }
-      end,
+      end
     },
 
     -- Cutlass
     {
       "gbprod/cutlass.nvim",
       config = function()
-        require("cutlass").setup({
-          {
-            cut_key = "x",
-            override_del = true,
-            exclude = {},
-          },
-        })
+        require("cutlass").setup()
       end
     },
 
@@ -282,7 +244,7 @@ lvim.plugins = {
       "Pocco81/auto-save.nvim",
       config = function()
         require("auto-save").setup()
-      end,
+      end
     },
 
     -- Better-Escape
@@ -340,7 +302,7 @@ lvim.plugins = {
             },
           },
           system_clipboard = {
-            sync_with_ring = true,
+            sync_with_ring = false,
           },
           highlight = {
             on_put = true,
@@ -408,17 +370,6 @@ lvim.plugins = {
       end,
     },
 
-    -- Hop
-    {
-      "phaazon/hop.nvim",
-      event = "BufRead",
-      config = function()
-        require("hop").setup()
-        vim.api.nvim_set_keymap("n", "S", "<cmd>HopWord<cr>", { silent = true })
-        vim.api.nvim_set_keymap("n", "s", "<cmd>HopChar2<cr>", { silent = true })
-      end,
-    },
-
     -- Nvim-Lastplace
     {
       "ethanholz/nvim-lastplace",
@@ -429,24 +380,6 @@ lvim.plugins = {
           lastplace_ignore_filetype = { "gitcommit", "gitrebase", "svn", "hgcommit", },
           lastplace_open_folds = true,
         })
-      end,
-    },
-
-    -- Symbols-Outline
-    {
-      "simrat39/symbols-outline.nvim",
-      config = function()
-        require('symbols-outline').setup()
-        vim.api.nvim_set_keymap("n", "<m-s>", "<cmd>SymbolsOutline<cr>", { silent = true })
-        vim.api.nvim_set_keymap("v", "<m-s>", "<cmd>SymbolsOutline<cr>", { silent = true })
-      end
-    },
-
-    -- Undotree
-    {
-      "mbbill/undotree",
-      config = function()
-        vim.api.nvim_set_keymap("n", "<leader>u", "<cmd>UndotreeToggle<cr>", { silent = true })
       end,
     },
 
@@ -476,7 +409,7 @@ lvim.plugins = {
             else
               return "<cmd>RunCode<cr>"
             end
-          end, { expr = true, silent = true })
+          end, { expr = true, noremap = true, silent = true })
         }
       end,
     },
@@ -488,7 +421,36 @@ lvim.plugins = {
       config = function()
         require('treesj').setup()
       end,
-      vim.api.nvim_set_keymap("n", "qq", "<cmd>TSJToggle<cr>", { silent = true, noremap = true })
+      vim.keymap.set("n", "qq", "<cmd>TSJToggle<cr>", { noremap = true, silent = true })
+    },
+
+    -- Hop
+    {
+      "phaazon/hop.nvim",
+      event = "BufRead",
+      config = function()
+        require("hop").setup()
+        vim.keymap.set("n", "S", "<cmd>HopWord<cr>", { noremap = true, silent = true })
+        vim.keymap.set("n", "s", "<cmd>HopChar2<cr>", { noremap = true, silent = true })
+      end,
+    },
+
+    -- Symbols-Outline
+    {
+      "simrat39/symbols-outline.nvim",
+      config = function()
+        require('symbols-outline').setup()
+        vim.keymap.set("n", "<m-s>", "<cmd>SymbolsOutline<cr>", { noremap = true, silent = true })
+        vim.keymap.set("v", "<m-s>", "<cmd>SymbolsOutline<cr>", { noremap = true, silent = true })
+      end
+    },
+
+    -- Undotree
+    {
+      "mbbill/undotree",
+      config = function()
+        vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", { noremap = true, silent = true })
+      end,
     },
 
     -- Substitute
@@ -500,10 +462,14 @@ lvim.plugins = {
             require("yanky").init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
           end,
         })
-        vim.api.nvim_set_keymap("n", "cxx", "<cmd>lua require('substitute.exchange').line()<cr>", { noremap = true })
-        vim.api.nvim_set_keymap("x", "X", "<cmd>lua require('substitute.exchange').visual()<cr>", { noremap = true })
-        vim.api.nvim_set_keymap("n", "cxc", "<cmd>lua require('substitute.exchange').cancel()<cr>", { noremap = true })
-        vim.api.nvim_set_keymap("n", "cx", "<cmd>lua require('substitute.exchange').operator()<cr>", { noremap = true })
+        vim.keymap.set("n", "cxx", "<cmd>lua require('substitute.exchange').line()<cr>",
+          { noremap = true, silent = true, })
+        vim.keymap.set("x", "X", "<cmd>lua require('substitute.exchange').visual()<cr>",
+          { noremap = true, silent = true, })
+        vim.keymap.set("n", "cxc", "<cmd>lua require('substitute.exchange').cancel()<cr>",
+          { noremap = true, silent = true, })
+        vim.keymap.set("n", "cx", "<cmd>lua require('substitute.exchange').operator()<cr>",
+          { noremap = true, silent = true, })
       end
     },
   },
@@ -545,7 +511,7 @@ function toggle_color_column()
     vim.cmd("silent! call clearmatches()")
     flag = false
   else
-    vim.cmd [[highlight ColorColumn guifg=#565f89 guibg=#565f89]]
+    vim.cmd [[silent! highlight ColorColumn guifg=#565f89 guibg=#565f89]]
     vim.fn.matchadd("ColorColumn", "\\%81v", 100)
     flag = true
   end
@@ -564,6 +530,16 @@ function moveToPrevPairs()
   local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
   local lnum, col = search_result[1], search_result[2]
   vim.fn.setpos('.', { 0, lnum, col, 0 })
+end
+
+-- Clear-Registers
+function clear_registers()
+  local regs = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+    'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+    'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/', '-', '"', '*', '+', '#', }
+  for i, r in ipairs(regs) do
+    vim.fn.setreg(r, {})
+  end
 end
 
 -- ||||||||||||||||||||||||||||||| Autocommands ||||||||||||||||||||||||||||||| --
@@ -587,10 +563,11 @@ lvim.lsp.on_attach_callback = function(client, bufnr)
 end
 
 -- Legacy
-vim.api.nvim_create_autocmd("BufEnter", {
+vim.api.nvim_create_autocmd("vimenter", {
   group = vim.api.nvim_create_augroup("legacy", { clear = true }),
   callback = function()
     vim.schedule(function()
+      clear_registers()
       vim.cmd [[
       ""===============[ Swap ]=================""
 

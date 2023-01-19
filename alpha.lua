@@ -72,14 +72,14 @@ local function configure_additional_autocmds()
   vim.api.nvim_create_autocmd("FileType", {
     group = group,
     pattern = "alpha",
-    command = "call clearmatches() | set showtabline=0 | autocmd BufLeave <buffer> set showtabline=" .. vim.opt.showtabline._value,
+    command = "silent! set showtabline=0 | autocmd BufLeave <buffer> silent! set showtabline=" .. vim.opt.showtabline._value,
   })
   if not lvim.builtin.lualine.options.globalstatus then
     -- https://github.com/goolord/alpha-nvim/issues/42
     vim.api.nvim_create_autocmd("FileType", {
       group = group,
       pattern = "alpha",
-      command = "set laststatus=0 | autocmd BufUnload <buffer> set laststatus=" .. vim.opt.laststatus._value,
+      command = "silent! set laststatus=0 | autocmd BufUnload <buffer> silent! set laststatus=" .. vim.opt.laststatus._value,
     })
   end
 end

@@ -29,23 +29,6 @@ lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- ||||||||||||||||||||||||||||||||| Keybinds ||||||||||||||||||||||||||||||||| --
 
--- Wildmenu
-vim.keymap.set("c", "<up>", function()
-  if vim.fn.wildmenumode then
-    return "<left>"
-  else
-    return "<up>"
-  end
-end, { expr = true, noremap = true })
-
-vim.keymap.set("c", "<down>", function()
-  if vim.fn.wildmenumode then
-    return "<right>"
-  else
-    return "<down>"
-  end
-end, { expr = true, noremap = true })
-
 -- Easy
 vim.keymap.set("n", ";", ":", { noremap = true })
 
@@ -499,6 +482,29 @@ formatters.setup {
 }
 
 -- ||||||||||||||||||||||||||||||||| Functions |||||||||||||||||||||||||||||||| --
+
+-- Wildmenu
+function wildmenu(direction)
+  if vim.fn.wildmenumode() then
+    if direction == "up" then
+      return "<left>"
+    elseif direction == "down" then
+      return "<right>"
+    end
+  else
+    if direction == "up" then
+      return "<up>"
+    elseif direction == "down" then
+      return "<down>"
+    end
+  end
+end
+
+vim.keymap.set("c", "<up>", function() return wildmenu("up")
+end, { expr = true, noremap = true })
+
+vim.keymap.set("c", "<down>", function() return wildmenu("down")
+end, { expr = true, noremap = true })
 
 -- Trim
 function trim()

@@ -131,6 +131,10 @@ vim.keymap.set('x', "cN", "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN", { noremap 
 -- Toggleterm
 vim.keymap.set({ "n", "t" }, "<leader>\\", "<cmd>ToggleTerm()<cr>", { noremap = true }, { silent = true })
 
+-- Wildmenu
+vim.api.nvim_set_keymap("c", "<up>", [[wildmenumode() ? "<left>" : "<up>"]], { expr = true, noremap = true })
+vim.api.nvim_set_keymap("c", "<down>", [[wildmenumode() ? "<right>" : "<down>"]], { expr = true, noremap = true })
+
 -- Rename
 vim.keymap.set("n", "<leader>rn",
   ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
@@ -138,7 +142,6 @@ vim.keymap.set("n", "<leader>rn",
 vim.keymap.set("x", "<leader>rn",
   [[y:%s/<C-R>=escape(@",'/\') <CR>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]]
   , { noremap = true })
-
 
 --|||||||||||||||||||||||||||||||||| Plugins ||||||||||||||||||||||||||||||||||--
 
@@ -322,37 +325,6 @@ lvim.plugins = {
       end,
     },
 
-    -- Code-Runner
-    {
-      "CRAG666/code_runner.nvim",
-      requires = "nvim-lua/plenary.nvim",
-      config = function()
-        require('code_runner').setup {
-          mode = "toggle",
-          focus = true,
-          filetype_path = "", -- No default path defined
-          filetype = {
-            javascript = "node",
-            java = "cd $dir && javac $fileName && java $fileNameWithoutExt",
-            c = "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
-            cpp = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
-            python = "python -u",
-            sh = "bash",
-            rust = "cd $dir && rustc $fileName && $dir$fileNameWithoutExt",
-          },
-          project_path = "", -- No default path defined
-          project = {},
-          vim.keymap.set("n", "<leader>r", function()
-            if vim.o.buftype == "terminal" then
-              return "<cmd>RunClose<cr>"
-            else
-              return "<cmd>RunCode<cr>"
-            end
-          end, { expr = true, noremap = true, silent = true })
-        }
-      end,
-    },
-
     -- Symbols-Outline
     {
       "simrat39/symbols-outline.nvim",
@@ -442,20 +414,38 @@ lvim.plugins = {
       end
     },
 
+    -- Code-Runner
+    {
+      "CRAG666/code_runner.nvim",
+      requires = "nvim-lua/plenary.nvim",
+      config = function()
+        require('code_runner').setup {
+          mode = "toggle",
+          focus = true,
+          filetype_path = "", -- No default path defined
+          filetype = {
+            javascript = "node",
+            java = "cd $dir && javac $fileName && java $fileNameWithoutExt",
+            c = "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
+            cpp = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
+            python = "python -u",
+            sh = "bash",
+            rust = "cd $dir && rustc $fileName && $dir$fileNameWithoutExt",
+          },
+          project_path = "", -- No default path defined
+          project = {},
+          vim.api.nvim_set_keymap("n", "<leader>r", [[&buftype == "terminal" ? ":RunClose<cr>" : ":RunCode<cr>"]], { expr = true, noremap = true })
+        }
+      end,
+    },
+
     -- Harpoon
     {
       "ThePrimeagen/harpoon",
       config = function()
-        vim.keymap.set("n", "dd", function()
-          if vim.o.filetype ~= "harpoon" then
-            return [["_dd]]
-          else
-            return [[<cmd>silent! normal! "_dd<cr>]]
-          end
-        end, { expr = true, noremap = true, silent = true })
         vim.keymap.set("n", "m", "<cmd>lua require('harpoon.mark').add_file()<cr>", { noremap = true, silent = true })
-        vim.keymap.set("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>",
-          { noremap = true, silent = true })
+        vim.keymap.set("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", { noremap = true, silent = true })
+        vim.api.nvim_set_keymap("n", "dd", [[&filetype == "harpoon" ? ':silent! normal! "_dd<cr>' : '"_dd']], { expr = true, noremap = true, silent = true })
       end
     },
   },
@@ -482,29 +472,6 @@ formatters.setup {
 }
 
 -- ||||||||||||||||||||||||||||||||| Functions |||||||||||||||||||||||||||||||| --
-
--- Wildmenu
-function wildmenu(direction)
-  if vim.fn.wildmenumode() then
-    if direction == "up" then
-      return "<left>"
-    elseif direction == "down" then
-      return "<right>"
-    end
-  else
-    if direction == "up" then
-      return "<up>"
-    elseif direction == "down" then
-      return "<down>"
-    end
-  end
-end
-
-vim.keymap.set("c", "<up>", function() return wildmenu("up")
-end, { expr = true, noremap = true })
-
-vim.keymap.set("c", "<down>", function() return wildmenu("down")
-end, { expr = true, noremap = true })
 
 -- Trim
 function trim()
@@ -665,7 +632,6 @@ end
 
 vim.keymap.set({ "n", "x" }, "<m-t>", "<cmd>lua toggle_color_column()<cr>", { noremap = true, silent = true })
 
-
 -- Clear-Registers
 function clear_registers()
   local regs = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
@@ -688,6 +654,13 @@ vim.api.nvim_create_autocmd("vimenter", {
   callback = function()
     vim.schedule(function()
       clear_registers()
+      vim.cmd[[
+      let b:copilot_enabled
+      let g:copilot_filetypes = {
+        \ '': v:false
+        \ }
+      }
+      ]]
     end)
   end
 })

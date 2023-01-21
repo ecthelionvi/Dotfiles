@@ -33,7 +33,7 @@ function M.SwapWithNext(cursor_pos, type)
   local current_word_start = vim.fn.match(line_before_cursor, _in .. "\\+$")
   local current_word_end = vim.fn.match(line, _in .. out, current_word_start)
   if current_word_end == -1 then
-    SwapWithPrev()
+    M.SwapWithPrev()
     return
   end
 
@@ -84,7 +84,7 @@ function M.SwapWithPrev(cursor_pos, type)
 
   local current_word_start = vim.fn.match(line_before_cursor, _in .. "\\+$")
   if current_word_start == -1 then
-    SwapWithNext()
+    M.SwapWithNext()
     return
   end
   local current_word_end = vim.fn.match(line, _in .. out, current_word_start)
@@ -137,7 +137,7 @@ function M.moveToPrevPairs()
 end
 
 -- Toggle-Color_Column
-flag = false
+local flag = false
 function M.toggle_color_column()
   if flag then
     vim.cmd("silent! call clearmatches()")

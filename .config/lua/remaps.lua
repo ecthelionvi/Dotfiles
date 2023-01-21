@@ -31,15 +31,6 @@ local keymaps = {
     ["<esc>"] = {
       cmd = "<C-\\><C-n>",
     },
-    ["<leader>q"] = {
-      cmd = "<cmd>q!<cr>",
-    },
-    ["<leader>gg"] = {
-      cmd = "<cmd>q!<cr>",
-    },
-    ["<leader>\\"] = {
-      cmd = "<cmd>ToggleTerm()<cr>",
-    },
   },
   [modes.command_mode] = {
     ["<up>"] = {

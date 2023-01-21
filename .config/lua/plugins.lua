@@ -220,6 +220,32 @@ lvim.plugins = {
       end,
     },
 
+    -- Code-Runner
+    {
+      "CRAG666/code_runner.nvim",
+      requires = "nvim-lua/plenary.nvim",
+      config = function()
+        require('code_runner').setup {
+          mode = "toggle",
+          focus = true,
+          filetype_path = "", -- No default path defined
+          filetype = {
+            javascript = "node",
+            java = "cd $dir && javac $fileName && java $fileNameWithoutExt",
+            c = "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
+            cpp = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
+            python = "python -u",
+            sh = "bash",
+            rust = "cd $dir && rustc $fileName && $dir$fileNameWithoutExt",
+          },
+          project_path = "", -- No default path defined
+          project = {},
+          vim.api.nvim_set_keymap("n", "<leader>r", [[&filetype == "" ? ":RunClose<cr>" : ":RunCode<cr>"]],
+          { expr = true, noremap = true, silent = true })
+        }
+      end,
+    },
+
     -- Dial
     {
       "monaqa/dial.nvim",
@@ -267,34 +293,9 @@ lvim.plugins = {
     {
       "kevinhwang91/rnvimr",
       config = function()
-        vim.keymap.set({ "n", "t" }, "<leader>.", "<cmd>RnvimrToggle<cr>", { noremap = true }, { silent = true })
+        vim.api.nvim_set_keymap("n", "<leader>.", [[&filetype == "" ? ":RnvimrToggle<cr>" : ":RnvimrToggle<cr>"]],
+          { expr = true, noremap = true, silent = true })
       end
-    },
-
-    -- Code-Runner
-    {
-      "CRAG666/code_runner.nvim",
-      requires = "nvim-lua/plenary.nvim",
-      config = function()
-        require('code_runner').setup {
-          mode = "toggle",
-          focus = true,
-          filetype_path = "", -- No default path defined
-          filetype = {
-            javascript = "node",
-            java = "cd $dir && javac $fileName && java $fileNameWithoutExt",
-            c = "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
-            cpp = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
-            python = "python -u",
-            sh = "bash",
-            rust = "cd $dir && rustc $fileName && $dir$fileNameWithoutExt",
-          },
-          project_path = "", -- No default path defined
-          project = {},
-          vim.api.nvim_set_keymap("n", "<leader>r", [[&buftype == "terminal" ? ":RunClose<cr>" : ":RunCode<cr>"]],
-            { expr = true, noremap = true })
-        }
-      end,
     },
 
     -- Harpoon

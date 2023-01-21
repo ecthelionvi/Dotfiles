@@ -153,6 +153,9 @@ local keymaps = {
     ["<s-cr>"] = {
       cmd = "mzO<Esc>`z",
     },
+    ["<m-bs>"] = {
+      cmd = [[<c-^>'"zz]],
+    },
     ["Z"] = {
       cmd = "mz:join<cr>`z",
     },

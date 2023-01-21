@@ -6,6 +6,13 @@ vim.api.nvim_create_autocmd("vimenter", {
   callback = function()
     vim.schedule(function()
       require("functions").clear_history()
+      vim.cmd[[
+      let b:copilot_enabled
+      let g:copilot_filetypes = {
+        \ '': v:false,
+        \ }
+      }
+      ]]
     end)
   end
 })

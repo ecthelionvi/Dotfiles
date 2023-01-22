@@ -1,5 +1,11 @@
 local M = {}
 
+-- Silence
+function M.silent(cmd)
+    vim.api.nvim_command("silent " .. cmd)
+    vim.api.nvim_command("redraw")
+end
+
 -- Trim
 function M.trim()
   local save = vim.fn.winsaveview()
@@ -84,7 +90,7 @@ function M.SwapWithPrev(cursor_pos, type)
 
   local current_word_start = vim.fn.match(line_before_cursor, _in .. "\\+$")
   if current_word_start == -1 then
-    M.SwapWithNext()
+    SwapWithNext()
     return
   end
   local current_word_end = vim.fn.match(line, _in .. out, current_word_start)
@@ -137,7 +143,7 @@ function M.moveToPrevPairs()
 end
 
 -- Toggle-Color_Column
-local flag = false
+flag = false
 function M.toggle_color_column()
   if flag then
     vim.cmd("silent! call clearmatches()")

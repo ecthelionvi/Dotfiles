@@ -187,8 +187,8 @@ lvim.plugins = {
       "simrat39/symbols-outline.nvim",
       config = function()
         require('symbols-outline').setup()
-        vim.keymap.set("n", "<m-s>", "<cmd>SymbolsOutline<cr>", { noremap = true, silent = true })
-        vim.keymap.set("v", "<m-s>", "<cmd>SymbolsOutline<cr>", { noremap = true, silent = true })
+        vim.keymap.set("n", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]], { noremap = true, silent = true })
+        vim.keymap.set("v", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]], { noremap = true, silent = true })
       end
     },
 
@@ -302,11 +302,11 @@ lvim.plugins = {
     {
       "ThePrimeagen/harpoon",
       config = function()
-        vim.keymap.set("n", "m", "<cmd>lua require('harpoon.mark').add_file()<cr>", { noremap = true, silent = true })
         vim.keymap.set("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>",
           { noremap = true, silent = true })
         vim.api.nvim_set_keymap("n", "dd", [[&filetype == "harpoon" ? ':silent! normal! "_dd<cr>' : '"_dd']],
           { expr = true, noremap = true, silent = true })
+        vim.keymap.set("n", "m", [[<cmd>lua require('functions').silent("lua require('harpoon.mark').add_file()")<cr>]], { noremap = true, silent = true })
       end
     },
   },

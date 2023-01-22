@@ -8,6 +8,7 @@ vim.opt.timeoutlen = 300
 vim.opt.relativenumber = true
 vim.opt.fillchars = { eob = " " }
 lvim.builtin.telescope.theme = nil
+lvim.builtin.project.show_hidden = true
 
 local remaps = require("remaps")
 local plugins = require("plugins")

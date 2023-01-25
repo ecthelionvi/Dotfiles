@@ -5,12 +5,13 @@ local M = {}
 vim.g.mapleader = " "
 
 local modes = {
+  term_mode = "t",
   insert_mode = "i",
   normal_mode = "n",
-  term_mode = "t",
   visual_mode = "v",
-  visual_block_mode = "x",
   command_mode = "c",
+  visual_block_mode = "x",
+  operator_pending_mode = "o",
 }
 
 local generic_opts = {
@@ -26,12 +27,6 @@ local generic_opts = {
 local generic_opts_any = {noremap = true, silent = true}
 
 local keymaps = {
-  [modes.insert_mode] = {},
-  [modes.term_mode] = {
-    ["<esc>"] = {
-      cmd = "<C-\\><C-n>",
-    },
-  },
   [modes.command_mode] = {
     ["<up>"] = {
       cmd = "wildmenumode() ? '<left>' : '<up>'",
@@ -203,6 +198,9 @@ local keymaps = {
     },
     ["<m-t>"] = {
       cmd = ":lua require('functions').toggle_color_column()<cr>",
+    },
+    ["dd"] = {
+      cmd = [[:lua require('functions').silent('normal! "_dd')<cr>]],
     },
     ["<leader>rn"] = {
       cmd = ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",

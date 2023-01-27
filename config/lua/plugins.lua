@@ -187,8 +187,10 @@ lvim.plugins = {
       "simrat39/symbols-outline.nvim",
       config = function()
         require('symbols-outline').setup()
-        vim.keymap.set("n", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]], { noremap = true, silent = true })
-        vim.keymap.set("v", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]], { noremap = true, silent = true })
+        vim.keymap.set("n", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]],
+          { noremap = true, silent = true })
+        vim.keymap.set("v", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]],
+          { noremap = true, silent = true })
       end
     },
 
@@ -241,7 +243,7 @@ lvim.plugins = {
           project_path = "", -- No default path defined
           project = {},
           vim.api.nvim_set_keymap("n", "<leader>r", [[&filetype == "" ? ":RunClose<cr>" : ":RunCode<cr>"]],
-          { expr = true, noremap = true, silent = true })
+            { expr = true, noremap = true, silent = true })
         }
       end,
     },
@@ -306,7 +308,8 @@ lvim.plugins = {
           { noremap = true, silent = true })
         vim.api.nvim_set_keymap("n", "dd", [[&filetype == "harpoon" ? ':silent! normal! "_dd<cr>' : '"_dd']],
           { expr = true, noremap = true, silent = true })
-        vim.keymap.set("n", "m", [[<cmd>lua require('functions').silent("lua require('harpoon.mark').add_file()")<cr>]], { noremap = true, silent = true })
+        vim.keymap.set("n", "m", [[<cmd>lua require('functions').silent("lua require('harpoon.mark').add_file()")<cr>]],
+          { noremap = true, silent = true })
       end
     },
   },
@@ -333,3 +336,4 @@ formatters.setup {
 }
 
 return M
+

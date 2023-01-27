@@ -187,7 +187,7 @@ keybinding:
     squashDown: 's'
     renameCommit: 'r'
     renameCommitWithEditor: 'R'
-    viewResetOptions: 'g'
+    viewResetOptions: 'G'
     markCommitAsFixup: 'f'
     createFixupCommit: 'F' # create fixup commit for this commit
     squashAboveCommits: 'S'

@@ -2,8 +2,6 @@
 
 local M = {}
 
-vim.g.mapleader = " "
-
 local modes = {
   term_mode = "t",
   insert_mode = "i",
@@ -15,18 +13,23 @@ local modes = {
 }
 
 local generic_opts = {
+  term_mode = { silent = true },
   insert_mode = generic_opts_any,
   normal_mode = generic_opts_any,
   visual_mode = generic_opts_any,
-  visual_block_mode = generic_opts_any,
   command_mode = generic_opts_any,
+  visual_block_mode = generic_opts_any,
   operator_pending_mode = generic_opts_any,
-  term_mode = { silent = true },
 }
 
 local generic_opts_any = {noremap = true, silent = true}
 
 local keymaps = {
+  [modes.term_mode] = {
+    ["<esc>"] = {
+      cmd = [[<C-\><C-n>]],
+    },
+  },
   [modes.command_mode] = {
     ["<up>"] = {
       cmd = "wildmenumode() ? '<left>' : '<up>'",
@@ -65,9 +68,6 @@ local keymaps = {
     ["<right>"] = {
       cmd = "",
     },
-    ["<m-a>"] = {
-      cmd = "VGo1G",
-    },
     ["cn"] = {
       cmd = "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn",
       opts = {silent = false}
@@ -76,11 +76,14 @@ local keymaps = {
       cmd = "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",
       opts = {silent = false}
     },
+    ["aa"] = {
+      cmd = ":lua require('rob.functions').highlight()<cr>",
+    },
     ["Q"] = {
-      cmd = ":lua require('functions').clear_history()<cr>",
+      cmd = ":lua require('rob.functions').clear_history()<cr>",
     },
     ["<m-t>"] = {
-      cmd = ":lua require('functions').toggle_color_column()<cr>",
+      cmd = ":lua require('rob.functions').toggle_color_column()<cr>",
     },
     ["<leader>rn"] = {
       cmd = "y:%s/<C-R>=escape(@\",'/\') <CR>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
@@ -102,9 +105,6 @@ local keymaps = {
     },
     ["<bs>"] = {
       cmd = '"_X',
-    },
-    ["<m-a>"] = {
-      cmd = "VGo1G",
     },
     ["U"] = {
       cmd = "<c-r>",
@@ -158,9 +158,6 @@ local keymaps = {
     ["<esc>"] = {
       cmd = ":nohlsearch<cr>",
     },
-    ["<leader>\\"] = {
-      cmd = ":ToggleTerm()<cr>",
-    },
     ["n"] = {
       cmd = "'Nn'[v:searchforward]",
       opts = {expr = true}
@@ -179,65 +176,42 @@ local keymaps = {
       cmd = ":silent exec '!(chmod +x % &)'<cr>",
     },
     ["<c-bs>"] = {
-      cmd = ":lua require('functions').trim()<cr>",
+      cmd = ":lua require('rob.functions').trim()<cr>",
+    },
+    ["aa"] = {
+      cmd = ":lua require('rob.functions').highlight()<cr>",
     },
     ["fl"] = {
-      cmd = ":lua require('functions').SwapWithNext()<cr>",
+      cmd = ":lua require('rob.functions').SwapWithNext()<cr>",
     },
     ["fh"] = {
-      cmd = ":lua require('functions').SwapWithPrev()<cr>",
+      cmd = ":lua require('rob.functions').SwapWithPrev()<cr>",
     },
     ["Q"] = {
-      cmd = ":lua require('functions').clear_history()<cr>",
+      cmd = ":lua require('rob.functions').clear_history()<cr>",
     },
     ["<tab>"] = {
-      cmd = ":lua require('functions').moveToNextPairs()<cr>",
+      cmd = ":lua require('rob.functions').moveToNextPairs()<cr>",
     },
     ["<m-tab>"] = {
-      cmd = ":lua require('functions').moveToPrevPairs()<cr>",
+      cmd = ":lua require('rob.functions').moveToPrevPairs()<cr>",
     },
     ["<m-t>"] = {
-      cmd = ":lua require('functions').toggle_color_column()<cr>",
-    },
-    ["dd"] = {
-      cmd = [[:lua require('functions').silent('normal! "_dd')<cr>]],
+      cmd = ":lua require('rob.functions').toggle_color_column()<cr>",
     },
     ["<leader>rn"] = {
       cmd = ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
+      opts = {silent = false}
     },
   },
 }
 
--- |||||||||||||||||||||||||||||||| Which-Key ||||||||||||||||||||||||||||||||| --
+-- ||||||||||||||||||||||||||||||||||| LSP |||||||||||||||||||||||||||||||||||| --
 
--- Which-Key
-lvim.builtin.which_key.mappings["t"] = {
-  name = "+Trouble",
-  q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
-  l = { "<cmd>Trouble loclist<cr>", "LocationList" },
-  r = { "<cmd>Trouble lsp_references<cr>", "References" },
-  f = { "<cmd>Trouble lsp_definitions<cr>", "Definitions" },
-  d = { "<cmd>Trouble document_diagnostics<cr>", "Diagnostics" },
-  w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
-}
+lvim.lsp.buffer_mappings.normal_mode['K'] = nil
+lvim.lsp.buffer_mappings.normal_mode['gk'] = { vim.lsp.buf.hover, "Show hover" }
 
-lvim.builtin.which_key.mappings.s.p = {}
-lvim.builtin.which_key.mappings.b.e = {}
-lvim.builtin.which_key.mappings['T'] = {}
-lvim.builtin.which_key.mappings['w'] = {}
-lvim.builtin.which_key.mappings.l.p = { "<cmd>LspStop<cr>", "Stop" }
-lvim.builtin.which_key.mappings.l.o = { "<cmd>LspStart<cr>", "Start" }
-lvim.builtin.which_key.mappings.g.d = { "<cmd>DiffviewOpen<cr>", "Diffview" }
-lvim.builtin.which_key.mappings.b.p = { "<cmd>BufferLinePick<cr>", "Pick Open" }
-lvim.builtin.which_key.mappings["f"] = {
-  function()
-    require("lvim.core.telescope.custom-finders").find_project_files {}
-  end,
-  "Find File",
-}
-lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<cr>", "Projects" }
-lvim.builtin.which_key.mappings.b.k = { "<cmd>BufferLinePickClose<cr>", "Pick Close" }
-lvim.builtin.which_key.mappings.s.y = { "<cmd>Telescope yank_history<cr>", "Yank History" }
+-- |||||||||||||||||||||||||||||||| Functions ||||||||||||||||||||||||||||||||| --
 
 function M.set_keymaps(mode, key, val)
   if type(val) == "table" then

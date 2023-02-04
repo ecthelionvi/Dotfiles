@@ -1,18 +1,26 @@
 local M = {}
 
+-- Noice
+vim.api.nvim_create_autocmd("filetype", {
+  pattern = "noice",
+  callback = function()
+    local bufnr = vim.fn.bufnr("%")
+    vim.api.nvim_buf_set_keymap(
+      bufnr,
+      "n",
+      "<esc>",
+      "q",
+      { silent = true }
+    )
+  end
+})
+
 -- Startup
 vim.api.nvim_create_autocmd("vimenter", {
   group = vim.api.nvim_create_augroup("clear_history", { clear = true }),
   callback = function()
     vim.schedule(function()
-      require("functions").clear_history()
-      vim.cmd[[
-      let b:copilot_enabled
-      let g:copilot_filetypes = {
-        \ '': v:false,
-        \ }
-      }
-      ]]
+      require("rob.functions").clear_history()
     end)
   end
 })
@@ -36,3 +44,4 @@ lvim.lsp.on_attach_callback = function(client, bufnr)
 end
 
 return M
+

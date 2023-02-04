@@ -1,9 +1,15 @@
 local M = {}
 
--- Silence
-function M.silent(cmd)
-    vim.api.nvim_command("silent " .. cmd)
-    vim.api.nvim_command("redraw")
+-- Lazygit
+function M.lazy()
+local bufnr = vim.fn.bufnr("%")
+vim.api.nvim_buf_set_keymap(
+  bufnr,
+  "t",
+  "<leader>gg",
+  "<esc>:q!<cr>",
+  { silent = true }
+)
 end
 
 -- Trim
@@ -11,6 +17,29 @@ function M.trim()
   local save = vim.fn.winsaveview()
   vim.cmd("keeppatterns %s/\\s\\+$//e")
   vim.fn.winrestview(save)
+end
+
+-- Highlight
+function M.highlight()
+  local mode = vim.api.nvim_get_mode()
+  if mode['mode'] == 'n' then
+    vim.api.nvim_command("normal! VGo1G")
+  elseif mode['mode'] == 'v' then
+    vim.api.nvim_command("normal! ggVG")
+  end
+end
+
+-- Toggle-Color_Column
+highlight = false
+function M.toggle_color_column()
+  if highlight then
+    vim.cmd("silent! call clearmatches()")
+    highlight = false
+  else
+    vim.cmd [[silent! highlight ColorColumn guifg=#565f89 guibg=#565f89]]
+    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+    highlight = true
+  end
 end
 
 -- Swap
@@ -142,25 +171,12 @@ function M.moveToPrevPairs()
   vim.fn.setpos('.', { 0, lnum, col, 0 })
 end
 
--- Toggle-Color_Column
-flag = false
-function M.toggle_color_column()
-  if flag then
-    vim.cmd("silent! call clearmatches()")
-    flag = false
-  else
-    vim.cmd [[silent! highlight ColorColumn guifg=#565f89 guibg=#565f89]]
-    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
-    flag = true
-  end
-end
-
 -- Clear-History
 function M.clear_history()
   local regs = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
     'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
     'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/', '-', '"', '*', '+',
-    '#', }
+    '#', '.'}
   for i, r in ipairs(regs) do
     vim.fn.setreg(r, {})
   end
@@ -168,4 +184,3 @@ function M.clear_history()
 end
 
 return M
-

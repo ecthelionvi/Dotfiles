@@ -5,13 +5,14 @@ local M = {}
 lvim.plugins = {
   {
     "tpope/vim-repeat",
+    "folke/noice.nvim",
+    "wellle/targets.vim",
     "tpope/vim-surround",
-    "github/copilot.vim",
-    "ThePrimeagen/harpoon",
+    "rcarriga/nvim-notify",
+    "MunifTanjim/nui.nvim",
     "kdheepak/lazygit.nvim",
     "ThePrimeagen/vim-be-good",
     "Vimjas/vim-python-pep8-indent",
-    "christoomey/vim-tmux-navigator",
     "nvim-treesitter/nvim-treesitter-context",
 
     -- Trouble
@@ -42,15 +43,36 @@ lvim.plugins = {
     {
       "gbprod/cutlass.nvim",
       config = function()
-        require("cutlass").setup()
+        require("cutlass").setup({
+          exclude = { "ns", "nS" },
+        })
       end
     },
 
     -- Auto-Save
     {
-      "Pocco81/auto-save.nvim",
+      "ecthelionvi/auto-save.nvim",
       config = function()
         require("auto-save").setup()
+      end
+    },
+
+    -- Move
+    {
+      "echasnovski/mini.nvim",
+      config = function()
+        require("mini.move").setup({
+          mappings = {
+            left = '<m-left>',
+            right = '<m-right>',
+            down = '<m-down>',
+            up = '<m-up>',
+            line_left = '<m-left>',
+            line_right = '<m-right>',
+            line_down = '<m-down>',
+            line_up = '<m-up>',
+          },
+        })
       end
     },
 
@@ -70,28 +92,55 @@ lvim.plugins = {
       end
     },
 
-    -- Move
+    -- Copilot
     {
-      "echasnovski/mini.nvim",
+      "github/copilot.vim",
       config = function()
-        require("mini.move").setup({
-          mappings = {
-            left = '<m-left>',
-            right = '<m-right>',
-            down = '<m-down>',
-            up = '<m-up>',
+        vim.cmd [[
+      let g:copilot_filetypes = {
+        \ '': v:false,
+        \ 'TelescopePrompt': v:false,
+        \ 'TelescopeResults': v:false,
+        \ 'lazy': v:false,
+        \ }
 
-            line_left = '<m-left>',
-            line_right = '<m-right>',
-            line_down = '<m-down>',
-            line_up = '<m-up>',
-          },
+      let g:copilot_no_tab_map = v:true
+      inoremap <silent><script><expr> <s-cr> copilot#Accept("\<CR>")
+      ]]
+      end
+    },
+
+    -- Quick-Fix
+    {
+      "romainl/vim-qf",
+      config = function()
+        vim.api.nvim_create_autocmd("filetype", {
+          group = vim.api.nvim_create_augroup("quickfix", { clear = true }),
+          pattern = "qf",
+          callback = function()
+            local bufnr = vim.fn.bufnr("%")
+            vim.api.nvim_buf_set_keymap(
+              bufnr,
+              "n",
+              "dd",
+              ":.Reject<cr>",
+              { silent = true }
+            )
+            vim.api.nvim_buf_set_keymap(
+              bufnr,
+              "n",
+              "bd",
+              ":Keep ''<cr>",
+              { silent = true }
+            )
+            vim.g.qf_auto_resize = 0
+          end
         })
       end
     },
 
     -- Yanky
-    { "gbprod/yanky.nvim",
+    { "ecthelionvi/yanky.nvim",
       config = function()
         require("yanky").setup({
           ring = {
@@ -123,12 +172,12 @@ lvim.plugins = {
         vim.keymap.set("n", "p", "<Plug>(YankyPutAfter)", { noremap = true }, { silent = true })
         vim.keymap.set("n", "P", "<Plug>(YankyPutBefore)", { noremap = true }, { silent = true })
         vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)", { noremap = true }, { silent = true })
-        vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", { noremap = true }, { silent = true })
         vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)", { noremap = true }, { silent = true })
         vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)", { noremap = true }, { silent = true })
+        vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", { noremap = true }, { silent = true })
         vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", { noremap = true }, { silent = true })
-        vim.keymap.set("x", "P", "<cmd>lua require('substitute').visual()<cr>", { noremap = true }, { silent = true })
-        vim.keymap.set("x", "p", "<cmd>lua require('substitute').visual()<cr>", { noremap = true }, { silent = true })
+        vim.keymap.set("x", "P", ":lua require('substitute').visual()<cr>", { noremap = true }, { silent = true })
+        vim.keymap.set("x", "p", ":lua require('substitute').visual()<cr>", { noremap = true }, { silent = true })
       end
     },
 
@@ -148,6 +197,27 @@ lvim.plugins = {
       end,
     },
 
+    -- Hop
+    {
+      "phaazon/hop.nvim",
+      event = "BufRead",
+      config = function()
+        require("hop").setup()
+        vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
+        vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
+      end,
+    },
+
+    -- TreeSJ
+    {
+      'Wansmer/treesj',
+      requires = { 'nvim-treesitter' },
+      config = function()
+        require('treesj').setup()
+      end,
+      vim.keymap.set("n", "qq", ":TSJToggle<cr>", { noremap = true, silent = true })
+    },
+
     -- Nvim-Lastplace
     {
       "ethanholz/nvim-lastplace",
@@ -161,25 +231,15 @@ lvim.plugins = {
       end,
     },
 
-    -- TreeSJ
+    -- Harpoon
     {
-      'Wansmer/treesj',
-      requires = { 'nvim-treesitter' },
+      "ThePrimeagen/harpoon",
       config = function()
-        require('treesj').setup()
-      end,
-      vim.keymap.set("n", "qq", "<cmd>TSJToggle<cr>", { noremap = true, silent = true })
-    },
-
-    -- Hop
-    {
-      "phaazon/hop.nvim",
-      event = "BufRead",
-      config = function()
-        require("hop").setup()
-        vim.keymap.set("n", "S", "<cmd>HopWord<cr>", { noremap = true, silent = true })
-        vim.keymap.set("n", "s", "<cmd>HopChar2<cr>", { noremap = true, silent = true })
-      end,
+        vim.keymap.set("n", "m", [[:lua require('harpoon.mark').add_file()<cr>]],
+          { noremap = true, silent = true })
+        vim.keymap.set("n", "\\", [[:lua require('harpoon.ui').toggle_quick_menu()<cr>]],
+          { noremap = true, silent = true })
+      end
     },
 
     -- Symbols-Outline
@@ -187,30 +247,10 @@ lvim.plugins = {
       "simrat39/symbols-outline.nvim",
       config = function()
         require('symbols-outline').setup()
-        vim.keymap.set("n", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]],
+        vim.keymap.set("n", "<m-s>", [[:lua require('functions').silent("SymbolsOutline")<cr>]],
           { noremap = true, silent = true })
-        vim.keymap.set("v", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]],
+        vim.keymap.set("v", "<m-s>", [[:lua require('functions').silent("SymbolsOutline")<cr>]],
           { noremap = true, silent = true })
-      end
-    },
-
-    -- Substitute
-    {
-      "gbprod/substitute.nvim",
-      config = function()
-        require("substitute").setup({
-          on_substitute = function(event)
-            require("yanky").init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
-          end,
-        })
-        vim.keymap.set("n", "cxx", "<cmd>lua require('substitute.exchange').line()<cr>",
-          { noremap = true, silent = true, })
-        vim.keymap.set("x", "X", "<cmd>lua require('substitute.exchange').visual()<cr>",
-          { noremap = true, silent = true, })
-        vim.keymap.set("n", "cxc", "<cmd>lua require('substitute.exchange').cancel()<cr>",
-          { noremap = true, silent = true, })
-        vim.keymap.set("n", "cx", "<cmd>lua require('substitute.exchange').operator()<cr>",
-          { noremap = true, silent = true, })
       end
     },
 
@@ -218,8 +258,29 @@ lvim.plugins = {
     {
       "mbbill/undotree",
       config = function()
-        vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", { noremap = true, silent = true })
+        vim.g.undotree_SetFocusWhenToggle = 1,
+        vim.keymap.set("n", "<leader>u", ":UndotreeToggle<cr>", { noremap = true, silent = true })
       end,
+    },
+
+    -- Substitute
+    {
+      "gbprod/substitute.nvim",
+      config = function()
+        require("substitute").setup({
+        vim.keymap.set("n", "cxx", ":lua require('substitute.exchange').line()<cr>",
+          { noremap = true, silent = true, }),
+        vim.keymap.set("x", "X", ":lua require('substitute.exchange').visual()<cr>",
+          { noremap = true, silent = true, }),
+        vim.keymap.set("n", "cxc", ":lua require('substitute.exchange').cancel()<cr>",
+          { noremap = true, silent = true, }),
+        vim.keymap.set("n", "cx", ":lua require('substitute.exchange').operator()<cr>",
+          { noremap = true, silent = true, }),
+          on_substitute = function(event)
+            require("yanky").init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
+          end,
+        })
+      end
     },
 
     -- Code-Runner
@@ -228,7 +289,7 @@ lvim.plugins = {
       requires = "nvim-lua/plenary.nvim",
       config = function()
         require('code_runner').setup {
-          mode = "toggle",
+          mode = "term",
           focus = true,
           filetype_path = "", -- No default path defined
           filetype = {
@@ -293,47 +354,13 @@ lvim.plugins = {
 
     --Rnvimr
     {
-      "kevinhwang91/rnvimr",
+      "ecthelionvi/rnvimr",
       config = function()
         vim.api.nvim_set_keymap("n", "<leader>.", [[&filetype == "" ? ":RnvimrToggle<cr>" : ":RnvimrToggle<cr>"]],
           { expr = true, noremap = true, silent = true })
       end
     },
-
-    -- Harpoon
-    {
-      "ThePrimeagen/harpoon",
-      config = function()
-        vim.keymap.set("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>",
-          { noremap = true, silent = true })
-        vim.api.nvim_set_keymap("n", "dd", [[&filetype == "harpoon" ? ':silent! normal! "_dd<cr>' : '"_dd']],
-          { expr = true, noremap = true, silent = true })
-        vim.keymap.set("n", "m", [[<cmd>lua require('functions').silent("lua require('harpoon.mark').add_file()")<cr>]],
-          { noremap = true, silent = true })
-      end
-    },
   },
 }
 
--- |||||||||||||||||||||||||||||| Plugin Settings ||||||||||||||||||||||||||||| --
-
--- ToggleTerm
-lvim.builtin.terminal.size = 12
-lvim.builtin.terminal.direction = 'horizontal'
-
--- Nvimtree
-lvim.builtin.nvimtree.setup.filters.dotfiles = true
-
--- Telescope
-lvim.builtin.telescope.on_config_done = function(telescope)
-  pcall(telescope.load_extension, "yank_history")
-end
-
--- Formatters
-local formatters = require "lvim.lsp.null-ls.formatters"
-formatters.setup {
-  { command = "black", filetypes = { "python" }, extra_args = { "--fast" }, },
-}
-
 return M
-

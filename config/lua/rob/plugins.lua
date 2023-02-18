@@ -9,12 +9,6 @@ lvim.plugins = {
     event = "VeryLazy",
   },
 
-  -- Targets
-  {
-    "wellle/targets.vim",
-    event = "VeryLazy",
-  },
-
   -- Surround
   {
     "tpope/vim-surround",
@@ -43,6 +37,16 @@ lvim.plugins = {
   {
     "ThePrimeagen/vim-be-good",
     cmd = "VimBeGood",
+  },
+
+  -- AI
+  {
+    "echasnovski/mini.ai", 
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.ai").setup()
+    end
   },
 
   -- Python-Indent

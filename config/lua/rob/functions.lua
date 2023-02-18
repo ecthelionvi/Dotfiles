@@ -43,7 +43,7 @@ end
 -- Excluded-Filetypes
 function M.is_excluded_filetype()
   local ft = vim.bo.filetype
-  local excluded_file_types = { 'help', 'alpha', 'lazy', 'lazygit', '' }
+  local excluded_file_types = { 'help', 'alpha', 'lazy', 'lazygit', 'rnvimr' }
   for _, excluded_ft in ipairs(excluded_file_types) do
     if string.match(ft, excluded_ft) then
       return true

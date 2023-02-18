@@ -24,6 +24,9 @@ noice.setup {
     view_search = false,
   },
   lsp = {
+    hover = {
+      enabled = false,
+    },
     progress = {
       enabled = false,
     },
@@ -54,6 +57,14 @@ noice.setup {
       opts = { skip = true },
     },
     {
+      filter = { event = "msg_show", find = "E486" },
+      opts = { skip = true },
+    },
+    {
+      filter = { event = "msg_show", find = "E149" },
+      opts = { skip = true },
+    },
+    {
       filter = { event = "msg_show", find = "after" },
       opts = { skip = true },
     },
@@ -63,6 +74,10 @@ noice.setup {
     },
     {
       filter = { event = "msg_show", find = "before" },
+      opts = { skip = true },
+    },
+    {
+      filter = { event = "msg_show", find = "search" },
       opts = { skip = true },
     },
     {
@@ -97,8 +112,10 @@ noice.setup {
   cmdline = {
     view = "cmdline",
     format = {
-      search_up = { kind = "search", pattern = "^%?", icon = "", lang = "regex" },
-      search_down = { kind = "search", pattern = "^/", icon = "", lang = "regex" },
+      lua = false,
+      help = false,
+      search_up = { kind = "search", pattern = "^%?", icon = "", lang = "regex" },
+      search_down = { kind = "search", pattern = "^/", icon = "", lang = "regex" },
     },
   },
 }

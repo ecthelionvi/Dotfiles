@@ -2,6 +2,8 @@
 
 local M = {}
 
+vim.g.mapleader = " "
+
 local modes = {
   term_mode = "t",
   insert_mode = "i",
@@ -76,8 +78,8 @@ local keymaps = {
       cmd = "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",
       opts = {silent = false}
     },
-    ["aa"] = {
-      cmd = ":lua require('rob.functions').highlight()<cr>",
+    ["<m-a>"] = {
+      cmd = ":lua require('rob.functions').select_all()<cr>",
     },
     ["Q"] = {
       cmd = ":lua require('rob.functions').clear_history()<cr>",
@@ -91,6 +93,12 @@ local keymaps = {
     },
   },
   [modes.normal_mode] = {
+    ["j"] = {
+      cmd = "<Plug>(accelerated_jk_gj)",
+    },
+    ["k"] = {
+      cmd = "<Plug>(accelerated_jk_gk)",
+    },
     ["J"] = {
       cmd = "}",
     },
@@ -178,23 +186,23 @@ local keymaps = {
     ["<c-bs>"] = {
       cmd = ":lua require('rob.functions').trim()<cr>",
     },
-    ["aa"] = {
-      cmd = ":lua require('rob.functions').highlight()<cr>",
+    ["<m-a>"] = {
+      cmd = ":lua require('rob.functions').select_all()<cr>",
     },
     ["fl"] = {
-      cmd = ":lua require('rob.functions').SwapWithNext()<cr>",
+      cmd = ":lua require('rob.functions').swap_next()<cr>",
     },
     ["fh"] = {
-      cmd = ":lua require('rob.functions').SwapWithPrev()<cr>",
+      cmd = ":lua require('rob.functions').swap_prev()<cr>",
     },
     ["Q"] = {
       cmd = ":lua require('rob.functions').clear_history()<cr>",
     },
     ["<tab>"] = {
-      cmd = ":lua require('rob.functions').moveToNextPairs()<cr>",
+      cmd = ":lua require('rob.functions').move_next_pair()<cr>",
     },
     ["<m-tab>"] = {
-      cmd = ":lua require('rob.functions').moveToPrevPairs()<cr>",
+      cmd = ":lua require('rob.functions').move_prev_pair()<cr>",
     },
     ["<m-t>"] = {
       cmd = ":lua require('rob.functions').toggle_color_column()<cr>",

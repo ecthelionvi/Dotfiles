@@ -1,23 +1,8 @@
 local M = {}
 
--- Noice
-vim.api.nvim_create_autocmd("filetype", {
-  pattern = "noice",
-  callback = function()
-    local bufnr = vim.fn.bufnr("%")
-    vim.api.nvim_buf_set_keymap(
-      bufnr,
-      "n",
-      "<esc>",
-      "q",
-      { silent = true }
-    )
-  end
-})
-
 -- Startup
-vim.api.nvim_create_autocmd("vimenter", {
-  group = vim.api.nvim_create_augroup("clear_history", { clear = true }),
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim.api.nvim_create_augroup("clear-history", { clear = true }),
   callback = function()
     vim.schedule(function()
       require("rob.functions").clear_history()
@@ -25,23 +10,19 @@ vim.api.nvim_create_autocmd("vimenter", {
   end
 })
 
--- LSP-Popup
-lvim.lsp.on_attach_callback = function(client, bufnr)
-  vim.api.nvim_create_autocmd("CursorHold", {
-    buffer = bufnr,
-    callback = function()
-      local opts = {
-        focusable = false,
-        close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-        border = 'rounded',
-        source = 'always',
-        prefix = ' ',
-        scope = 'cursor',
-      }
-      vim.diagnostic.open_float(nil, opts)
-    end
-  })
-end
+-- Colorcolumn
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = vim.api.nvim_create_augroup("color-column", { clear = true }),
+  callback = function()
+    vim.schedule(function()
+      if not require("rob.functions").is_excluded_filetype() then
+        require("rob.functions").toggle_color_column()
+      else
+      vim.fn.clearmatches()
+      end
+    end)
+  end
+})
+
 
 return M
-

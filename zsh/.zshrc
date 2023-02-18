@@ -1,5 +1,6 @@
 export HISTFILE=$HOME/.cache/zsh/zsh_history
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 eval "$(starship init zsh)"
 
 alias lv='/Users/rob/.local/bin/lvim'

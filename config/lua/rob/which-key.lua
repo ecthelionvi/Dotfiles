@@ -7,7 +7,7 @@ lvim.builtin.which_key.mappings = {
     ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment" },
   },
   [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
-  ["w"] = { "<cmd>w!<CR>", "Save" },
+  ["P"] = { "<cmd>Telescope projects<cr>", "Projects" },
   ["q"] = { "<cmd>silent! q!<CR>", "Quit" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment" },
   ["c"] = { "<cmd>BufferKill<CR>", "Close Buffer" },
@@ -26,7 +26,8 @@ lvim.builtin.which_key.mappings = {
     b = { "<cmd>BufferLineCyclePrev<cr>", "Previous" },
     n = { "<cmd>BufferLineCycleNext<cr>", "Next" },
     W = { "<cmd>noautocmd w<cr>", "Save" },
-    e = {
+    p = { "<cmd>BufferLinePick<cr>", "Pick Open" },
+    k = {
       "<cmd>BufferLinePickClose<cr>",
       "Pick Close",
     },
@@ -37,11 +38,11 @@ lvim.builtin.which_key.mappings = {
     },
     D = {
       "<cmd>BufferLineSortByDirectory<cr>",
-      "Sort by directory",
+      "Sort Directory",
     },
     L = {
       "<cmd>BufferLineSortByExtension<cr>",
-      "Sort by language",
+      "Sort Language",
     },
   },
   d = {
@@ -74,7 +75,7 @@ lvim.builtin.which_key.mappings = {
   },
   g = {
     name = "Git",
-    g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr>", "Lazygit" },
+    g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr><cmd>lua require 'rob.functions'.lazy()<cr>", "Lazygit" },
     j = { "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", "Next Hunk" },
     k = { "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", "Prev Hunk" },
     l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
@@ -116,6 +117,8 @@ lvim.builtin.which_key.mappings = {
     },
     l = { vim.lsp.codelens.run, "CodeLens Action" },
     q = { vim.diagnostic.setloclist, "Quickfix" },
+    o = { vim.diagnostic.show, "Show" },
+    p = { vim.diagnostic.hide, "Hide" },
     r = { vim.lsp.buf.rename, "Rename" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
     S = {
@@ -175,7 +178,6 @@ lvim.builtin.which_key.mappings = {
   s = {
     name = "Search",
     b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
-    c = { "<cmd>Telescope colorscheme<cr>", "Colorscheme" },
     f = { "<cmd>Telescope find_files<cr>", "Find File" },
     h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
     H = { "<cmd>Telescope highlights<cr>", "Find Highlight Groups" },
@@ -185,9 +187,10 @@ lvim.builtin.which_key.mappings = {
     t = { "<cmd>Telescope live_grep<cr>", "Text" },
     k = { "<cmd>Telescope keymaps<cr>", "Keymaps" },
     C = { "<cmd>Telescope commands<cr>", "Commands" },
-    p = {
+    y = { "<cmd>Telescope yank_history<cr>", "Yank History" },
+    c = {
       "<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>",
-      "Colorscheme with Preview",
+      "Colorscheme",
     },
   },
   t = {

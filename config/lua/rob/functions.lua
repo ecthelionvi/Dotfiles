@@ -20,7 +20,7 @@ function M.trim()
 end
 
 -- Highlight
-function M.highlight()
+function M.select_all()
   local mode = vim.api.nvim_get_mode()
   if mode['mode'] == 'n' then
     vim.api.nvim_command("normal! VGo1G")
@@ -29,17 +29,27 @@ function M.highlight()
   end
 end
 
--- Toggle-Color_Column
-highlight = false
+-- Toggle-Color-Column
 function M.toggle_color_column()
-  if highlight then
+  local matches = vim.fn.getmatches()
+  if #matches > 0 then
     vim.cmd("silent! call clearmatches()")
-    highlight = false
   else
-    vim.cmd [[silent! highlight ColorColumn guifg=#565f89 guibg=#565f89]]
+    vim.cmd[[silent! highlight ColorColumn guifg=#565f89 guibg=#565f89]]
     vim.fn.matchadd("ColorColumn", "\\%81v", 100)
-    highlight = true
   end
+end
+
+-- Excluded-Filetypes
+function M.is_excluded_filetype()
+  local ft = vim.bo.filetype
+  local excluded_file_types = { 'help', 'alpha' }
+  for _, excluded_ft in ipairs(excluded_file_types) do
+    if string.match(ft, excluded_ft) then
+      return true
+    end
+  end
+  return false
 end
 
 -- Swap
@@ -53,7 +63,7 @@ entity_pattern.k._in = "\\k"
 entity_pattern.k.out = "\\k\\@!"
 entity_pattern.k.prev_end = "\\k\\(\\k\\@!.\\)\\+$"
 
-function M.SwapWithNext(cursor_pos, type)
+function M.swap_next(cursor_pos, type)
   type = type or "w"
   cursor_pos = cursor_pos or "follow"
 
@@ -68,13 +78,13 @@ function M.SwapWithNext(cursor_pos, type)
   local current_word_start = vim.fn.match(line_before_cursor, _in .. "\\+$")
   local current_word_end = vim.fn.match(line, _in .. out, current_word_start)
   if current_word_end == -1 then
-    M.SwapWithPrev()
+    M.swap_prev()
     return
   end
 
   local next_word_start = vim.fn.match(line, _in, current_word_end + 1)
   if next_word_start == -1 then
-    M.SwapWithPrev()
+    M.swap_prev()
     return
   end
   local next_word_end = vim.fn.match(line, _in .. out, next_word_start)
@@ -104,7 +114,7 @@ function M.SwapWithNext(cursor_pos, type)
   vim.api.nvim_win_set_cursor(0, { cursor[1], new_c - 1 })
 end
 
-function M.SwapWithPrev(cursor_pos, type)
+function M.swap_prev(cursor_pos, type)
   type = type or "w"
   cursor_pos = cursor_pos or "follow"
 
@@ -119,7 +129,7 @@ function M.SwapWithPrev(cursor_pos, type)
 
   local current_word_start = vim.fn.match(line_before_cursor, _in .. "\\+$")
   if current_word_start == -1 then
-    SwapWithNext()
+    M.swap_next()
     return
   end
   local current_word_end = vim.fn.match(line, _in .. out, current_word_start)
@@ -127,7 +137,7 @@ function M.SwapWithPrev(cursor_pos, type)
 
   local prev_word_end = vim.fn.match(line:sub(1, current_word_start), prev_end)
   if prev_word_end == -1 then
-    M.SwapWithNext()
+   M.swap_next()
     return
   end
   local prev_word_start = vim.fn.match(line:sub(1, prev_word_end + 1), _in .. "\\+$")
@@ -157,14 +167,14 @@ function M.SwapWithPrev(cursor_pos, type)
 end
 
 -- Jump-Brackets
-function M.moveToNextPairs()
+function M.move_next_pair()
   local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
   local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
   local lnum, col = search_result[1], search_result[2]
   vim.fn.setpos('.', { 0, lnum, col, 0 })
 end
 
-function M.moveToPrevPairs()
+function M.move_prev_pair()
   local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
   local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
   local lnum, col = search_result[1], search_result[2]
@@ -176,7 +186,7 @@ function M.clear_history()
   local regs = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
     'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
     'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/', '-', '"', '*', '+',
-    '#', '.'}
+    '#',}
   for i, r in ipairs(regs) do
     vim.fn.setreg(r, {})
   end

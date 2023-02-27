@@ -12,14 +12,16 @@ vim.api.nvim_buf_set_keymap(
 )
 end
 
--- Trim
-function M.trim()
-  local save = vim.fn.winsaveview()
-  vim.cmd("keeppatterns %s/\\s\\+$//e")
-  vim.fn.winrestview(save)
+-- Excluded-Buftype
+function M.is_excluded_buftype()
+  local buftype = vim.bo.buftype
+  if buftype == 'terminal' then
+    return true
+  end
+  return false
 end
 
--- Highlight
+-- Select-All
 function M.select_all()
   local mode = vim.api.nvim_get_mode()
   if mode['mode'] == 'n' then
@@ -29,27 +31,29 @@ function M.select_all()
   end
 end
 
--- Toggle-Color-Column
-function M.toggle_color_column()
-  local matches = vim.fn.getmatches()
-  if #matches > 0 then
-    vim.cmd("silent! call clearmatches()")
-  else
-    vim.cmd[[silent! highlight ColorColumn guifg=#565f89 guibg=#565f89]]
-    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
-  end
+-- Trim
+function M.trim()
+  local save = vim.fn.winsaveview()
+  vim.api.nvim_command("keeppatterns %s/\\s\\+$//e")
+  vim.fn.winrestview(save)
 end
 
--- Excluded-Filetypes
+-- Excluded-Filetype
 function M.is_excluded_filetype()
   local ft = vim.bo.filetype
-  local excluded_file_types = { 'help', 'alpha', 'lazy', 'lazygit', 'rnvimr' }
+  local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice' }
   for _, excluded_ft in ipairs(excluded_file_types) do
     if string.match(ft, excluded_ft) then
       return true
     end
   end
-  return false
+  return M.is_excluded_buftype()
+end
+
+-- Toggle-Color-Column
+function M.toggle_color_column()
+    vim.api.nvim_command("silent! highlight ColorColumn guibg=#565f89")
+    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
 end
 
 -- Swap

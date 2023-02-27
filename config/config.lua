@@ -2,18 +2,45 @@
 
 local M = {}
 
+-- Require
+require("rob.noice")
+require("rob.remaps")
+require("rob.plugins")
+require("rob.functions")
+require("rob.which-key")
+require("rob.autocommands")
+
 -- Settings
 vim.opt.cmdheight = 0
 vim.opt.timeoutlen = 300
+vim.opt.maxfuncdepth = 1000
 vim.opt.relativenumber = true
+lvim.builtin.terminal.size = 12
 vim.opt.fillchars = { eob = " " }
 lvim.builtin.telescope.theme = nil
 lvim.builtin.project.show_hidden = true
+lvim.builtin.terminal.direction = 'horizontal'
+lvim.builtin.nvimtree.setup.filters.dotfiles = true
 
-local remaps = require("remaps")
-local plugins = require("plugins")
-local functions = require("functions")
-local autocommands = require("autocommands")
+-- Lualine
+local components = require "lvim.core.lualine.components"
+lvim.builtin.lualine.sections.lualine_x = {
+  components.diagnostics,
+  components.lsp,
+  components.filetype,
+}
+
+-- Telescope
+lvim.builtin.telescope.on_config_done = function(telescope)
+  pcall(telescope.load_extension, "yank_history")
+end
+--lvim.builtin.telescope.defaults.layout_config.preview_width = 59
+
+-- Formatters
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  { command = "black", filetypes = { "python" }, extra_args = { "--fast" }, },
+}
 
 -- |||||||||||||||||||||||||||||||||| Defaults |||||||||||||||||||||||||||||||| --
 

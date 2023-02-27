@@ -27,6 +27,11 @@ local generic_opts = {
 local generic_opts_any = {noremap = true, silent = true}
 
 local keymaps = {
+  [modes.insert_mode] = {
+    ["<tab>"] = {
+      cmd = "<c-tab>",
+    },
+  },
   [modes.term_mode] = {
     ["<esc>"] = {
       cmd = [[<C-\><C-n>]],
@@ -34,11 +39,11 @@ local keymaps = {
   },
   [modes.command_mode] = {
     ["<up>"] = {
-      cmd = "wildmenumode() ? '<left>' : '<up>'",
+      cmd = function() return vim.fn.wildmenumode() and '<left>' or '<up>' end,
       opts = {expr = true}
     },
     ["<down>"] = {
-      cmd = "wildmenumode() ? '<right>' : '<down>'",
+      cmd = function() return vim.fn.wildmenumode() and '<right>' or '<down>' end,
       opts = {expr = true}
     }
   },
@@ -78,27 +83,18 @@ local keymaps = {
       cmd = "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",
       opts = {silent = false}
     },
-    ["<m-a>"] = {
+    ["<leader>a"] = {
       cmd = ":lua require('rob.functions').select_all()<cr>",
     },
     ["Q"] = {
       cmd = ":lua require('rob.functions').clear_history()<cr>",
     },
-    ["<m-t>"] = {
-      cmd = ":lua require('rob.functions').toggle_color_column()<cr>",
-    },
     ["<leader>rn"] = {
-      cmd = "y:%s/<C-R>=escape(@\",'/\') <CR>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
+      cmd = "y:%s/<C-R>=escape(@\",'/\')<CR>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
       opts = {silent = false}
     },
   },
   [modes.normal_mode] = {
-    ["j"] = {
-      cmd = "<Plug>(accelerated_jk_gj)",
-    },
-    ["k"] = {
-      cmd = "<Plug>(accelerated_jk_gk)",
-    },
     ["J"] = {
       cmd = "}",
     },
@@ -113,6 +109,9 @@ local keymaps = {
     },
     ["<bs>"] = {
       cmd = '"_X',
+    },
+    ["<leader>j"] = {
+      cmd = "mzJ`z",
     },
     ["U"] = {
       cmd = "<c-r>",
@@ -147,9 +146,6 @@ local keymaps = {
     ["<s-cr>"] = {
       cmd = "mzO<Esc>`z",
     },
-    ["<m-bs>"] = {
-      cmd = [[<c-^>'"zz]],
-    },
     ["Z"] = {
       cmd = "mz:join<cr>`z",
     },
@@ -180,13 +176,19 @@ local keymaps = {
     ["<m-l>"] = {
       cmd = ":BufferLineCycleNext<cr>",
     },
+    ["j"] = {
+      cmd = "<Plug>(accelerated_jk_gj)",
+    },
+    ["k"] = {
+      cmd = "<Plug>(accelerated_jk_gk)",
+    },
     ["<leader>x"] = {
       cmd = ":silent exec '!(chmod +x % &)'<cr>",
     },
     ["<c-bs>"] = {
       cmd = ":lua require('rob.functions').trim()<cr>",
     },
-    ["<m-a>"] = {
+    ["<leader>a"] = {
       cmd = ":lua require('rob.functions').select_all()<cr>",
     },
     ["fl"] = {
@@ -201,11 +203,8 @@ local keymaps = {
     ["<tab>"] = {
       cmd = ":lua require('rob.functions').move_next_pair()<cr>",
     },
-    ["<m-tab>"] = {
+    ["<s-tab>"] = {
       cmd = ":lua require('rob.functions').move_prev_pair()<cr>",
-    },
-    ["<m-t>"] = {
-      cmd = ":lua require('rob.functions').toggle_color_column()<cr>",
     },
     ["<leader>rn"] = {
       cmd = ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
@@ -227,7 +226,7 @@ function M.set_keymaps(mode, key, val)
     val = val.cmd
   end
   if val then
-    vim.api.nvim_set_keymap(mode, key, val, opt)
+    vim.keymap.set(mode, key, val, opt)
   else
     pcall(vim.api.nvim_del_keymap, mode, key)
   end

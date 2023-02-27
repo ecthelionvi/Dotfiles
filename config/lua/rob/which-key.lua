@@ -10,7 +10,7 @@ lvim.builtin.which_key.mappings = {
   ["P"] = { "<cmd>Telescope projects<cr>", "Projects" },
   ["q"] = { "<cmd>silent! q!<CR>", "Quit" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment" },
-  ["c"] = { "<cmd>BufferKill<CR>", "Close Buffer" },
+  ["k"] = { "<cmd>BufferKill<CR>", "Close Buffer" },
   ["f"] = {
     function()
       require("lvim.core.telescope.custom-finders").find_project_files { previewer = false }
@@ -26,10 +26,9 @@ lvim.builtin.which_key.mappings = {
     b = { "<cmd>BufferLineCyclePrev<cr>", "Previous" },
     n = { "<cmd>BufferLineCycleNext<cr>", "Next" },
     W = { "<cmd>noautocmd w<cr>", "Save" },
-    p = { "<cmd>BufferLinePick<cr>", "Pick Open" },
     k = {
       "<cmd>BufferLinePickClose<cr>",
-      "Pick Close",
+      "Close",
     },
     h = { "<cmd>BufferLineCloseLeft<cr>", "Close All " },
     l = {

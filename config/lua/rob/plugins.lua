@@ -18,7 +18,7 @@ lvim.plugins = {
   -- Accerlated-JK
   {
     "rhysd/accelerated-jk",
-    event = "VeryLazy", 
+    event = "VeryLazy",
   },
 
   -- LazyGit
@@ -41,7 +41,7 @@ lvim.plugins = {
 
   -- AI
   {
-    "echasnovski/mini.ai", 
+    "echasnovski/mini.ai",
     version = false,
     event = "VeryLazy",
     config = function()
@@ -163,21 +163,10 @@ lvim.plugins = {
         \ 'TelescopeResults': v:false,
         \ 'lazy': v:false,
         \ }
-
-      let g:copilot_no_tab_map = v:true
       inoremap <silent><script><expr> <s-cr> copilot#Accept("\<CR>")
       ]]
+      vim.g.copilot_no_tab_map = true
     end
-  },
-
-  -- Sad
-  {
-    "ray-x/sad.nvim",
-    event = "VeryLazy",
-    dependencies = { "ray-x/guihua.lua", run = "cd lua/fzy && make" },
-    config = function()
-      require("sad").setup {}
-    end,
   },
 
   -- Quick-Fix
@@ -195,14 +184,14 @@ lvim.plugins = {
             "n",
             "dd",
             ":.Reject<cr>",
-            { silent = true }
+            { noremap = true, silent = true }
           )
           vim.api.nvim_buf_set_keymap(
             bufnr,
             "n",
             "bd",
             ":Keep ''<cr>",
-            { silent = true }
+            { noremap = true, silent = true }
           )
           vim.g.qf_auto_resize = 0
         end
@@ -231,7 +220,7 @@ lvim.plugins = {
           },
         },
         system_clipboard = {
-          sync_with_ring = false,
+          sync_with_ring = true,
         },
         highlight = {
           on_put = true,
@@ -242,15 +231,13 @@ lvim.plugins = {
           enabled = true,
         },
       })
-      vim.keymap.set("n", "p", "<Plug>(YankyPutAfter)", { noremap = true }, { silent = true })
-      vim.keymap.set("n", "P", "<Plug>(YankyPutBefore)", { noremap = true }, { silent = true })
-      vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)", { noremap = true }, { silent = true })
-      vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)", { noremap = true }, { silent = true })
-      vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)", { noremap = true }, { silent = true })
-      vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", { noremap = true }, { silent = true })
-      vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", { noremap = true }, { silent = true })
-      vim.keymap.set("x", "P", ":lua require('substitute').visual()<cr>", { noremap = true }, { silent = true })
-      vim.keymap.set("x", "p", ":lua require('substitute').visual()<cr>", { noremap = true }, { silent = true })
+      vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)", { noremap = true, silent = true })
+      vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)", { noremap = true, silent = true })
+      vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)", { noremap = true, silent = true })
+      vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", { noremap = true, silent = true })
+      vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)", { noremap = true, silent = true })
+      vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", { noremap = true, silent = true })
+      vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", { noremap = true, silent = true })
     end
   },
 
@@ -277,8 +264,8 @@ lvim.plugins = {
     event = "BufRead",
     config = function()
       require("hop").setup()
-      vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
-      vim.api.nvim_set_keymap("n", "S", ":HopWord<cr>", { silent = true })
+      vim.keymap.set("n", "S", ":HopWord<cr>", { noremap = true, silent = true })
+      vim.keymap.set("n", "s", ":HopChar2<cr>", { noremap = true, silent = true })
     end,
   },
 
@@ -288,7 +275,9 @@ lvim.plugins = {
     event = "VeryLazy",
     dependencies = { 'nvim-treesitter' },
     config = function()
-      require('treesj').setup()
+      require('treesj').setup({
+        use_default_keymaps = false,
+      })
     end,
     vim.keymap.set("n", "qq", ":TSJToggle<cr>", { noremap = true, silent = true })
   },
@@ -320,14 +309,14 @@ lvim.plugins = {
             "n",
             "m",
             "",
-            { silent = true }
+            { noremap = true, silent = true }
           )
           vim.api.nvim_buf_set_keymap(
             bufnr,
             "o",
             "d",
             [[:silent! normal! "_dd<cr>]],
-            { silent = true }
+            { noremap = true, silent = true }
           )
         end
       })
@@ -367,6 +356,7 @@ lvim.plugins = {
     event = "VeryLazy",
     config = function()
       require("substitute").setup({
+        on_substitute = require("yanky.integration").substitute(),
         vim.keymap.set("n", "cxx", ":lua require('substitute.exchange').line()<cr>",
           { noremap = true, silent = true, }),
         vim.keymap.set("x", "X", ":lua require('substitute.exchange').visual()<cr>",
@@ -375,9 +365,6 @@ lvim.plugins = {
           { noremap = true, silent = true, }),
         vim.keymap.set("n", "cx", ":lua require('substitute.exchange').operator()<cr>",
           { noremap = true, silent = true, }),
-        on_substitute = function(event)
-          require("yanky").init_ring("p", event.register, event.count, event.vmode:match("[vV�]"))
-        end,
       })
     end
   },
@@ -391,7 +378,7 @@ lvim.plugins = {
       require('code_runner').setup {
         mode = "term",
         focus = true,
-        filetype_path = "", -- No default path defined
+        --filetype_path = "", -- No default path defined
         filetype = {
           javascript = "node",
           java = "cd $dir && javac $fileName && java $fileNameWithoutExt",
@@ -399,12 +386,13 @@ lvim.plugins = {
           cpp = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
           python = "python -u",
           sh = "bash",
-          rust = "cd $dir && rustc $fileName && $dir$fileNameWithoutExt",
+          rust = "cd $dir && rustc $fileName && $dir/$fileNameWithoutExt",
         },
-        project_path = "", -- No default path defined
-        project = {},
-        vim.api.nvim_set_keymap("n", "<leader>r", [[&filetype == "" ? ":RunClose<cr>" : ":RunCode<cr>"]],
-          { expr = true, noremap = true, silent = true })
+        --project_path = "", -- No default path defined
+        --project = {},
+        vim.keymap.set("n", "<leader>r", function()
+          return vim.bo.buftype == "terminal" and ":RunClose<cr>" or ":RunCode<cr>"
+        end, { expr = true, noremap = true, silent = true })
       }
     end,
   },
@@ -454,11 +442,15 @@ lvim.plugins = {
 
   --Rnvimr
   {
-    "ecthelionvi/rnvimr",
+    "kevinhwang91/rnvimr",
     event = "VeryLazy",
     config = function()
-      vim.api.nvim_set_keymap("n", "<leader>.", [[&filetype == "" ? ":RnvimrToggle<cr>" : ":RnvimrToggle<cr>"]],
-        { expr = true, noremap = true, silent = true })
+      vim.g.rnvimr_bw_enable = 1
+      vim.g.rnvimr_draw_border = 1
+      vim.g.rnvimr_pick_enable = 1
+      vim.g.rnvimr_presets = { { width = 0.800, height = 0.800 } }
+      vim.keymap.set("n", "<leader>.", ":RnvimrToggle<cr>",
+        { noremap = true, silent = true })
     end
   },
 }

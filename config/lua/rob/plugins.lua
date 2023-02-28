@@ -39,44 +39,10 @@ lvim.plugins = {
     cmd = "VimBeGood",
   },
 
-  -- AI
-  {
-    "echasnovski/mini.ai",
-    version = false,
-    event = "VeryLazy",
-    config = function()
-      require("mini.ai").setup()
-    end
-  },
-
-  -- Python-Indent
-  {
-    "Vimjas/vim-python-pep8-indent",
-    event = "BufRead",
-  },
-
   -- Trouble
   {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
-  },
-
-  -- Diffview
-  {
-    "sindrets/diffview.nvim",
-    event = "BufRead",
-  },
-
-  -- Numb
-  {
-    "nacro90/numb.nvim",
-    event = "BufRead",
-    config = function()
-      require("numb").setup {
-        show_numbers = true,
-        show_cursorline = true,
-      }
-    end
   },
 
   -- Noice
@@ -86,6 +52,24 @@ lvim.plugins = {
       "MunifTanjim/nui.nvim",
       "rcarriga/nvim-notify",
     }
+  },
+
+  -- Diffview
+  {
+    "sindrets/diffview.nvim",
+    event = "BufRead",
+  },
+
+   -- Numb
+  {
+    "nacro90/numb.nvim",
+    event = "BufRead",
+    config = function()
+      require("numb").setup {
+        show_numbers = true,
+        show_cursorline = true,
+      }
+    end
   },
 
   -- Cutlass
@@ -108,24 +92,10 @@ lvim.plugins = {
     end
   },
 
-  -- Move
+  -- Python-Indent
   {
-    "echasnovski/mini.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("mini.move").setup({
-        mappings = {
-          left = '<m-left>',
-          right = '<m-right>',
-          down = '<m-down>',
-          up = '<m-up>',
-          line_left = '<m-left>',
-          line_right = '<m-right>',
-          line_down = '<m-down>',
-          line_up = '<m-up>',
-        },
-      })
-    end
+    "Vimjas/vim-python-pep8-indent",
+    event = "BufRead",
   },
 
   -- Better-Escape
@@ -146,9 +116,46 @@ lvim.plugins = {
     end
   },
 
+  -- Mini
+  {
+    "echasnovski/mini.nvim", 
+    version = false,
+    event = "VeryLazy",
+    config = function()
+      require("mini.ai").setup()
+      require("mini.move").setup({
+        mappings = {
+          left = '<m-left>',
+          right = '<m-right>',
+          down = '<m-down>',
+          up = '<m-up>',
+          line_left = '<m-left>',
+          line_right = '<m-right>',
+          line_down = '<m-down>',
+          line_up = '<m-up>',
+        },
+      })
+      require("mini.cursorword").setup()
+    end
+  },
+
   -- Treesitter-Context
   {
     "nvim-treesitter/nvim-treesitter-context",
+  },
+
+  --Rnvimr
+  {
+    "kevinhwang91/rnvimr",
+    event = "VeryLazy",
+    config = function()
+      vim.g.rnvimr_bw_enable = 1
+      vim.g.rnvimr_draw_border = 1
+      vim.g.rnvimr_pick_enable = 1
+      vim.g.rnvimr_presets = { { width = 0.800, height = 0.800 } }
+      vim.keymap.set("n", "<leader>.", ":RnvimrToggle<cr>",
+        { noremap = true, silent = true })
+    end
   },
 
   -- Copilot
@@ -199,48 +206,6 @@ lvim.plugins = {
     end
   },
 
-  -- Yanky
-  {
-    "gbprod/yanky.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("yanky").setup({
-        ring = {
-          history_length = 100,
-          storage = "shada",
-          sync_with_numbered_registers = true,
-          cancel_event = "update",
-        },
-        picker = {
-          select = {
-            action = nil,
-          },
-          telescope = {
-            mappings = nil,
-          },
-        },
-        system_clipboard = {
-          sync_with_ring = true,
-        },
-        highlight = {
-          on_put = true,
-          on_yank = true,
-          timer = 500,
-        },
-        preserve_cursor_position = {
-          enabled = true,
-        },
-      })
-      vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)", { noremap = true, silent = true })
-      vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)", { noremap = true, silent = true })
-      vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)", { noremap = true, silent = true })
-      vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", { noremap = true, silent = true })
-      vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)", { noremap = true, silent = true })
-      vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", { noremap = true, silent = true })
-      vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", { noremap = true, silent = true })
-    end
-  },
-
   -- Nvim-Colorizer
   {
     "norcalli/nvim-colorizer.lua",
@@ -288,9 +253,9 @@ lvim.plugins = {
     event = "BufRead",
     config = function()
       require("nvim-lastplace").setup({
+        lastplace_open_folds = true,
         lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
         lastplace_ignore_filetype = { "gitcommit", "gitrebase", "svn", "hgcommit", },
-        lastplace_open_folds = true,
       })
     end,
   },
@@ -325,29 +290,6 @@ lvim.plugins = {
       vim.keymap.set("n", "\\", [[:lua require('harpoon.ui').toggle_quick_menu()<cr>]],
         { noremap = true, silent = true })
     end
-  },
-
-  -- Symbols-Outline
-  {
-    "simrat39/symbols-outline.nvim",
-    event = "VeryLazy",
-    config = function()
-      require('symbols-outline').setup()
-      vim.keymap.set("n", "<m-s>", [[:lua require('functions').silent("SymbolsOutline")<cr>]],
-        { noremap = true, silent = true })
-      vim.keymap.set("v", "<m-s>", [[:lua require('functions').silent("SymbolsOutline")<cr>]],
-        { noremap = true, silent = true })
-    end
-  },
-
-  -- Undotree
-  {
-    "mbbill/undotree",
-    event = "VeryLazy",
-    config = function()
-      vim.g.undotree_SetFocusWhenToggle = 1,
-          vim.keymap.set("n", "<leader>u", ":UndotreeToggle<cr>", { noremap = true, silent = true })
-    end,
   },
 
   -- Substitute
@@ -397,6 +339,71 @@ lvim.plugins = {
     end,
   },
 
+  -- Symbols-Outline
+  {
+    "simrat39/symbols-outline.nvim",
+    event = "VeryLazy",
+    config = function()
+      require('symbols-outline').setup()
+      vim.keymap.set("n", "<m-s>", [[:lua require('functions').silent("SymbolsOutline")<cr>]],
+        { noremap = true, silent = true })
+      vim.keymap.set("v", "<m-s>", [[:lua require('functions').silent("SymbolsOutline")<cr>]],
+        { noremap = true, silent = true })
+    end
+  },
+
+  -- Undotree
+  {
+    "mbbill/undotree",
+    event = "VeryLazy",
+    config = function()
+      vim.g.undotree_SetFocusWhenToggle = 1,
+          vim.keymap.set("n", "<leader>u", ":UndotreeToggle<cr>", { noremap = true, silent = true })
+    end,
+  },
+
+  -- Yanky
+  {
+    "gbprod/yanky.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("yanky").setup({
+        ring = {
+          history_length = 100,
+          storage = "shada",
+          sync_with_numbered_registers = true,
+          cancel_event = "update",
+        },
+        picker = {
+          select = {
+            action = nil,
+          },
+          telescope = {
+            mappings = nil,
+          },
+        },
+        system_clipboard = {
+          sync_with_ring = true,
+        },
+        highlight = {
+          on_put = true,
+          on_yank = true,
+          timer = 500,
+        },
+        preserve_cursor_position = {
+          enabled = true,
+        },
+      })
+      vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)", { noremap = true, silent = true })
+      vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)", { noremap = true, silent = true })
+      vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)", { noremap = true, silent = true })
+      vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", { noremap = true, silent = true })
+      vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)", { noremap = true, silent = true })
+      vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", { noremap = true, silent = true })
+      vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", { noremap = true, silent = true })
+    end
+  },
+
   -- Dial
   {
     "monaqa/dial.nvim",
@@ -437,20 +444,6 @@ lvim.plugins = {
       vim.keymap.set("x", "<c-x>", require("dial.map").dec_visual(), { noremap = true }, { silent = true })
       vim.keymap.set("x", "g<c-a>", require("dial.map").inc_gvisual(), { noremap = true }, { silent = true })
       vim.keymap.set("x", "g<c-x>", require("dial.map").dec_gvisual(), { noremap = true }, { silent = true })
-    end
-  },
-
-  --Rnvimr
-  {
-    "kevinhwang91/rnvimr",
-    event = "VeryLazy",
-    config = function()
-      vim.g.rnvimr_bw_enable = 1
-      vim.g.rnvimr_draw_border = 1
-      vim.g.rnvimr_pick_enable = 1
-      vim.g.rnvimr_presets = { { width = 0.800, height = 0.800 } }
-      vim.keymap.set("n", "<leader>.", ":RnvimrToggle<cr>",
-        { noremap = true, silent = true })
     end
   },
 }

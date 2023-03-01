@@ -1,5 +1,3 @@
-#/opt/homebrew/Cellar/ranger/1.9.3_2/lib/python3.11/site-packages/ranger/data/scope.sh
-
 #!/usr/bin/env bash
 
 set -o noclobber -o noglob -o nounset -o pipefail

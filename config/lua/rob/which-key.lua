@@ -74,7 +74,7 @@ lvim.builtin.which_key.mappings = {
   },
   g = {
     name = "Git",
-    g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr><cmd>lua require 'rob.functions'.lazy()<cr>", "Lazygit" },
+    g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr><cmd>LazyGitKeymap<cr>", "Lazygit" },
     j = { "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", "Next Hunk" },
     k = { "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", "Prev Hunk" },
     l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },

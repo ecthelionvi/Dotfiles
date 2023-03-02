@@ -60,9 +60,6 @@ local keymaps = {
     ["L"] = {
       cmd = "$",
     },
-    ["<bs>"] = {
-      cmd = '"_X',
-    },
     ["<up>"] = {
       cmd = "",
     },
@@ -84,10 +81,13 @@ local keymaps = {
       opts = {silent = false}
     },
     ["<leader>a"] = {
-      cmd = ":lua require('rob.functions').select_all()<cr>",
+      cmd = "<cmd>lua require('rob.functions').select_all()<cr>",
     },
     ["Q"] = {
-      cmd = ":lua require('rob.functions').clear_history()<cr>",
+      cmd = "<cmd>lua require('rob.functions').clear_history()<cr>",
+    },
+    ["<bs>"] = {
+      cmd = "<cmd>lua require('rob.functions').backspace_improved()<CR>",
     },
     ["<leader>rn"] = {
       cmd = "y:%s/<C-R>=escape(@\",'/\')<CR>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
@@ -107,9 +107,6 @@ local keymaps = {
     ["L"] = {
       cmd = "$",
     },
-    ["<bs>"] = {
-      cmd = '"_X',
-    },
     ["<leader>j"] = {
       cmd = "mzJ`z",
     },
@@ -122,45 +119,33 @@ local keymaps = {
     ["cN"] = {
       cmd = "#``cgN",
     },
-    ["<leader>o"] = {
-      cmd = "o",
-    },
-    ["<leader>O"] = {
-      cmd = "O",
-    },
     ["<m-j>"] = {
       cmd = "<c-d>zz",
     },
     ["<m-k>"] = {
       cmd = "<c-u>zz",
     },
-    ["o"] = {
-      cmd = "mzo<Esc>`z",
-    },
-    ["O"] = {
-      cmd = "mzO<Esc>`z",
-    },
-    ["<cr>"] = {
-      cmd = "mzo<Esc>`z",
-    },
-    ["<s-cr>"] = {
-      cmd = "mzO<Esc>`z",
-    },
-    ["Z"] = {
-      cmd = "mz:join<cr>`z",
-    },
-    ["gf"] = {
-      cmd = ":e <cfile><cr>",
-    },
-    ["<c-s>"] = {
-      cmd = ":silent! w<cr>",
+    ["<m-t>"] = {
+      cmd = "<cmd>enew<cr>",
     },
     [";"] = {
       cmd = ":",
       opts = {silent = false}
     },
+    ["gf"] = {
+      cmd = "<cmd>e <cfile><cr>",
+    },
+    ["<c-s>"] = {
+      cmd = "<cmd>silent! w<cr>",
+    },
+    ["<cr>"] = {
+      cmd = "<cmd>normal! o<cr>",
+    },
+    ["<s-cr>"] = {
+      cmd = "<cmd>normal! O<cr>",
+    },
     ["<esc>"] = {
-      cmd = ":nohlsearch<cr>",
+      cmd = "<cmd>nohlsearch<cr>",
     },
     ["n"] = {
       cmd = "'Nn'[v:searchforward]",
@@ -170,41 +155,44 @@ local keymaps = {
       cmd = "'nN'[v:searchforward]",
       opts = {expr = true}
     },
-    ["<m-h>"] = {
-      cmd = ":BufferLineCyclePrev<cr>",
-    },
-    ["<m-l>"] = {
-      cmd = ":BufferLineCycleNext<cr>",
-    },
     ["j"] = {
       cmd = "<Plug>(accelerated_jk_gj)",
     },
     ["k"] = {
       cmd = "<Plug>(accelerated_jk_gk)",
     },
+    ["<m-h>"] = {
+      cmd = "<cmd>BufferLineCyclePrev<cr>",
+    },
+    ["<m-l>"] = {
+      cmd = "<cmd>BufferLineCycleNext<cr>",
+    },
     ["<leader>x"] = {
-      cmd = ":silent exec '!(chmod +x % &)'<cr>",
+      cmd = "<cmd>silent exec '!(chmod +x % &)'<cr>",
     },
     ["<c-bs>"] = {
-      cmd = ":lua require('rob.functions').trim()<cr>",
-    },
-    ["<leader>a"] = {
-      cmd = ":lua require('rob.functions').select_all()<cr>",
+      cmd = "<cmd>lua require('rob.functions').trim()<cr>",
     },
     ["fl"] = {
-      cmd = ":lua require('rob.functions').swap_next()<cr>",
+      cmd = "<cmd>lua require('rob.functions').swap_next()<cr>",
     },
     ["fh"] = {
-      cmd = ":lua require('rob.functions').swap_prev()<cr>",
+      cmd = "<cmd>lua require('rob.functions').swap_prev()<cr>",
+    },
+    ["<leader>a"] = {
+      cmd = "<cmd>lua require('rob.functions').select_all()<cr>",
     },
     ["Q"] = {
-      cmd = ":lua require('rob.functions').clear_history()<cr>",
+      cmd = "<cmd>lua require('rob.functions').clear_history()<cr>",
     },
     ["<tab>"] = {
-      cmd = ":lua require('rob.functions').move_next_pair()<cr>",
+      cmd = "<cmd>lua require('rob.functions').move_next_pair()<cr>",
     },
     ["<s-tab>"] = {
-      cmd = ":lua require('rob.functions').move_prev_pair()<cr>",
+      cmd = "<cmd>lua require('rob.functions').move_prev_pair()<cr>",
+    },
+    ["<bs>"] = {
+      cmd = "<cmd>lua require('rob.functions').backspace_improved()<CR>",
     },
     ["<leader>rn"] = {
       cmd = ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",

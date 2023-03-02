@@ -33,12 +33,6 @@ lvim.plugins = {
     event = "VeryLazy",
   },
 
-  -- Vim-Be-Good
-  {
-    "ThePrimeagen/vim-be-good",
-    cmd = "VimBeGood",
-  },
-
   -- Trouble
   {
     "folke/trouble.nvim",
@@ -60,7 +54,13 @@ lvim.plugins = {
     event = "BufRead",
   },
 
-   -- Numb
+  -- Vim-Be-Good
+  {
+    "ThePrimeagen/vim-be-good",
+    cmd = "VimBeGood",
+  },
+
+  -- Numb
   {
     "nacro90/numb.nvim",
     event = "BufRead",
@@ -80,15 +80,6 @@ lvim.plugins = {
       require("cutlass").setup({
         exclude = { "ns", "nS" },
       })
-    end
-  },
-
-  -- Auto-Save
-  {
-    "ecthelionvi/auto-save.nvim",
-    event = "BufRead",
-    config = function()
-      require("auto-save").setup()
     end
   },
 
@@ -118,7 +109,7 @@ lvim.plugins = {
 
   -- Mini
   {
-    "echasnovski/mini.nvim", 
+    "echasnovski/mini.nvim",
     version = false,
     event = "VeryLazy",
     config = function()
@@ -135,13 +126,26 @@ lvim.plugins = {
           line_up = '<m-up>',
         },
       })
-      require("mini.cursorword").setup()
     end
   },
 
   -- Treesitter-Context
   {
     "nvim-treesitter/nvim-treesitter-context",
+  },
+
+  -- CamelCaseMotion
+  {
+    "bkad/CamelCaseMotion",
+    event = "VeryLazy",
+    vim.keymap.set("n", "w", "<Plug>CamelCaseMotion_w",
+      { noremap = true, silent = true, }),
+    vim.keymap.set("n", "b", "<Plug>CamelCaseMotion_b",
+      { noremap = true, silent = true, }),
+    vim.keymap.set("n", "e", "<Plug>CamelCaseMotion_e",
+      { noremap = true, silent = true, }),
+    vim.keymap.set("n", "ge", "<Plug>CamelCaseMotion_ge",
+      { noremap = true, silent = true, }),
   },
 
   --Rnvimr
@@ -153,26 +157,8 @@ lvim.plugins = {
       vim.g.rnvimr_draw_border = 1
       vim.g.rnvimr_pick_enable = 1
       vim.g.rnvimr_presets = { { width = 0.800, height = 0.800 } }
-      vim.keymap.set("n", "<leader>.", ":RnvimrToggle<cr>",
+      vim.keymap.set("n", "<leader>.", "<cmd>RnvimrToggle<cr>",
         { noremap = true, silent = true })
-    end
-  },
-
-  -- Copilot
-  {
-    "github/copilot.vim",
-    event = "BufRead",
-    config = function()
-      vim.cmd [[
-      let g:copilot_filetypes = {
-        \ '': v:false,
-        \ 'TelescopePrompt': v:false,
-        \ 'TelescopeResults': v:false,
-        \ 'lazy': v:false,
-        \ }
-      inoremap <silent><script><expr> <s-cr> copilot#Accept("\<CR>")
-      ]]
-      vim.g.copilot_no_tab_map = true
     end
   },
 
@@ -185,19 +171,18 @@ lvim.plugins = {
         group = vim.api.nvim_create_augroup("quickfix", { clear = true }),
         pattern = "qf",
         callback = function()
-          local bufnr = vim.fn.bufnr("%")
           vim.api.nvim_buf_set_keymap(
-            bufnr,
+            0,
             "n",
             "dd",
-            ":.Reject<cr>",
+            "<cmd>.Reject<cr>",
             { noremap = true, silent = true }
           )
           vim.api.nvim_buf_set_keymap(
-            bufnr,
+            0,
             "n",
             "bd",
-            ":Keep ''<cr>",
+            "<cmd>Keep ''<cr>",
             { noremap = true, silent = true }
           )
           vim.g.qf_auto_resize = 0
@@ -223,14 +208,31 @@ lvim.plugins = {
     end,
   },
 
+  -- Copilot
+  {
+    "github/copilot.vim",
+    event = "BufRead",
+    config = function()
+      vim.cmd [[
+      let g:copilot_filetypes = {
+        \ '': v:false,
+        \ 'TelescopePrompt': v:false,
+        \ 'TelescopeResults': v:false,
+        \ 'lazy': v:false,
+        \ }]]
+      vim.g.copilot_no_tab_map = true
+      vim.cmd('inoremap <silent><script><expr> <s-cr> copilot#Accept("\\<CR>")')
+    end
+  },
+
   -- Hop
   {
     "phaazon/hop.nvim",
     event = "BufRead",
     config = function()
       require("hop").setup()
-      vim.keymap.set("n", "S", ":HopWord<cr>", { noremap = true, silent = true })
-      vim.keymap.set("n", "s", ":HopChar2<cr>", { noremap = true, silent = true })
+      vim.keymap.set("n", "S", "<cmd>HopWord<cr>", { noremap = true, silent = true })
+      vim.keymap.set("n", "s", "<cmd>HopChar2<cr>", { noremap = true, silent = true })
     end,
   },
 
@@ -244,10 +246,10 @@ lvim.plugins = {
         use_default_keymaps = false,
       })
     end,
-    vim.keymap.set("n", "qq", ":TSJToggle<cr>", { noremap = true, silent = true })
+    vim.keymap.set("n", "qq", "<cmd>TSJToggle<cr>", { noremap = true, silent = true })
   },
 
-  -- Nvim-Lastplace
+  -- Lastplace
   {
     "ethanholz/nvim-lastplace",
     event = "BufRead",
@@ -268,46 +270,19 @@ lvim.plugins = {
       vim.api.nvim_create_autocmd("filetype", {
         pattern = "harpoon",
         callback = function()
-          local bufnr = vim.fn.bufnr("%")
           vim.api.nvim_buf_set_keymap(
-            bufnr,
+            0,
             "n",
             "m",
             "",
             { noremap = true, silent = true }
           )
-          vim.api.nvim_buf_set_keymap(
-            bufnr,
-            "o",
-            "d",
-            [[:silent! normal! "_dd<cr>]],
-            { noremap = true, silent = true }
-          )
         end
       })
-      vim.keymap.set("n", "m", [[:lua require('harpoon.mark').add_file()<cr>]],
+      vim.keymap.set("n", "m", [[<cmd>lua require('harpoon.mark').add_file()<cr>]],
         { noremap = true, silent = true })
-      vim.keymap.set("n", "\\", [[:lua require('harpoon.ui').toggle_quick_menu()<cr>]],
+      vim.keymap.set("n", "\\", [[<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>]],
         { noremap = true, silent = true })
-    end
-  },
-
-  -- Substitute
-  {
-    "gbprod/substitute.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("substitute").setup({
-        on_substitute = require("yanky.integration").substitute(),
-        vim.keymap.set("n", "cxx", ":lua require('substitute.exchange').line()<cr>",
-          { noremap = true, silent = true, }),
-        vim.keymap.set("x", "X", ":lua require('substitute.exchange').visual()<cr>",
-          { noremap = true, silent = true, }),
-        vim.keymap.set("n", "cxc", ":lua require('substitute.exchange').cancel()<cr>",
-          { noremap = true, silent = true, }),
-        vim.keymap.set("n", "cx", ":lua require('substitute.exchange').operator()<cr>",
-          { noremap = true, silent = true, }),
-      })
     end
   },
 
@@ -333,7 +308,7 @@ lvim.plugins = {
         --project_path = "", -- No default path defined
         --project = {},
         vim.keymap.set("n", "<leader>r", function()
-          return vim.bo.buftype == "terminal" and ":RunClose<cr>" or ":RunCode<cr>"
+          return vim.bo.buftype == "terminal" and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
         end, { expr = true, noremap = true, silent = true })
       }
     end,
@@ -345,9 +320,9 @@ lvim.plugins = {
     event = "VeryLazy",
     config = function()
       require('symbols-outline').setup()
-      vim.keymap.set("n", "<m-s>", [[:lua require('functions').silent("SymbolsOutline")<cr>]],
+      vim.keymap.set("n", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]],
         { noremap = true, silent = true })
-      vim.keymap.set("v", "<m-s>", [[:lua require('functions').silent("SymbolsOutline")<cr>]],
+      vim.keymap.set("v", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]],
         { noremap = true, silent = true })
     end
   },
@@ -358,7 +333,7 @@ lvim.plugins = {
     event = "VeryLazy",
     config = function()
       vim.g.undotree_SetFocusWhenToggle = 1,
-          vim.keymap.set("n", "<leader>u", ":UndotreeToggle<cr>", { noremap = true, silent = true })
+          vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", { noremap = true, silent = true })
     end,
   },
 
@@ -444,6 +419,21 @@ lvim.plugins = {
       vim.keymap.set("x", "<c-x>", require("dial.map").dec_visual(), { noremap = true }, { silent = true })
       vim.keymap.set("x", "g<c-a>", require("dial.map").inc_gvisual(), { noremap = true }, { silent = true })
       vim.keymap.set("x", "g<c-x>", require("dial.map").dec_gvisual(), { noremap = true }, { silent = true })
+    end
+  },
+
+  -- Substitute
+  {
+    "gbprod/substitute.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("substitute").setup({
+        on_substitute = require("yanky.integration").substitute(),
+        vim.keymap.set("n", "cxx", "<cmd>lua require('substitute.exchange').line()<cr>", { noremap = true }),
+        vim.keymap.set("x", "X", "<cmd>lua require('substitute.exchange').visual()<cr>", { noremap = true }),
+        vim.keymap.set("n", "cc", "<cmd>lua require('substitute.exchange').cancel()<cr>", { noremap = true }),
+        vim.keymap.set("n", "cx", "<cmd>lua require('substitute.exchange').operator()<cr>", { noremap = true }),
+      })
     end
   },
 }

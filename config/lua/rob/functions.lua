@@ -2,9 +2,8 @@ local M = {}
 
 -- Lazygit
 function M.lazy()
-local bufnr = vim.fn.bufnr("%")
 vim.api.nvim_buf_set_keymap(
-  bufnr,
+  0,
   "t",
   "<leader>gg",
   "<esc>:q!<cr>",
@@ -25,17 +24,33 @@ end
 function M.select_all()
   local mode = vim.api.nvim_get_mode()
   if mode['mode'] == 'n' then
-    vim.api.nvim_command("normal! VGo1G")
+    vim.cmd("normal! VGo1G")
   elseif mode['mode'] == 'v' then
-    vim.api.nvim_command("normal! ggVG")
+    vim.cmd("normal! ggVG")
   end
 end
 
 -- Trim
 function M.trim()
   local save = vim.fn.winsaveview()
-  vim.api.nvim_command("keeppatterns %s/\\s\\+$//e")
+  vim.cmd("keeppatterns %s/\\s\\+$//e")
   vim.fn.winrestview(save)
+end
+
+-- Backspace
+function M.backspace_improved()
+  local curr_pos = vim.api.nvim_win_get_cursor(0)
+  local curr_line = vim.api.nvim_get_current_line()
+  vim.cmd[[silent! normal! "_x]]
+  if curr_pos[2] == 0 then
+    vim.cmd[[silent! normal! "_X]]
+  end
+end
+
+-- Toggle-Color-Column
+function M.toggle_color_column()
+    vim.cmd("silent! highlight ColorColumn guibg=#565f89")
+    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
 end
 
 -- Excluded-Filetype
@@ -50,10 +65,17 @@ function M.is_excluded_filetype()
   return M.is_excluded_buftype()
 end
 
--- Toggle-Color-Column
-function M.toggle_color_column()
-    vim.api.nvim_command("silent! highlight ColorColumn guibg=#565f89")
-    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+-- Auto-Save
+function M.auto_save()
+  local fn = vim.fn
+  local interval = 135
+  local buf = vim.fn.bufnr("%")
+  local timer = vim.loop.new_timer()
+  timer:start(0, interval, vim.schedule_wrap(function()
+    if fn.getbufvar(buf, "&modifiable") == 1 and fn.bufname(buf) ~= "" then
+      vim.cmd("silent! w")
+    end
+  end))
 end
 
 -- Swap

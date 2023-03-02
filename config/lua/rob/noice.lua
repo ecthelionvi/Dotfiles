@@ -3,21 +3,6 @@ if not status_ok then
   return
 end
 
--- Noice
-vim.api.nvim_create_autocmd("filetype", {
-  pattern = "noice",
-  callback = function()
-    local bufnr = vim.fn.bufnr("%")
-    vim.api.nvim_buf_set_keymap(
-      bufnr,
-      "n",
-      "<esc>",
-      "q",
-      { silent = true }
-    )
-  end
-})
-
 noice.setup {
   messages = {
     view = "popup",
@@ -77,11 +62,19 @@ noice.setup {
       opts = { skip = true },
     },
     {
+      filter = { event = "msg_show", find = "yanked" },
+      opts = { skip = true },
+    },
+    {
       filter = { event = "msg_show", find = "search" },
       opts = { skip = true },
     },
     {
       filter = { event = "notify", find = "Register" },
+      opts = { skip = true },
+    },
+    {
+      filter = { event = "msg_show", find = "written" },
       opts = { skip = true },
     },
     {
@@ -107,6 +100,28 @@ noice.setup {
     {
       filter = { event = "msg_show", find = "Already at newest change" },
       opts = { skip = true },
+    },
+  },
+  views = {
+    popup = {
+      backend = "popup",
+      relative = "editor",
+      close = {
+        events = { "BufLeave" },
+        keys = { "q" },
+      },
+      enter = true,
+      border = {
+        style = "rounded",
+      },
+      position = "50%",
+      size = {
+        width = "120",
+        height = "20",
+      },
+      win_options = {
+        winhighlight = { Normal = "NoicePopup", FloatBorder = "NoicePopupBorder" },
+      },
     },
   },
   cmdline = {

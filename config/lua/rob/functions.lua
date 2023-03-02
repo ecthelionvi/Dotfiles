@@ -12,7 +12,7 @@ vim.api.nvim_buf_set_keymap(
 end
 
 -- Excluded-Buftype
-function M.is_excluded_buftype()
+function M.excluded_buftype()
   local buftype = vim.bo.buftype
   if buftype == 'terminal' then
     return true
@@ -23,11 +23,8 @@ end
 -- Select-All
 function M.select_all()
   local mode = vim.api.nvim_get_mode()
-  if mode['mode'] == 'n' then
-    vim.cmd("normal! VGo1G")
-  elseif mode['mode'] == 'v' then
-    vim.cmd("normal! ggVG")
-  end
+  vim.cmd("normal! VGo1G")
+  vim.cmd("normal! gg0")
 end
 
 -- Trim
@@ -54,7 +51,7 @@ function M.toggle_color_column()
 end
 
 -- Excluded-Filetype
-function M.is_excluded_filetype()
+function M.excluded_filetype()
   local ft = vim.bo.filetype
   local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice' }
   for _, excluded_ft in ipairs(excluded_file_types) do
@@ -62,7 +59,7 @@ function M.is_excluded_filetype()
       return true
     end
   end
-  return M.is_excluded_buftype()
+  return M.excluded_buftype()
 end
 
 -- Auto-Save

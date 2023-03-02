@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   group = vim.api.nvim_create_augroup("autosave", { clear = true }),
   callback = function()
     vim.schedule(function()
-      require("rob.functions").auto_save()
+      if vim.bo.modified then require("rob.functions").auto_save() end
     end)
   end
 })
@@ -39,7 +39,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   group = vim.api.nvim_create_augroup("color-column", { clear = true }),
   callback = function()
     vim.schedule(function()
-      if not require("rob.functions").is_excluded_filetype() then
+      if not require("rob.functions").excluded_filetype() then
         require("rob.functions").toggle_color_column()
       else
         vim.fn.clearmatches()

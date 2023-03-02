@@ -131,7 +131,21 @@ lvim.plugins = {
 
   -- Treesitter-Context
   {
-    "nvim-treesitter/nvim-treesitter-context",
+    "romgrk/nvim-treesitter-context",
+    config = function()
+      require("treesitter-context").setup {
+        enable = true,
+        throttle = true,
+        max_lines = 0,
+        patterns = {
+          default = {
+            'class',
+            'function',
+            'method',
+          },
+        },
+      }
+    end
   },
 
   -- CamelCaseMotion
@@ -146,6 +160,19 @@ lvim.plugins = {
       { noremap = true, silent = true, }),
     vim.keymap.set("n", "ge", "<Plug>CamelCaseMotion_ge",
       { noremap = true, silent = true, }),
+  },
+
+  -- Symbols-Outline
+  {
+    "simrat39/symbols-outline.nvim",
+    event = "VeryLazy",
+    config = function()
+      require('symbols-outline').setup()
+      vim.keymap.set("n", "<m-s>", "<cmd>SymbolsOutline<cr>",
+        { noremap = true, silent = true })
+      vim.keymap.set("x", "<m-s>", "<cmd>SymbolsOutline<cr>",
+        { noremap = true, silent = true })
+    end
   },
 
   --Rnvimr
@@ -220,7 +247,6 @@ lvim.plugins = {
         \ 'TelescopeResults': v:false,
         \ 'lazy': v:false,
         \ }]]
-      vim.g.copilot_no_tab_map = true
       vim.cmd('inoremap <silent><script><expr> <s-cr> copilot#Accept("\\<CR>")')
     end
   },
@@ -312,19 +338,6 @@ lvim.plugins = {
         end, { expr = true, noremap = true, silent = true })
       }
     end,
-  },
-
-  -- Symbols-Outline
-  {
-    "simrat39/symbols-outline.nvim",
-    event = "VeryLazy",
-    config = function()
-      require('symbols-outline').setup()
-      vim.keymap.set("n", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]],
-        { noremap = true, silent = true })
-      vim.keymap.set("v", "<m-s>", [[<cmd>lua require('functions').silent("SymbolsOutline")<cr>]],
-        { noremap = true, silent = true })
-    end
   },
 
   -- Undotree

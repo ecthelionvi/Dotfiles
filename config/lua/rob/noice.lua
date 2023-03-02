@@ -94,6 +94,10 @@ noice.setup {
       opts = { skip = true },
     },
     {
+      filter = { event = "msg_show", find = "Not an editor command" },
+      opts = { skip = true },
+    },
+    {
       filter = { event = "msg_show", find = "Already at oldest change" },
       opts = { skip = true },
     },

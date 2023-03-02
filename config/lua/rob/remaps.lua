@@ -27,11 +27,6 @@ local generic_opts = {
 local generic_opts_any = {noremap = true, silent = true}
 
 local keymaps = {
-  [modes.insert_mode] = {
-    ["<tab>"] = {
-      cmd = "<c-tab>",
-    },
-  },
   [modes.term_mode] = {
     ["<esc>"] = {
       cmd = [[<C-\><C-n>]],
@@ -72,25 +67,25 @@ local keymaps = {
     ["<right>"] = {
       cmd = "",
     },
+    ["<leader>a"] = {
+      cmd = "<cmd>SelectAll<cr>",
+    },
+    ["<bs>"] = {
+      cmd = "<cmd>Backspace<cr>",
+    },
+    ["Q"] = {
+      cmd = "<cmd>ClearHistory<cr>",
+    },
     ["cn"] = {
-      cmd = "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgn",
+      cmd = "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgn",
       opts = {silent = false}
     },
     ["cN"] = {
-      cmd = "y/\\V<C-R>=escape(@\", '/')<CR><CR>``cgN",
+      cmd = "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgN",
       opts = {silent = false}
     },
-    ["<leader>a"] = {
-      cmd = "<cmd>lua require('rob.functions').select_all()<cr>",
-    },
-    ["Q"] = {
-      cmd = "<cmd>lua require('rob.functions').clear_history()<cr>",
-    },
-    ["<bs>"] = {
-      cmd = "<cmd>lua require('rob.functions').backspace_improved()<CR>",
-    },
     ["<leader>rn"] = {
-      cmd = "y:%s/<C-R>=escape(@\",'/\')<CR>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
+      cmd = "y:%s/<c-r>=escape(@\",'/\')<cr>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
       opts = {silent = false}
     },
   },
@@ -107,9 +102,6 @@ local keymaps = {
     ["L"] = {
       cmd = "$",
     },
-    ["<leader>j"] = {
-      cmd = "mzJ`z",
-    },
     ["U"] = {
       cmd = "<c-r>",
     },
@@ -125,12 +117,36 @@ local keymaps = {
     ["<m-k>"] = {
       cmd = "<c-u>zz",
     },
+    ["<leader>j"] = {
+      cmd = "mzJ`z",
+    },
     ["<m-t>"] = {
       cmd = "<cmd>enew<cr>",
+    },
+    ["<c-bs>"] = {
+      cmd = "<cmd>Trim<cr>",
     },
     [";"] = {
       cmd = ":",
       opts = {silent = false}
+    },
+    ["fl"] = {
+      cmd = "<cmd>SwapNext<cr>",
+    },
+    ["fh"] = {
+      cmd = "<cmd>SwapPrev<cr>",
+    },
+    ["<leader>a"] = {
+      cmd = "<cmd>SelectAll<cr>",
+    },
+    ["<tab>"] = {
+      cmd = "<cmd>MoveNext<cr>",
+    },
+    ["<s-tab>"] = {
+      cmd = "<cmd>MovePrev<cr>",
+    },
+    ["<bs>"] = {
+      cmd = "<cmd>Backspace<CR>",
     },
     ["gf"] = {
       cmd = "<cmd>e <cfile><cr>",
@@ -146,6 +162,9 @@ local keymaps = {
     },
     ["<esc>"] = {
       cmd = "<cmd>nohlsearch<cr>",
+    },
+    ["Q"] = {
+      cmd = "<cmd>ClearHistory<cr>",
     },
     ["n"] = {
       cmd = "'Nn'[v:searchforward]",
@@ -170,32 +189,8 @@ local keymaps = {
     ["<leader>x"] = {
       cmd = "<cmd>silent exec '!(chmod +x % &)'<cr>",
     },
-    ["<c-bs>"] = {
-      cmd = "<cmd>lua require('rob.functions').trim()<cr>",
-    },
-    ["fl"] = {
-      cmd = "<cmd>lua require('rob.functions').swap_next()<cr>",
-    },
-    ["fh"] = {
-      cmd = "<cmd>lua require('rob.functions').swap_prev()<cr>",
-    },
-    ["<leader>a"] = {
-      cmd = "<cmd>lua require('rob.functions').select_all()<cr>",
-    },
-    ["Q"] = {
-      cmd = "<cmd>lua require('rob.functions').clear_history()<cr>",
-    },
-    ["<tab>"] = {
-      cmd = "<cmd>lua require('rob.functions').move_next_pair()<cr>",
-    },
-    ["<s-tab>"] = {
-      cmd = "<cmd>lua require('rob.functions').move_prev_pair()<cr>",
-    },
-    ["<bs>"] = {
-      cmd = "<cmd>lua require('rob.functions').backspace_improved()<CR>",
-    },
     ["<leader>rn"] = {
-      cmd = ":%s/\\<<C-r><C-w>\\>//g | norm g``<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>",
+      cmd = ":%s/\\<<c-r><c-w>\\>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
       opts = {silent = false}
     },
   },

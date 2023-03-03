@@ -38,9 +38,9 @@ end
 function M.backspace_improved()
   local curr_pos = vim.api.nvim_win_get_cursor(0)
   local curr_line = vim.api.nvim_get_current_line()
-  vim.cmd[[silent! normal! "_x]]
+  vim.cmd('silent! normal! "_x')
   if curr_pos[2] == 0 then
-    vim.cmd[[silent! normal! "_X]]
+    vim.cmd('silent! normal! "_X')
   end
 end
 

@@ -6,6 +6,7 @@ local M = {}
 require("rob.noice")
 require("rob.remaps")
 require("rob.plugins")
+require("rob.commands")
 require("rob.functions")
 require("rob.which-key")
 require("rob.autocommands")
@@ -15,6 +16,7 @@ vim.opt.cmdheight = 0
 vim.opt.timeoutlen = 300
 vim.opt.maxfuncdepth = 1000
 vim.opt.relativenumber = true
+vim.g.copilot_no_tab_map = true
 lvim.builtin.terminal.size = 12
 vim.opt.fillchars = { eob = " " }
 lvim.builtin.telescope.theme = nil
@@ -34,7 +36,6 @@ lvim.builtin.lualine.sections.lualine_x = {
 lvim.builtin.telescope.on_config_done = function(telescope)
   pcall(telescope.load_extension, "yank_history")
 end
---lvim.builtin.telescope.defaults.layout_config.preview_width = 59
 
 -- Formatters
 local formatters = require "lvim.lsp.null-ls.formatters"

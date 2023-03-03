@@ -1,7 +1,10 @@
 local M = {}
 
+local autocmd = vim.api.nvim_create_autocmd
+local augroup = vim.api.nvim_create_augroup
+
 -- Quit
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
   pattern = { "qf", "help", "man", "noice" },
   callback = function()
     vim.api.nvim_buf_set_keymap(
@@ -14,19 +17,9 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Auto-Save
-vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
-  group = vim.api.nvim_create_augroup("autosave", { clear = true }),
-  callback = function()
-    vim.schedule(function()
-      if vim.bo.modified then require("rob.functions").auto_save() end
-    end)
-  end
-})
-
 -- Startup
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = vim.api.nvim_create_augroup("clear-history", { clear = true }),
+autocmd("VimEnter", {
+  group = augroup("clear-history", { clear = true }),
   callback = function()
     vim.schedule(function()
       require("rob.functions").clear_history()
@@ -35,8 +28,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 -- Colorcolumn
-vim.api.nvim_create_autocmd("BufWinEnter", {
-  group = vim.api.nvim_create_augroup("color-column", { clear = true }),
+autocmd("BufWinEnter", {
+  group = augroup("color-column", { clear = true }),
   callback = function()
     vim.schedule(function()
       if not require("rob.functions").excluded_filetype() then
@@ -48,5 +41,14 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end
 })
 
-return M
+-- Auto-Save
+autocmd({ "InsertLeave", "TextChanged" }, {
+  group = augroup("autosave", { clear = true }),
+  callback = function()
+    vim.schedule(function()
+      if vim.bo.modified then require("rob.functions").auto_save() end
+    end)
+  end
+})
 
+return M

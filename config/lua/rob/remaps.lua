@@ -3,6 +3,7 @@
 local M = {}
 
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 local modes = {
   term_mode = "t",

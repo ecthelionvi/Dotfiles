@@ -202,3 +202,4 @@ lvim.builtin.which_key.mappings = {
     w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
   },
 }
+

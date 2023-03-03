@@ -1,4 +1,4 @@
---|||||||||||||||||||||||||||||||||| Plugins ||||||||||||||||||||||||||||||||||--
+-- ||||||||||||||||||||||||||||||||| Plugins |||||||||||||||||||||||||||||||||| --
 
 local M = {}
 
@@ -433,7 +433,7 @@ lvim.plugins = {
         --project = {},
         map("n", "<leader>r", function()
           return vim.bo.buftype == "terminal" and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
-        end, { expr = true, noremap = true, silent = true })
+        end, { noremap = true, silent = true, expr = true, })
       }
     end,
   },
@@ -444,9 +444,9 @@ lvim.plugins = {
     event = "BufRead",
     config = function()
       vim.g.copilot_filetypes = {
+        lazy = false,
         TelescopePrompt = false,
         TelescopeResults = false,
-        lazy = false,
       }
       map("i", "<s-cr>", "copilot#Accept('\\<cr>')", { noremap = true, silent = true, expr = true, script = true })
     end

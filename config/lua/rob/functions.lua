@@ -1,3 +1,5 @@
+-- |||||||||||||||||||||||||||||||| Functions ||||||||||||||||||||||||||||||||| --
+
 local M = {}
 
 -- Lazygit
@@ -46,7 +48,7 @@ end
 
 -- Toggle-Color-Column
 function M.toggle_color_column()
-    vim.cmd("silent! highlight ColorColumn guibg=#565f89")
+    vim.cmd("silent! highlight ColorColumn guibg=#565f89 guifg=#1a1b26")
     vim.fn.matchadd("ColorColumn", "\\%81v", 100)
 end
 

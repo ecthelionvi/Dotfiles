@@ -5,225 +5,100 @@ local M = {}
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-local modes = {
-  term_mode = "t",
-  insert_mode = "i",
-  normal_mode = "n",
-  visual_mode = "v",
-  command_mode = "c",
-  visual_block_mode = "x",
-  operator_pending_mode = "o",
-}
+local map = vim.keymap.set
+local opts = { noremap = true, silent = true }
 
-local generic_opts = {
-  term_mode = { silent = true },
-  insert_mode = generic_opts_any,
-  normal_mode = generic_opts_any,
-  visual_mode = generic_opts_any,
-  command_mode = generic_opts_any,
-  visual_block_mode = generic_opts_any,
-  operator_pending_mode = generic_opts_any,
-}
+-- Undo
+map("n", "U", "<c-r>", opts)
 
-local generic_opts_any = {noremap = true, silent = true}
+-- Movement
+map({"n", "x"}, "J", "}", opts)
+map({"n", "x"}, "K", "{", opts)
+map({"n", "x"}, "H", "^", opts)
+map({"n", "x"}, "L", "$", opts)
 
-local keymaps = {
-  [modes.term_mode] = {
-    ["<esc>"] = {
-      cmd = [[<C-\><C-n>]],
-    },
-  },
-  [modes.command_mode] = {
-    ["<up>"] = {
-      cmd = function() return vim.fn.wildmenumode() and '<left>' or '<up>' end,
-      opts = {expr = true}
-    },
-    ["<down>"] = {
-      cmd = function() return vim.fn.wildmenumode() and '<right>' or '<down>' end,
-      opts = {expr = true}
-    }
-  },
-  [modes.visual_block_mode] = {
-    ["J"] = {
-      cmd = "}",
-    },
-    ["K"] = {
-      cmd = "{",
-    },
-    ["H"] = {
-      cmd = "^",
-    },
-    ["L"] = {
-      cmd = "$",
-    },
-    ["<up>"] = {
-      cmd = "",
-    },
-    ["<down>"] = {
-      cmd = "",
-    },
-    ["<left>"] = {
-      cmd = "",
-    },
-    ["<right>"] = {
-      cmd = "",
-    },
-    ["<leader>a"] = {
-      cmd = "<cmd>SelectAll<cr>",
-    },
-    ["<bs>"] = {
-      cmd = "<cmd>Backspace<cr>",
-    },
-    ["Q"] = {
-      cmd = "<cmd>ClearHistory<cr>",
-    },
-    ["cn"] = {
-      cmd = "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgn",
-      opts = {silent = false}
-    },
-    ["cN"] = {
-      cmd = "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgN",
-      opts = {silent = false}
-    },
-    ["<leader>rn"] = {
-      cmd = "y:%s/<c-r>=escape(@\",'/\')<cr>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
-      opts = {silent = false}
-    },
-  },
-  [modes.normal_mode] = {
-    ["J"] = {
-      cmd = "}",
-    },
-    ["K"] = {
-      cmd = "{",
-    },
-    ["H"] = {
-      cmd = "^",
-    },
-    ["L"] = {
-      cmd = "$",
-    },
-    ["U"] = {
-      cmd = "<c-r>",
-    },
-    ["cn"] = {
-      cmd = "*``cgn",
-    },
-    ["cN"] = {
-      cmd = "#``cgN",
-    },
-    ["<m-j>"] = {
-      cmd = "<c-d>zz",
-    },
-    ["<m-k>"] = {
-      cmd = "<c-u>zz",
-    },
-    ["<leader>j"] = {
-      cmd = "mzJ`z",
-    },
-    ["<m-t>"] = {
-      cmd = "<cmd>enew<cr>",
-    },
-    ["<c-bs>"] = {
-      cmd = "<cmd>Trim<cr>",
-    },
-    [";"] = {
-      cmd = ":",
-      opts = {silent = false}
-    },
-    ["fl"] = {
-      cmd = "<cmd>SwapNext<cr>",
-    },
-    ["fh"] = {
-      cmd = "<cmd>SwapPrev<cr>",
-    },
-    ["<leader>a"] = {
-      cmd = "<cmd>SelectAll<cr>",
-    },
-    ["<tab>"] = {
-      cmd = "<cmd>MoveNext<cr>",
-    },
-    ["<s-tab>"] = {
-      cmd = "<cmd>MovePrev<cr>",
-    },
-    ["<bs>"] = {
-      cmd = "<cmd>Backspace<CR>",
-    },
-    ["gf"] = {
-      cmd = "<cmd>e <cfile><cr>",
-    },
-    ["<c-s>"] = {
-      cmd = "<cmd>silent! w<cr>",
-    },
-    ["<cr>"] = {
-      cmd = "<cmd>normal! o<cr>",
-    },
-    ["<s-cr>"] = {
-      cmd = "<cmd>normal! O<cr>",
-    },
-    ["<esc>"] = {
-      cmd = "<cmd>nohlsearch<cr>",
-    },
-    ["Q"] = {
-      cmd = "<cmd>ClearHistory<cr>",
-    },
-    ["n"] = {
-      cmd = "'Nn'[v:searchforward]",
-      opts = {expr = true}
-    },
-    ["N"] = {
-      cmd = "'nN'[v:searchforward]",
-      opts = {expr = true}
-    },
-    ["j"] = {
-      cmd = "<Plug>(accelerated_jk_gj)",
-    },
-    ["k"] = {
-      cmd = "<Plug>(accelerated_jk_gk)",
-    },
-    ["<m-h>"] = {
-      cmd = "<cmd>BufferLineCyclePrev<cr>",
-    },
-    ["<m-l>"] = {
-      cmd = "<cmd>BufferLineCycleNext<cr>",
-    },
-    ["<leader>x"] = {
-      cmd = "<cmd>silent exec '!(chmod +x % &)'<cr>",
-    },
-    ["<leader>rn"] = {
-      cmd = ":%s/\\<<c-r><c-w>\\>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
-      opts = {silent = false}
-    },
-  },
-}
+-- Visual-Arrows
+map("x", "<up>", "<nop>", opts)
+map("x", "<down>", "<nop>", opts)
+map("x", "<left>", "<nop>", opts)
+map("x", "<right>", "<nop>", opts)
 
--- ||||||||||||||||||||||||||||||||||| LSP |||||||||||||||||||||||||||||||||||| --
+-- Page-Up/Down
+map("n", "<m-j>", "<c-d>zz", opts)
+map("n", "<m-kt>", "<c-u>zz", opts)
 
-lvim.lsp.buffer_mappings.normal_mode['K'] = nil
+-- Append
+map("n", "<leader>j", "mzJ`z", opts)
+
+-- Terminal-ESC
+map("t", "<esc>", "<C-\\><C-n>", opts)
+
+-- Command Mode
+map("n", ";", ":", { noremap = true })
+
+-- New-Buffer
+map("n", "<m-t>", "<cmd>enew<cr>", opts)
+
+-- Trim
+map("n", "<c-bs>", "<cmd>Trim<cr>", opts)
+
+-- Swap
+map("n", "fh", "<cmd>SwapPrev<cr>", opts)
+map("n", "fl", "<cmd>SwapNext<cr>", opts)
+
+-- Open-File
+map("n", "gf", "<cmd>e <cfile><cr>", opts)
+
+-- Newline
+map("n", "<cr>", "<cmd>normal! o<cr>", opts)
+map("n", "<s-cr>", "<cmd>normal! O<cr>", opts)
+
+-- Jump-Brackets
+map("n", "<tab>", "<cmd>MoveNext<cr>", opts)
+map("n", "<s-tab>", "<cmd>MovePrev<cr>", opts)
+
+-- Highlight
+map("n", "<esc>", "<cmd>nohlsearch<cr>", opts)
+
+-- Accelerated-JK
+map("n", "j", "<Plug>(accelerated_jk_gj)", opts)
+map("n", "k", "<Plug>(accelerated_jk_gk)", opts)
+
+-- Backspace
+map({"n", "x"}, "<bs>", "<cmd>Backspace<cr>", opts)
+
+-- Clear-History
+map({"n", "x"}, "Q", "<cmd>ClearHistory<cr>", opts)
+
+-- Search-Movement
+map("n", "n", "'Nn'[v:searchforward]", { expr = true })
+map("n", "N", "'nN'[v:searchforward]", { expr = true })
+
+-- Buffer-Navigation
+map("n", "<m-h>", "<cmd>BufferLineCyclePrev<cr>", opts)
+map("n", "<m-l>", "<cmd>BufferLineCycleNext<cr>", opts)
+
+-- Select-All
+map({"n", "x"}, "<leader>a", "<cmd>SelectAll<cr>", opts)
+
+-- Change-Name
+map("n", "cn", "*``cgn", opts)
+map("n", "cN", "*``cgN", opts)
+map("x", "cn", "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgn", opts)
+map("x", "cN", "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgN", opts)
+
+-- Chmod-X
+map("n", "<leader>x", "<cmd>silent exec '!(chmod +x % &)'<cr>", opts)
+
+-- LSP
 lvim.lsp.buffer_mappings.normal_mode['gk'] = { vim.lsp.buf.hover, "Show hover" }
 
--- |||||||||||||||||||||||||||||||| Functions ||||||||||||||||||||||||||||||||| --
+-- Wildmenu-Navigation
+map("c", "<up>", function() return vim.fn.wildmenumode() and '<left>' or '<up>' end, { expr = true })
+map("c", "<down>", function() return vim.fn.wildmenumode() and '<right>' or '<down>' end, { expr = true })
 
-function M.set_keymaps(mode, key, val)
-  if type(val) == "table" then
-    opt = val.opts or generic_opts[mode] or generic_opts_any
-    val = val.cmd
-  end
-  if val then
-    vim.keymap.set(mode, key, val, opt)
-  else
-    pcall(vim.api.nvim_del_keymap, mode, key)
-  end
-end
-
-function M.load(keymaps)
-  for mode, mappings in pairs(keymaps) do
-    for mapping, data in pairs(mappings) do
-      M.set_keymaps(mode, mapping, data)
-    end
-  end
-end
-
-M.load(keymaps)
+-- Rename
+map("n", "<leader>rn", ":%s/\\<<c-r><c-w>\\>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>", { noremap = true })
+map("x", "<leader>rn", "y:%s/<c-r>=escape(@\",'/\')<cr>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>", { noremap = true })
 
 return M

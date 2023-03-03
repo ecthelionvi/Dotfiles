@@ -1,3 +1,5 @@
+-- |||||||||||||||||||||||||||||||||| Noice ||||||||||||||||||||||||||||||||||| --
+
 local status_ok, noice = pcall(require, "noice")
 if not status_ok then
   return
@@ -47,6 +49,10 @@ noice.setup {
     },
     {
       filter = { event = "msg_show", find = "E149" },
+      opts = { skip = true },
+    },
+    {
+      filter = { event = "msg_show", find = "[*/*]" },
       opts = { skip = true },
     },
     {

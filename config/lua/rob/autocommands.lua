@@ -1,3 +1,5 @@
+-- ||||||||||||||||||||||||||||||| Autocommands ||||||||||||||||||||||||||||||| --
+
 local M = {}
 
 local autocmd = vim.api.nvim_create_autocmd
@@ -5,6 +7,7 @@ local augroup = vim.api.nvim_create_augroup
 
 -- Quit
 autocmd("FileType", {
+  group = augroup("q-map", { clear = true }),
   pattern = { "qf", "help", "man", "noice" },
   callback = function()
     vim.api.nvim_buf_set_keymap(
@@ -14,6 +17,16 @@ autocmd("FileType", {
       "<cmd>q!<CR>",
       { noremap = true, silent = true }
     )
+  end,
+})
+
+-- Comment
+autocmd("FileType", {
+  group = augroup("comment", { clear = true }),
+  pattern = "*",
+  callback = function()
+    vim.opt.formatoptions =
+        vim.opt.formatoptions - { "c", "r", "o" }
   end,
 })
 

@@ -91,6 +91,7 @@ map("x", "cN", "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgN", opts)
 map("n", "<leader>x", "<cmd>silent exec '!(chmod +x % &)'<cr>", opts)
 
 -- LSP
+lvim.lsp.buffer_mappings.normal_mode['K'] = nil
 lvim.lsp.buffer_mappings.normal_mode['gk'] = { vim.lsp.buf.hover, "Show hover" }
 
 -- Wildmenu-Navigation

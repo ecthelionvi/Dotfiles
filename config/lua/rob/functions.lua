@@ -48,9 +48,11 @@ end
 
 -- Toggle-Color-Column
 function M.toggle_color_column()
-    vim.cmd("silent! highlight ColorColumn guibg=#565f89 guifg=#1a1b26")
+    vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#c0caf5")
     vim.fn.matchadd("ColorColumn", "\\%81v", 100)
 end
+
+--vim.cmd("silent! highlight ColorColumn guibg=#a9b1d6 guifg=#1a1b26")
 
 -- Excluded-Filetype
 function M.excluded_filetype()

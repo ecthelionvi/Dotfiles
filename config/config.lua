@@ -11,54 +11,66 @@ require("rob.functions")
 require("rob.which-key")
 require("rob.autocommands")
 
--- Settings
+-- |||||||||||||||||||||||||||||||||| Settings |||||||||||||||||||||||||||||||| --
+
+-- Options
+vim.opt.tabstop = 2
 vim.opt.cmdheight = 0
+vim.opt.shiftwidth = 2
 vim.opt.timeoutlen = 300
 vim.opt.maxfuncdepth = 1000
 vim.opt.relativenumber = true
+
+-- Copilot
 vim.g.copilot_no_tab_map = true
-lvim.builtin.terminal.size = 12
-vim.opt.fillchars = { eob = " " }
-lvim.builtin.telescope.theme = nil
+
+-- Lvim
+lvim.leader = "space"
+lvim.log.level = "info"
+lvim.colorscheme = "lunar"
+lvim.format_on_save.enabled = false
+
+-- Alpha
+lvim.builtin.alpha.active = true
+lvim.builtin.alpha.mode = "dashboard"
+
+-- Project
 lvim.builtin.project.show_hidden = true
+
+-- Treesitter
+lvim.builtin.treesitter.auto_install = true
+
+-- Which-Key
 lvim.builtin.which_key.ignore_missing = true
-lvim.builtin.terminal.direction = 'horizontal'
-lvim.builtin.nvimtree.setup.filters.dotfiles = true
+
+-- ToggleTerm
+lvim.builtin.terminal.size = 12
+lvim.builtin.terminal.active = true
+lvim.builtin.terminal.direction = "horizontal"
 
 -- Lualine
 local components = require "lvim.core.lualine.components"
 lvim.builtin.lualine.sections.lualine_x = {
-  components.diagnostics,
   components.lsp,
   components.filetype,
+  components.diagnostics,
 }
 
 -- Telescope
+lvim.builtin.telescope.theme = nil
 lvim.builtin.telescope.on_config_done = function(telescope)
   pcall(telescope.load_extension, "yank_history")
 end
+
+-- Nvim-Tree
+lvim.builtin.nvimtree.setup.view.side = "left"
+lvim.builtin.nvimtree.setup.filters.dotfiles = true
+lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- Formatters
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
   { command = "black", filetypes = { "python" }, extra_args = { "--fast" }, },
 }
-
--- |||||||||||||||||||||||||||||||||| Defaults |||||||||||||||||||||||||||||||| --
-
--- General
-vim.opt.tabstop = 2
-lvim.leader = "space"
-vim.opt.shiftwidth = 2
-lvim.log.level = "info"
-lvim.colorscheme = "lunar"
-vim.opt.relativenumber = true
-lvim.builtin.alpha.active = true
-lvim.builtin.terminal.active = true
-lvim.format_on_save.enabled = false
-lvim.builtin.alpha.mode = "dashboard"
-lvim.builtin.treesitter.auto_install = true
-lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 return M

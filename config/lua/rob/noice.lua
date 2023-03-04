@@ -24,11 +24,11 @@ noice.setup {
   },
   routes = {
     {
-      filter = { event = "msg_show", find = "Hop" },
+      filter = { event = "msg_show", find = "->" },
       opts = { skip = true },
     },
     {
-      filter = { event = "msg_show", find = "->" },
+      filter = { event = "msg_show", find = "Hop" },
       opts = { skip = true },
     },
     {

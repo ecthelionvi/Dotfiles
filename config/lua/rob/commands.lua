@@ -11,7 +11,7 @@ cmd("Trim", "lua require('rob.functions').trim()", {})
 cmd("SwapNext", "lua require('rob.functions').swap_next()", {})
 cmd("SwapPrev", "lua require('rob.functions').swap_prev()", {})
 
--- LazyGitKeymap
+-- LazyGit-Keymap
 cmd("LazyGitKeymap", "lua require('rob.functions').lazy()", {})
 
 -- Select-All

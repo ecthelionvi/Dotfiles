@@ -201,16 +201,16 @@ function M.swap_prev(cursor_pos, type)
 end
 
 -- Jump-Brackets
-function M.move_next_pair()
-  local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
+function M.move_prev_pair()
+  local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
+  local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
   local lnum, col = search_result[1], search_result[2]
   vim.fn.setpos('.', { 0, lnum, col, 0 })
 end
 
-function M.move_prev_pair()
-  local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
+function M.move_next_pair()
+  local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
+  local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
   local lnum, col = search_result[1], search_result[2]
   vim.fn.setpos('.', { 0, lnum, col, 0 })
 end

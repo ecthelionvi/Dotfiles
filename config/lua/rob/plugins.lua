@@ -9,6 +9,7 @@ local augroup = vim.api.nvim_create_augroup
 local opts = { noremap = true, silent = true }
 
 lvim.plugins = {
+
   -- Repeat
   {
     "tpope/vim-repeat",
@@ -234,16 +235,6 @@ lvim.plugins = {
     map("n", "qq", "<cmd>TSJToggle<cr>", opts)
   },
 
-  -- Undotree
-  {
-    "mbbill/undotree",
-    event = "VeryLazy",
-    config = function()
-      vim.g.undotree_SetFocusWhenToggle = 1,
-          map("n", "<leader>u", "<cmd>UndotreeToggle<cr>", opts)
-    end,
-  },
-
   -- Yanky
   {
     "gbprod/yanky.nvim",
@@ -284,6 +275,16 @@ lvim.plugins = {
       map({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", opts)
       map({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", opts)
     end
+  },
+
+  -- Undotree
+  {
+    "mbbill/undotree",
+    event = "VeryLazy",
+    config = function()
+      vim.g.undotree_SetFocusWhenToggle = 1,
+          map("n", "<leader>u", "<cmd>UndotreeToggle<cr>", opts)
+    end,
   },
 
   -- Dial

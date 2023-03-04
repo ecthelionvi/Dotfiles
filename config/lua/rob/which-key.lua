@@ -1,5 +1,7 @@
 -- |||||||||||||||||||||||||||||||| Which-Key ||||||||||||||||||||||||||||||||| --
 
+local M = {}
+
 lvim.builtin.which_key.mappings = {
   -- Plugins
   p = {
@@ -152,3 +154,5 @@ lvim.builtin.which_key.mappings = {
     },
   },
 }
+
+return M

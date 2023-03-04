@@ -64,6 +64,10 @@ map("n", "<esc>", "<cmd>nohlsearch<cr>", opts)
 map("n", "j", "<Plug>(accelerated_jk_gj)", opts)
 map("n", "k", "<Plug>(accelerated_jk_gk)", opts)
 
+-- Select-All
+map("x", "<leader>a", "<esc>", opts)
+map("n", "<leader>a", "<cmd>SelectAll<cr>", opts)
+
 -- Backspace
 map({"n", "x"}, "<bs>", "<cmd>Backspace<cr>", opts)
 
@@ -77,9 +81,6 @@ map("n", "N", "'nN'[v:searchforward]", { expr = true })
 -- Buffer-Navigation
 map("n", "<m-h>", "<cmd>BufferLineCyclePrev<cr>", opts)
 map("n", "<m-l>", "<cmd>BufferLineCycleNext<cr>", opts)
-
--- Select-All
-map({"n", "x"}, "<leader>a", "<cmd>SelectAll<cr>", opts)
 
 -- Change-Name
 map("n", "cn", "*``cgn", opts)

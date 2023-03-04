@@ -360,6 +360,20 @@ lvim.plugins = {
     end,
   },
 
+  -- Copilot
+  {
+    "github/copilot.vim",
+    event = "BufRead",
+    config = function()
+      vim.g.copilot_filetypes = {
+        lazy = false,
+        TelescopePrompt = false,
+        TelescopeResults = false,
+      }
+      vim.cmd("imap <silent><script><expr> <s-cr> copilot#Accept('\\<CR>')")
+    end
+  },
+
   -- Harpoon
   {
     "ThePrimeagen/harpoon",
@@ -436,20 +450,6 @@ lvim.plugins = {
         end, { noremap = true, silent = true, expr = true, })
       }
     end,
-  },
-
-  -- Copilot
-  {
-    "github/copilot.vim",
-    event = "BufRead",
-    config = function()
-      vim.g.copilot_filetypes = {
-        lazy = false,
-        TelescopePrompt = false,
-        TelescopeResults = false,
-      }
-      map("i", "<s-cr>", "copilot#Accept('\\<cr>')", { noremap = true, silent = true, expr = true, script = true })
-    end
   },
 }
 

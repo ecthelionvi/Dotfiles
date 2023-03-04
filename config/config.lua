@@ -21,6 +21,7 @@ lvim.builtin.terminal.size = 12
 vim.opt.fillchars = { eob = " " }
 lvim.builtin.telescope.theme = nil
 lvim.builtin.project.show_hidden = true
+lvim.builtin.which_key.ignore_missing = true
 lvim.builtin.terminal.direction = 'horizontal'
 lvim.builtin.nvimtree.setup.filters.dotfiles = true
 

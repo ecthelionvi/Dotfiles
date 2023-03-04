@@ -2,6 +2,12 @@
 
 local M = {}
 
+-- Select-All
+function M.select_all()
+  vim.cmd("normal! VGo1G")
+  vim.cmd("normal! gg0")
+end
+
 -- Lazygit
 function M.lazy()
 vim.api.nvim_buf_set_keymap(
@@ -11,22 +17,21 @@ vim.api.nvim_buf_set_keymap(
   "<esc>:q!<cr>",
   { silent = true }
 )
+vim.api.nvim_buf_set_keymap(
+  0,
+  "t",
+  "<esc>",
+  "<esc>",
+  { silent = true }
+)
 end
 
 -- Excluded-Buftype
 function M.excluded_buftype()
-  local buftype = vim.bo.buftype
-  if buftype == 'terminal' then
+  if vim.bo.buftype == 'terminal' then
     return true
   end
   return false
-end
-
--- Select-All
-function M.select_all()
-  local mode = vim.api.nvim_get_mode()
-  vim.cmd("normal! VGo1G")
-  vim.cmd("normal! gg0")
 end
 
 -- Trim
@@ -46,24 +51,21 @@ function M.backspace_improved()
   end
 end
 
--- Toggle-Color-Column
-function M.toggle_color_column()
-    vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#c0caf5")
-    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
-end
-
---vim.cmd("silent! highlight ColorColumn guibg=#a9b1d6 guifg=#1a1b26")
-
 -- Excluded-Filetype
 function M.excluded_filetype()
-  local ft = vim.bo.filetype
   local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice' }
   for _, excluded_ft in ipairs(excluded_file_types) do
-    if string.match(ft, excluded_ft) then
+    if string.match(vim.bo.filetype, excluded_ft) then
       return true
     end
   end
   return M.excluded_buftype()
+end
+
+-- Toggle-Color-Column
+function M.toggle_color_column()
+    vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#c0caf5")
+    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
 end
 
 -- Auto-Save
@@ -77,6 +79,11 @@ function M.auto_save()
       vim.cmd("silent! w")
     end
   end))
+end
+
+-- Project-Files
+function M.project_files()
+  return require("lvim.core.telescope.custom-finders").find_project_files {}
 end
 
 -- Swap

@@ -25,8 +25,10 @@ autocmd("FileType", {
   group = augroup("comment", { clear = true }),
   pattern = "*",
   callback = function()
+    vim.schedule(function()
     vim.opt.formatoptions =
         vim.opt.formatoptions - { "c", "r", "o" }
+      end)
   end,
 })
 
@@ -40,9 +42,9 @@ autocmd("VimEnter", {
   end
 })
 
--- Colorcolumn
+-- Toggle-Color-Column
 autocmd("BufWinEnter", {
-  group = augroup("color-column", { clear = true }),
+  group = augroup("toggle-color-column", { clear = true }),
   callback = function()
     vim.schedule(function()
       if not require("rob.functions").excluded_filetype() then

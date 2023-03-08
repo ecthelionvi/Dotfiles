@@ -7,7 +7,7 @@ end
 
 noice.setup {
   messages = {
-    view = "popup",
+    view = "notify",
     view_search = false,
   },
   lsp = {

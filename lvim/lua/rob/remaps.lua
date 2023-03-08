@@ -12,10 +12,11 @@ local opts = { noremap = true, silent = true }
 map("n", "U", "<c-r>", opts)
 
 -- Movement
-map({"n", "x"}, "J", "}", opts)
-map({"n", "x"}, "K", "{", opts)
-map({"n", "x"}, "H", "^", opts)
-map({"n", "x"}, "L", "$", opts)
+map({ "n", "x" }, "J", "}", opts)
+map({ "n", "x" }, "K", "{", opts)
+map({ "n", "x" }, "H", "^", opts)
+map({ "n", "x" }, "L", "$", opts)
+
 
 -- Visual-Arrows
 map("x", "<up>", "<nop>", opts)
@@ -25,7 +26,7 @@ map("x", "<right>", "<nop>", opts)
 
 -- Page-Up/Down
 map("n", "<m-j>", "<c-d>zz", opts)
-map("n", "<m-kt>", "<c-u>zz", opts)
+map("n", "<m-k>", "<c-u>zz", opts)
 
 -- Append
 map("n", "<leader>j", "mzJ`z", opts)
@@ -43,8 +44,8 @@ map("n", "<m-t>", "<cmd>enew<cr>", opts)
 map("n", "<c-bs>", "<cmd>Trim<cr>", opts)
 
 -- Swap
-map("n", "<c-h>", "<cmd>SwapPrev<cr>", opts)
-map("n", "<c-l>", "<cmd>SwapNext<cr>", opts)
+map("n", "zh", "<cmd>SwapPrev<cr>", opts)
+map("n", "zl", "<cmd>SwapNext<cr>", opts)
 
 -- Open-File
 map("n", "gf", "<cmd>e <cfile><cr>", opts)
@@ -69,10 +70,10 @@ map("x", "<leader>a", "<esc>", opts)
 map("n", "<leader>a", "<cmd>SelectAll<cr>", opts)
 
 -- Backspace
-map({"n", "x"}, "<bs>", "<cmd>Backspace<cr>", opts)
+map({ "n", "x" }, "<bs>", "<cmd>Backspace<cr>", opts)
 
 -- Clear-History
-map({"n", "x"}, "Q", "<cmd>ClearHistory<cr>", opts)
+map({ "n", "x" }, "Z", "<cmd>ClearHistory<cr>", opts)
 
 -- Search-Movement
 map("n", "n", "'Nn'[v:searchforward]", { expr = true })
@@ -93,14 +94,24 @@ map("n", "<leader>x", "<cmd>silent exec '!(chmod +x % &)'<cr>", opts)
 
 -- LSP
 lvim.lsp.buffer_mappings.normal_mode['K'] = nil
-lvim.lsp.buffer_mappings.normal_mode['gk'] = { vim.lsp.buf.hover, "Show hover" }
+lvim.lsp.buffer_mappings.normal_mode['gl'] = nil
+lvim.lsp.buffer_mappings.normal_mode['gj'] = { function()
+  local config = lvim.lsp.diagnostics.float
+  config.scope = "line"
+  vim.diagnostic.open_float(0, config)
+end }
+lvim.lsp.buffer_mappings.normal_mode['gK'] = { vim.lsp.buf.hover, "Show hover" }
 
 -- Wildmenu-Navigation
 map("c", "<up>", function() return vim.fn.wildmenumode() and '<left>' or '<up>' end, { expr = true })
 map("c", "<down>", function() return vim.fn.wildmenumode() and '<right>' or '<down>' end, { expr = true })
 
 -- Rename
-map("n", "<leader>rn", ":%s/\\<<c-r><c-w>\\>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>", { noremap = true })
-map("x", "<leader>rn", "y:%s/<c-r>=escape(@\",'/\')<cr>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>", { noremap = true })
+map("n", "<leader>rn",
+":%s/\\<<c-r><c-w>\\>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
+{ noremap = true })
+map("x", "<leader>rn",
+"y:%s/<c-r>=escape(@\",'/\')<cr>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
+{ noremap = true })
 
 return M

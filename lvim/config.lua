@@ -1,4 +1,4 @@
--- ||||||||||||||||||| /Users/rob/.config/lvim/config.lua ||||||||||||||||||||| --
+-- ||||||||||||||||||| /Users/rob/.config/lvim/config.lua ||||||||||||||||||||| -
 
 local M = {}
 
@@ -47,6 +47,8 @@ lvim.builtin.treesitter.auto_install = true
 lvim.builtin.treesitter.ensure_installed = { "vim" }
 
 -- Which-Key
+lvim.builtin.which_key.setup.show_keys = false
+lvim.builtin.which_key.setup.show_help = false
 lvim.builtin.which_key.setup.ignore_missing = true
 lvim.builtin.which_key.setup.layout.align = "center"
 
@@ -58,16 +60,18 @@ lvim.builtin.lualine.sections.lualine_x = {
   components.diagnostics,
 }
 
--- Telescope
-lvim.builtin.telescope.theme = nil
-lvim.builtin.telescope.on_config_done = function(telescope)
-  pcall(telescope.load_extension, "yank_history")
-end
-
 -- Nvim-Tree
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.filters.dotfiles = true
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+
+-- Telescope
+lvim.builtin.telescope.theme = nil
+lvim.builtin.telescope.defaults.layout_config = { preview_width = 59 }
+
+lvim.builtin.telescope.on_config_done = function(telescope)
+  pcall(telescope.load_extension, "yank_history")
+end
 
 -- Formatters
 local formatters = require "lvim.lsp.null-ls.formatters"

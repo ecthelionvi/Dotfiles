@@ -8,20 +8,6 @@ function M.select_all()
   vim.cmd("normal! gg0")
 end
 
--- Lazygit
-function M.lazy()
-vim.keymap.set("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 } )
-vim.keymap.set("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 } )
-end
-
--- Excluded-Buftype
-function M.excluded_buftype()
-  if vim.bo.buftype == 'terminal' then
-    return true
-  end
-  return false
-end
-
 -- Trim
 function M.trim()
   local save = vim.fn.winsaveview()
@@ -33,38 +19,37 @@ end
 function M.backspace_improved()
   local curr_pos = vim.api.nvim_win_get_cursor(0)
   local curr_line = vim.api.nvim_get_current_line()
-  vim.cmd('silent! normal! "_x')
-  if curr_pos[2] == 0 then
+  if curr_pos[2] == #curr_line - 1 then
+    vim.cmd('silent! normal! "_x')
+  end
+  if curr_pos[2] == 0 or curr_pos[2] < #curr_line - 1 then
     vim.cmd('silent! normal! "_X')
   end
 end
 
--- Excluded-Filetype
-function M.excluded_filetype()
-  local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf' }
-  for _, excluded_ft in ipairs(excluded_file_types) do
-    if string.match(vim.bo.filetype, excluded_ft) then
-      return true
-    end
-  end
-  return M.excluded_buftype()
-end
-
 -- Toggle-Color-Column
 function M.toggle_color_column()
-    vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#c0caf5")
-    vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+  vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#c0caf5")
+  vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+end
+
+-- Code-Runner
+function M.has_crunner_buffers()
+    for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
+        if string.match(vim.api.nvim_buf_get_name(buffer), 'crunner') then
+            return "<cmd>RunClose<cr>"
+        end
+    end
+    return "<cmd>RunCode<cr>"
 end
 
 -- Auto-Save
 function M.auto_save()
   local fn = vim.fn
-  local interval = 135
-  local buf = vim.fn.bufnr("%")
   local timer = vim.loop.new_timer()
-  timer:start(0, interval, vim.schedule_wrap(function()
-    if fn.getbufvar(buf, "&modifiable") == 1 and fn.bufname(buf) ~= "" then
-      vim.cmd("silent! w")
+  timer:start(0, 135, vim.schedule_wrap(function()
+    if fn.getbufvar("%", "&modifiable") and fn.bufname("%") ~= "" then
+      vim.cmd("silent! wall")
     end
   end))
 end
@@ -72,6 +57,21 @@ end
 -- Project-Files
 function M.project_files()
   return require("lvim.core.telescope.custom-finders").find_project_files {}
+end
+
+-- Jump-Brackets
+function M.move_prev_pair()
+  local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
+  local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
+  local lnum, col = search_result[1], search_result[2]
+  vim.fn.setpos('.', { 0, lnum, col, 0 })
+end
+
+function M.move_next_pair()
+  local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
+  local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
+  local lnum, col = search_result[1], search_result[2]
+  vim.fn.setpos('.', { 0, lnum, col, 0 })
 end
 
 -- Swap
@@ -159,7 +159,7 @@ function M.swap_prev(cursor_pos, type)
 
   local prev_word_end = vim.fn.match(line:sub(1, current_word_start), prev_end)
   if prev_word_end == -1 then
-   M.swap_next()
+    M.swap_next()
     return
   end
   local prev_word_start = vim.fn.match(line:sub(1, prev_word_end + 1), _in .. "\\+$")
@@ -188,19 +188,16 @@ function M.swap_prev(cursor_pos, type)
   vim.api.nvim_win_set_cursor(0, { cursor[1], new_c - 1 })
 end
 
--- Jump-Brackets
-function M.move_prev_pair()
-  local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
-  local lnum, col = search_result[1], search_result[2]
-  vim.fn.setpos('.', { 0, lnum, col, 0 })
+-- Excluded-Types
+function M.excluded_types()
+    local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text' }
+    return vim.tbl_contains(excluded_file_types, vim.bo.filetype) or vim.bo.buftype == 'terminal'
 end
 
-function M.move_next_pair()
-  local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
-  local lnum, col = search_result[1], search_result[2]
-  vim.fn.setpos('.', { 0, lnum, col, 0 })
+-- Lazygit
+function M.lazy()
+  vim.keymap.set("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 })
+  vim.keymap.set("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
 end
 
 -- Clear-History
@@ -208,7 +205,7 @@ function M.clear_history()
   local regs = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
     'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
     'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/', '-', '"', '*', '+',
-    '#',}
+    '#', }
   for i, r in ipairs(regs) do
     vim.fn.setreg(r, {})
   end

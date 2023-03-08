@@ -33,18 +33,12 @@ lvim.plugins = {
     cmd = "LazyGit",
   },
 
-  -- Dressing
-  {
-    "stevearc/dressing.nvim",
-    event = "VeryLazy",
-  },
-
   -- Noice
   {
     "folke/noice.nvim",
+    event = "VimEnter",
     dependencies = {
       "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
     }
   },
 
@@ -69,6 +63,17 @@ lvim.plugins = {
         show_numbers = true,
         show_cursorline = true,
       }
+    end
+  },
+
+  -- Notify
+  {
+    "rcarriga/nvim-notify",
+    event = "VeryLazy",
+    config = function()
+      require("notify").setup({
+        timeout = 500,
+      })        
     end
   },
 
@@ -134,7 +139,7 @@ lvim.plugins = {
     "kylechui/nvim-surround",
     event = "BufRead",
     config = function()
-        require("nvim-surround").setup()
+      require("nvim-surround").setup()
     end
   },
 
@@ -381,19 +386,6 @@ lvim.plugins = {
     end
   },
 
-  -- Lastplace
-  {
-    "ethanholz/nvim-lastplace",
-    event = "BufRead",
-    config = function()
-      require("nvim-lastplace").setup({
-        lastplace_open_folds = true,
-        lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
-        lastplace_ignore_filetype = { "gitcommit", "gitrebase", "svn", "hgcommit", },
-      })
-    end,
-  },
-
   -- Substitute
   {
     "gbprod/substitute.nvim",
@@ -430,8 +422,9 @@ lvim.plugins = {
         },
         --project_path = "", -- No default path defined
         --project = {},
+
         map("n", "<leader>r", function()
-          return vim.bo.buftype == "terminal" and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
+          return require('rob.functions').has_crunner_buffers()
         end, { noremap = true, silent = true, expr = true, })
       }
     end,

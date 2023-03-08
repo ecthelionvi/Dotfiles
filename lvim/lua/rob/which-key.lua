@@ -31,7 +31,7 @@ lvim.builtin.which_key.mappings = {
     D = { "<cmd>BufferLineSortByDirectory<cr>", "Sort Directory" },
   },
 
-  --Trouble
+  -- Trouble
   t = {
     name = "+Trouble",
     q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },

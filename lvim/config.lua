@@ -1,4 +1,4 @@
--- ||||||||||||||||||| /Users/rob/.config/lvim/config.lua ||||||||||||||||||||| -
+-- ||||||||||||||||||| /Users/rob/.config/lvim/config.lua ||||||||||||||||||||| --
 
 local M = {}
 

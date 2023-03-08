@@ -422,7 +422,6 @@ lvim.plugins = {
         },
         --project_path = "", -- No default path defined
         --project = {},
-
         map("n", "<leader>r", function()
           return require('rob.functions').has_crunner_buffers()
         end, { noremap = true, silent = true, expr = true, })

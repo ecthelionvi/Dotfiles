@@ -17,7 +17,6 @@ map({ "n", "x" }, "K", "{", opts)
 map({ "n", "x" }, "H", "^", opts)
 map({ "n", "x" }, "L", "$", opts)
 
-
 -- Visual-Arrows
 map("x", "<up>", "<nop>", opts)
 map("x", "<down>", "<nop>", opts)

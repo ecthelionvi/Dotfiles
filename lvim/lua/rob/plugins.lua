@@ -147,10 +147,6 @@ lvim.plugins = {
     end
   },
 
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-  },
-
   -- Treesitter-Context
   {
     "romgrk/nvim-treesitter-context",
@@ -206,6 +202,10 @@ lvim.plugins = {
       })
     end,
     map("n", "zz", "<cmd>TSJToggle<cr>", opts)
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
   },
 
   -- Symbols-Outline

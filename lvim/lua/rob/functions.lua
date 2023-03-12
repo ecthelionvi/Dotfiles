@@ -4,8 +4,7 @@ local M = {}
 
 -- Select-All
 function M.select_all()
-  vim.cmd("normal! VGo1G")
-  vim.cmd("normal! gg0")
+  vim.cmd("normal! VGo1G | gg0")
 end
 
 -- Trim
@@ -15,32 +14,10 @@ function M.trim()
   vim.fn.winrestview(save)
 end
 
--- Backspace
-function M.backspace_improved()
-  local curr_pos = vim.api.nvim_win_get_cursor(0)
-  local curr_line = vim.api.nvim_get_current_line()
-  if curr_pos[2] == #curr_line - 1 then
-    vim.cmd('silent! normal! "_x')
-  end
-  if curr_pos[2] == 0 or curr_pos[2] < #curr_line - 1 then
-    vim.cmd('silent! normal! "_X')
-  end
-end
-
 -- Toggle-Color-Column
 function M.toggle_color_column()
-  vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#c0caf5")
+  vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64")
   vim.fn.matchadd("ColorColumn", "\\%81v", 100)
-end
-
--- Code-Runner
-function M.has_crunner_buffers()
-    for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
-        if string.match(vim.api.nvim_buf_get_name(buffer), 'crunner') then
-            return "<cmd>RunClose<cr>"
-        end
-    end
-    return "<cmd>RunCode<cr>"
 end
 
 -- Auto-Save
@@ -52,6 +29,16 @@ function M.auto_save()
       vim.cmd("silent! wall")
     end
   end))
+end
+
+-- Code-Runner
+function M.has_crunner_buffers()
+    for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
+        if string.match(vim.api.nvim_buf_get_name(buffer), 'crunner') then
+            return "<cmd>RunClose<cr>"
+        end
+    end
+    return "<cmd>RunCode<cr>"
 end
 
 -- Project-Files
@@ -72,6 +59,15 @@ function M.move_next_pair()
   local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
   local lnum, col = search_result[1], search_result[2]
   vim.fn.setpos('.', { 0, lnum, col, 0 })
+end
+
+-- Clear-History
+function M.clear_history()
+  local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-\"*+#"
+  for char in chars:gmatch(".") do
+    vim.fn.setreg(char, {})
+  end
+  vim.fn.histdel(":")
 end
 
 -- Swap
@@ -188,9 +184,17 @@ function M.swap_prev(cursor_pos, type)
   vim.api.nvim_win_set_cursor(0, { cursor[1], new_c - 1 })
 end
 
+-- Backspace
+function M.backspace_improved()
+  local curr_pos = vim.api.nvim_win_get_cursor(0)
+  local curr_line = vim.api.nvim_get_current_line()
+  local command = curr_pos[2] == #curr_line - 1 and 'x' or 'X'
+  vim.cmd(string.format('silent! normal! "_%s', vim.fn.mode() == 'v' and 'x' or command))
+end
+
 -- Excluded-Types
 function M.excluded_types()
-    local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text' }
+    local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text', 'lspinfo' }
     return vim.tbl_contains(excluded_file_types, vim.bo.filetype) or vim.bo.buftype == 'terminal'
 end
 
@@ -198,18 +202,6 @@ end
 function M.lazy()
   vim.keymap.set("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 })
   vim.keymap.set("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
-end
-
--- Clear-History
-function M.clear_history()
-  local regs = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
-    'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-    'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/', '-', '"', '*', '+',
-    '#', }
-  for i, r in ipairs(regs) do
-    vim.fn.setreg(r, {})
-  end
-  vim.fn.histdel(":")
 end
 
 return M

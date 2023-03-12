@@ -2,6 +2,11 @@
 
 local M = {}
 
+lvim.builtin.which_key.setup.show_keys = false
+lvim.builtin.which_key.setup.show_help = false
+lvim.builtin.which_key.setup.ignore_missing = true
+lvim.builtin.which_key.setup.layout.align = "center"
+
 lvim.builtin.which_key.mappings = {
   -- Plugins
   p = {
@@ -31,7 +36,7 @@ lvim.builtin.which_key.mappings = {
     D = { "<cmd>BufferLineSortByDirectory<cr>", "Sort Directory" },
   },
 
-  -- Trouble
+  --Trouble
   t = {
     name = "+Trouble",
     q = { "<cmd>Trouble quickfix<cr>", "QuickFix" },
@@ -66,7 +71,7 @@ lvim.builtin.which_key.mappings = {
 
   -- Dashboard
   [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
-  ["q"] = { "<cmd>silent! q!<CR>", "Quit" },
+  ["q"] = { "<cmd>silent! q<CR>", "Quit" },
   ["k"] = { "<cmd>BufferKill<CR>", "Close Buffer" },
   ["h"] = { "<cmd>nohlsearch<CR>", "No Highlight" },
   ["e"] = { "<cmd>NvimTreeToggle<CR>", "Explorer" },

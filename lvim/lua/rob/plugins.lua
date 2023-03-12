@@ -7,6 +7,10 @@ local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 local opts = { noremap = true, silent = true }
 
+local need = function(module)
+  return require(module)
+end
+
 lvim.plugins = {
 
   -- Repeat
@@ -143,6 +147,10 @@ lvim.plugins = {
     end
   },
 
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+  },
+
   -- Treesitter-Context
   {
     "romgrk/nvim-treesitter-context",
@@ -197,7 +205,7 @@ lvim.plugins = {
         use_default_keymaps = false,
       })
     end,
-    map("n", "qq", "<cmd>TSJToggle<cr>", opts)
+    map("n", "zz", "<cmd>TSJToggle<cr>", opts)
   },
 
   -- Symbols-Outline
@@ -327,7 +335,7 @@ lvim.plugins = {
 
   --Rnvimr
   {
-    "kevinhwang91/rnvimr",
+    "ecthelionvi/rnvimr",
     event = "VeryLazy",
     config = function()
       vim.g.rnvimr_bw_enable = 1

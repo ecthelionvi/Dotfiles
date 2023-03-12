@@ -32,11 +32,19 @@ noice.setup {
       opts = { skip = true },
     },
     {
+      filter = { event = "msg_show", find = "E21" },
+      opts = { skip = true },
+    },
+    {
       filter = { event = "msg_show", find = "E35" },
       opts = { skip = true },
     },
     {
-      filter = { event = "msg_show", find = "E21" },
+      filter = { event = "msg_show", find = "E37" },
+      opts = { skip = true },
+    },
+    {
+      filter = { event = "msg_show", find = "E149" },
       opts = { skip = true },
     },
     {
@@ -48,15 +56,11 @@ noice.setup {
       opts = { skip = true },
     },
     {
-      filter = { event = "msg_show", find = "E149" },
+      filter = { event = "msg_show", find = "fewer" },
       opts = { skip = true },
     },
     {
       filter = { event = "msg_show", find = "after" },
-      opts = { skip = true },
-    },
-    {
-      filter = { event = "msg_show", find = "fewer" },
       opts = { skip = true },
     },
     {
@@ -84,15 +88,19 @@ noice.setup {
       opts = { skip = true },
     },
     {
+      filter = { event = "msg_show", find = "more lines" },
+      opts = { skip = true },
+    },
+    {
       filter = { event = "msg_show", find = "substitutions" },
       opts = { skip = true },
     },
     {
-      filter = { event = "msg_show", find = "No lines in buffer" },
+      filter = { event = "msg_show", find = "Not an editor command" },
       opts = { skip = true },
     },
     {
-      filter = { event = "msg_show", find = "Not an editor command" },
+      filter = { event = "msg_show", find = "--No lines in buffer--" },
       opts = { skip = true },
     },
     {
@@ -101,6 +109,10 @@ noice.setup {
     },
     {
       filter = { event = "msg_show", find = "Already at newest change" },
+      opts = { skip = true },
+    },
+    {
+      filter = { event = "notify", find = "Your last action was not put, ignoring cycle" },
       opts = { skip = true },
     },
   },

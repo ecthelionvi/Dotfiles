@@ -10,6 +10,7 @@ autocmd("VimEnter", {
   group = augroup("clear-history", { clear = true }),
   callback = function()
     vim.schedule(function()
+      vim.g.copilot_no_tab_map = true
       require("rob.functions").clear_history()
     end)
   end

@@ -33,12 +33,12 @@ end
 
 -- Code-Runner
 function M.has_crunner_buffers()
-    for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
-        if string.match(vim.api.nvim_buf_get_name(buffer), 'crunner') then
-            return "<cmd>RunClose<cr>"
-        end
+  for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
+    if string.match(vim.api.nvim_buf_get_name(buffer), 'crunner') then
+      return "<cmd>RunClose<cr>"
     end
-    return "<cmd>RunCode<cr>"
+  end
+  return "<cmd>RunCode<cr>"
 end
 
 -- Project-Files
@@ -194,8 +194,8 @@ end
 
 -- Excluded-Types
 function M.excluded_types()
-    local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text', 'lspinfo' }
-    return vim.tbl_contains(excluded_file_types, vim.bo.filetype) or vim.bo.buftype == 'terminal'
+  local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text', 'lspinfo' }
+  return vim.tbl_contains(excluded_file_types, vim.bo.filetype) or vim.bo.buftype == 'terminal'
 end
 
 -- Lazygit

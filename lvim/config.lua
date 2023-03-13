@@ -8,6 +8,7 @@ local load = function(module)
 end
 
 -- Load
+load("rob.lsp")
 load("rob.noice")
 load("rob.remaps")
 load("rob.lualine")
@@ -18,9 +19,9 @@ load("rob.nvim-tree")
 load("rob.functions")
 load("rob.telescope")
 load("rob.which-key")
+load("rob.formatters")
 load("rob.treesitter")
 load("rob.toggleterm")
-load("rob.formatters")
 load("rob.autocommands")
 
 -- |||||||||||||||||||||||||||||||||| Settings |||||||||||||||||||||||||||||||| --

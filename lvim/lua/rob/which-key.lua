@@ -20,7 +20,6 @@ lvim.builtin.which_key.mappings = {
     p = { "<cmd>Lazy profile<cr>", "Profile" },
     i = { "<cmd>Lazy install<cr>", "Install" },
   },
-
   -- Buffer
   b = {
     name = "Buffers",
@@ -29,13 +28,12 @@ lvim.builtin.which_key.mappings = {
     n = { "<cmd>BufferLineCycleNext<cr>", "Next" },
     k = { "<cmd>BufferLinePickClose<cr>", "Close" },
     b = { "<cmd>BufferLineCyclePrev<cr>", "Previous" },
-    h = { "<cmd>BufferLineCloseLeft<cr>", "Close All " },
-    l = { "<cmd>BufferLineCloseRight<cr>", "Close All ",},
+    h = { "<cmd>BufferLineCloseLeft<cr>", "Close All 󰧀" },
+    l = { "<cmd>BufferLineCloseRight<cr>", "Close All 󰧂", },
     f = { "<cmd>Telescope buffers previewer=false<cr>", "Find" },
     L = { "<cmd>BufferLineSortByExtension<cr>", "Sort Language" },
     D = { "<cmd>BufferLineSortByDirectory<cr>", "Sort Directory" },
   },
-
   --Trouble
   t = {
     name = "+Trouble",
@@ -46,7 +44,6 @@ lvim.builtin.which_key.mappings = {
     d = { "<cmd>Trouble document_diagnostics<cr>", "Diagnostics" },
     w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
   },
-
   -- Debug
   d = {
     name = "Debug",
@@ -65,10 +62,8 @@ lvim.builtin.which_key.mappings = {
     U = { "<cmd>lua require'dapui'.toggle({reset = true})<cr>", "Toggle UI" },
     t = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
   },
-
   -- Visual-Comment
   vmappings = { ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment" } },
-
   -- Dashboard
   [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
   ["q"] = { "<cmd>silent! q<CR>", "Quit" },
@@ -78,13 +73,12 @@ lvim.builtin.which_key.mappings = {
   ["P"] = { "<cmd>Telescope projects<cr>", "Projects" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment" },
   ["f"] = { function() require('rob.functions').project_files() end, "Find File" },
-
   -- LSP
   l = {
     name = "LSP",
     i = { "<cmd>LspInfo<cr>", "Info" },
-    o = { vim.diagnostic.show, "Show" },
-    p = { vim.diagnostic.hide, "Hide" },
+    o = { vim.diagnostic.show, "󰐍 Play" },
+    p = { vim.diagnostic.hide, "󰏦 Pause" },
     r = { vim.lsp.buf.rename, "Rename" },
     I = { "<cmd>Mason<cr>", "Mason Info" },
     q = { vim.diagnostic.setloclist, "Quickfix" },
@@ -99,7 +93,6 @@ lvim.builtin.which_key.mappings = {
     S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
     d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
   },
-
   -- Git
   g = {
     name = "Git",
@@ -118,7 +111,6 @@ lvim.builtin.which_key.mappings = {
     k = { "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", "Prev Hunk" },
     g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr><cmd>LazyGitKeymap<cr>", "Lazygit" },
   },
-
   -- Search
   s = {
     name = "Search",
@@ -128,14 +120,13 @@ lvim.builtin.which_key.mappings = {
     h = { "<cmd>Telescope help_tags<cr>", "Find Help" },
     M = { "<cmd>Telescope man_pages<cr>", "Man Pages" },
     R = { "<cmd>Telescope registers<cr>", "Registers" },
-    f = { "<cmd>Telescope find_files<cr>", "Find File" },
+    f = { "<cmd>Telescope find_files search_dirs={'$HOME'}<cr>", "Find File" },
     r = { "<cmd>Telescope oldfiles<cr>", "Recent Files" },
     y = { "<cmd>Telescope yank_history<cr>", "Yank History" },
     b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
     H = { "<cmd>Telescope highlights<cr>", "Find Highlight Groups" },
     c = { "<cmd>lua require('telescope.builtin').colorscheme({enable_preview = true})<cr>", "Colorscheme" },
   },
-
   -- LunarVim
   L = {
     name = "+LunarVim",
@@ -147,7 +138,8 @@ lvim.builtin.which_key.mappings = {
     i = { "<cmd>lua require('lvim.core.info').toggle_popup(vim.bo.filetype)<cr>", "Toggle LunarVim Info" },
     f = { "<cmd>lua require('lvim.core.telescope.custom-finders').find_lunarvim_files()<cr>", "Find LunarVim Files" },
     g = { "<cmd>lua require('lvim.core.telescope.custom-finders').grep_lunarvim_files()<cr>", "Grep LunarVim Files" },
-    I = { "<cmd>lua require('lvim.core.telescope.custom-finders').view_lunarvim_changelog()<cr>", "View LunarVim Changelog" },
+    I = { "<cmd>lua require('lvim.core.telescope.custom-finders').view_lunarvim_changelog()<cr>",
+      "View LunarVim Changelog" },
     l = {
       name = "+Logs",
       N = { "<cmd>edit $NVIM_LOG_FILE<cr>", "Open Neovim Logfile" },
@@ -155,7 +147,8 @@ lvim.builtin.which_key.mappings = {
       l = { "<cmd>lua require('lvim.core.terminal').toggle_log_view(vim.lsp.get_log_path())<cr>", "View LSP Log" },
       D = { "<cmd>lua vim.fn.execute('edit ' .. require('lvim.core.log').get_path())<cr>", "Open Default Logfile" },
       n = { "<cmd>lua require('lvim.core.terminal').toggle_log_view(os.getenv('NVIM_LOG_FILE'))<cr>", "View Neovim Log" },
-      d = { "<cmd>lua require('lvim.core.terminal').toggle_log_view(require('lvim.core.log').get_path())<cr>", "View Default Log" },
+      d = { "<cmd>lua require('lvim.core.terminal').toggle_log_view(require('lvim.core.log').get_path())<cr>",
+        "View Default Log" },
     },
   },
 }

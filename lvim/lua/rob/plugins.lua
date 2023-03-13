@@ -77,7 +77,7 @@ lvim.plugins = {
     config = function()
       require("notify").setup({
         timeout = 500,
-      })        
+      })
     end
   },
 

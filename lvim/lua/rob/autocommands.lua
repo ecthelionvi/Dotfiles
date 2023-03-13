@@ -17,7 +17,7 @@ autocmd("VimEnter", {
 })
 
 -- Toggle-Color-Column
-autocmd("BufWinEnter", {
+autocmd({ "BufEnter", "BufLeave", "BufWinEnter", "BufWinLeave" }, {
   group = augroup("toggle-color-column", { clear = true }),
   callback = function()
     vim.schedule(function()
@@ -27,8 +27,7 @@ autocmd("BufWinEnter", {
         vim.fn.clearmatches()
       end
     end)
-    vim.opt.formatoptions =
-        vim.opt.formatoptions - { "c", "r", "o" }
+    vim.opt.formatoptions:remove({ 'c', 'r', 'o' })
   end
 })
 

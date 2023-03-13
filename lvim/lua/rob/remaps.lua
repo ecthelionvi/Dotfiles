@@ -9,7 +9,7 @@ local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
 -- Macro
-map("n", "Q", "@q", opts, "Replay-Macro")
+map("n", "Q", "@q", opts)
 
 -- Undo
 map("n", "U", "<c-r>", opts)
@@ -29,6 +29,9 @@ map("x", "<right>", "<nop>", opts)
 -- Page-Up/Down
 map("n", "<m-j>", "<c-d>zz", opts)
 map("n", "<m-k>", "<c-u>zz", opts)
+
+-- C-Yank
+map({ "n", "x" }, "c", '"_c', opts)
 
 -- Append
 map("n", "<leader>j", "mzJ`z", opts)
@@ -108,16 +111,16 @@ lvim.lsp.buffer_mappings.normal_mode['gK'] = { vim.lsp.buf.hover, "Show hover" }
 map("c", "<up>", function() return vim.fn.wildmenumode() and '<left>' or '<up>' end, { expr = true })
 map("c", "<down>", function() return vim.fn.wildmenumode() and '<right>' or '<down>' end, { expr = true })
 
-map("n", "<leader>rn",function() return require('rob.functions').rename() end,
-{ noremap = true })
+map("n", "<leader>rn", function() return require('rob.functions').rename() end,
+  { noremap = true })
 
 -- Rename
 map("n", "<leader>rn",
-":%s/\\<<c-r><c-w>\\>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
-{ noremap = true })
+  ":%s/\\<<c-r><c-w>\\>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
+  { noremap = true })
 
 map("x", "<leader>rn",
-"y:%s/<c-r>=escape(@\",'/\')<cr>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
-{ noremap = true })
+  "y:%s/<c-r>=escape(@\",'/\')<cr>//g | norm g``<left><left><left><left><left><left><left><left><left><left><left><left><left>",
+  { noremap = true })
 
 return M

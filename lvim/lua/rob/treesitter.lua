@@ -2,14 +2,13 @@
 
 local M = {}
 
-lvim.builtin.treesitter.ensure_installed = { "vim" }
+lvim.builtin.treesitter.ensure_installed = { "vim", "regex" }
 lvim.builtin.treesitter.auto_install = true
-lvim.builtin.treesitter = { 
+lvim.builtin.treesitter = {
   textobjects = {
     select = {
       enable = true,
       lookahead = true,
-
       keymaps = {
         ["af"] = "@function.outer",
         ["if"] = "@function.inner",

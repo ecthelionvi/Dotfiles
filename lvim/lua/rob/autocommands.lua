@@ -21,13 +21,13 @@ autocmd({ "BufEnter", "BufLeave", "BufWinEnter", "BufWinLeave" }, {
   group = augroup("toggle-color-column", { clear = true }),
   callback = function()
     vim.schedule(function()
-      if not require("rob.functions").excluded_types() then
-        require("rob.functions").toggle_color_column()
-      else
+      if require("rob.functions").excluded_types() then
         vim.fn.clearmatches()
+      else
+        require("rob.functions").toggle_color_column()
       end
     end)
-    vim.opt.formatoptions:remove({ 'c', 'r', 'o' })
+    vim.o.fo = vim.o.fo:gsub("[cro]", "")
   end
 })
 

@@ -2,37 +2,39 @@
 
 local M = {}
 
+local fn = vim.fn
+local cmd = vim.cmd
+
 -- Select-All
 function M.select_all()
-  vim.cmd("normal! VGo1G | gg0")
+  cmd("normal! VGo1G | gg0")
 end
 
 -- Trim
 function M.trim()
   local save = vim.fn.winsaveview()
-  vim.cmd("keeppatterns %s/\\s\\+$//e")
-  vim.fn.winrestview(save)
+  cmd("keeppatterns %s/\\s\\+$//e")
+  fn.winrestview(save)
 end
 
 -- Toggle-Color-Column
 function M.toggle_color_column()
-  vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64")
-  vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+  cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64")
+  fn.matchadd("ColorColumn", "\\%81v", 100)
 end
 
 -- Auto-Save
 function M.auto_save()
-  local fn = vim.fn
   local timer = vim.loop.new_timer()
   timer:start(0, 135, vim.schedule_wrap(function()
     if fn.getbufvar("%", "&modifiable") and fn.bufname("%") ~= "" then
-      vim.cmd("silent! wall")
+      cmd("silent! wall")
     end
   end))
 end
 
 -- Code-Runner
-function M.has_crunner_buffers()
+function M.crunner_buffer()
   for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
     if string.match(vim.api.nvim_buf_get_name(buffer), 'crunner') then
       return "<cmd>RunClose<cr>"
@@ -40,6 +42,7 @@ function M.has_crunner_buffers()
   end
   return "<cmd>RunCode<cr>"
 end
+
 
 -- Project-Files
 function M.project_files()
@@ -49,25 +52,25 @@ end
 -- Jump-Brackets
 function M.move_prev_pair()
   local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = vim.fn.eval("searchpos('" .. backsearch .. "', 'b')")
+  local search_result = fn.eval("searchpos('" .. backsearch .. "', 'b')")
   local lnum, col = search_result[1], search_result[2]
-  vim.fn.setpos('.', { 0, lnum, col, 0 })
+  fn.setpos('.', { 0, lnum, col, 0 })
 end
 
 function M.move_next_pair()
   local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = vim.fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
+  local search_result = fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
   local lnum, col = search_result[1], search_result[2]
-  vim.fn.setpos('.', { 0, lnum, col, 0 })
+  fn.setpos('.', { 0, lnum, col, 0 })
 end
 
 -- Clear-History
 function M.clear_history()
   local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-\"*+#"
   for char in chars:gmatch(".") do
-    vim.fn.setreg(char, {})
+    fn.setreg(char, {})
   end
-  vim.fn.histdel(":")
+  fn.histdel(":")
 end
 
 -- Swap
@@ -189,12 +192,12 @@ function M.backspace_improved()
   local curr_pos = vim.api.nvim_win_get_cursor(0)
   local curr_line = vim.api.nvim_get_current_line()
   local command = curr_pos[2] == #curr_line - 1 and 'x' or 'X'
-  vim.cmd(string.format('silent! normal! "_%s', vim.fn.mode() == 'v' and 'x' or command))
+  cmd(string.format('silent! normal! "_%s', fn.mode() == 'v' and 'x' or command))
 end
 
 -- Excluded-Types
 function M.excluded_types()
-  local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text', 'lspinfo' }
+  local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text', 'lspinfo', 'checkhealth' }
   return vim.tbl_contains(excluded_file_types, vim.bo.filetype) or vim.bo.buftype == 'terminal'
 end
 

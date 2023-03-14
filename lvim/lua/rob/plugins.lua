@@ -7,10 +7,6 @@ local autocmd = vim.api.nvim_create_autocmd
 local augroup = vim.api.nvim_create_augroup
 local opts = { noremap = true, silent = true }
 
-local need = function(module)
-  return require(module)
-end
-
 lvim.plugins = {
 
   -- Repeat
@@ -431,7 +427,7 @@ lvim.plugins = {
         --project_path = "", -- No default path defined
         --project = {},
         map("n", "<leader>r", function()
-          return require('rob.functions').has_crunner_buffers()
+          return require('rob.functions').crunner_buffer()
         end, { noremap = true, silent = true, expr = true, })
       }
     end,

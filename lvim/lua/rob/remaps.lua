@@ -97,16 +97,6 @@ map("x", "cN", "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgN", opts)
 -- Chmod-X
 map("n", "<leader>x", "<cmd>silent exec '!(chmod +x % &)'<cr>", opts)
 
--- LSP
-lvim.lsp.buffer_mappings.normal_mode['K'] = nil
-lvim.lsp.buffer_mappings.normal_mode['gl'] = nil
-lvim.lsp.buffer_mappings.normal_mode['gj'] = { function()
-  local config = lvim.lsp.diagnostics.float
-  config.scope = "line"
-  vim.diagnostic.open_float(0, config)
-end }
-lvim.lsp.buffer_mappings.normal_mode['gK'] = { vim.lsp.buf.hover, "Show hover" }
-
 -- Wildmenu-Navigation
 map("c", "<up>", function() return vim.fn.wildmenumode() and '<left>' or '<up>' end, { expr = true })
 map("c", "<down>", function() return vim.fn.wildmenumode() and '<right>' or '<down>' end, { expr = true })

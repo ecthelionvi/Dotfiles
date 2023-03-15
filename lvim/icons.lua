@@ -1,7 +1,7 @@
 return {
   kind = {
     Array = "",
-    Boolean = "蘒",
+    --Boolean = "蘒",
     Boolean = "",
     Class = "",
     Color = "",
@@ -131,7 +131,7 @@ return {
     Telescope = "",
     Text = "",
     Tree = "",
-    Triangle = "契",
+    --Triangle = "契",
     Triangle = "▎",
     TriangleShortArrowDown = "",
     TriangleShortArrowLeft = "",

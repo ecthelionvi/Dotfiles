@@ -8,5 +8,4 @@ lvim.builtin.telescope.on_config_done = function(telescope)
 end
 lvim.builtin.telescope.defaults.layout_config = { preview_width = 59 }
 
-
 return M

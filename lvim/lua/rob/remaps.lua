@@ -97,6 +97,9 @@ map("x", "cN", "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgN", opts)
 -- Chmod-X
 map("n", "<leader>x", "<cmd>silent exec '!(chmod +x % &)'<cr>", opts)
 
+-- Visual-Comment
+map("x", "<leader>/", "<Plug>(comment_toggle_linewise_visual)", opts)
+
 -- Wildmenu-Navigation
 map("c", "<up>", function() return vim.fn.wildmenumode() and '<left>' or '<up>' end, { expr = true })
 map("c", "<down>", function() return vim.fn.wildmenumode() and '<right>' or '<down>' end, { expr = true })

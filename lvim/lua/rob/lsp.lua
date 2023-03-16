@@ -2,11 +2,14 @@
 
 local M = {}
 
-lvim.lsp.buffer_mappings.normal_mode['K'] = nil
-lvim.lsp.buffer_mappings.normal_mode['gl'] = nil
+-- Semantic-Tokens
 lvim.lsp.on_attach_callback = function(client, _)
   client.server_capabilities.semanticTokensProvider = nil
 end
+
+-- Keymaps
+lvim.lsp.buffer_mappings.normal_mode['K'] = nil
+lvim.lsp.buffer_mappings.normal_mode['gl'] = nil
 lvim.lsp.buffer_mappings.normal_mode['gj'] = { function()
   local config = lvim.lsp.diagnostics.float
   config.scope = "line"

@@ -62,8 +62,6 @@ lvim.builtin.which_key.mappings = {
     U = { "<cmd>lua require'dapui'.toggle({reset = true})<cr>", "Toggle UI" },
     t = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
   },
-  -- Visual-Comment
-  vmappings = { ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment" } },
   -- Dashboard
   [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
   ["q"] = { "<cmd>silent! q<CR>", "Quit" },
@@ -107,9 +105,9 @@ lvim.builtin.which_key.mappings = {
     p = { "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", "Preview Hunk" },
     R = { "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", "Reset Buffer" },
     u = { "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>", "Undo Stage Hunk" },
+    g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr>", "Lazygit" },
     j = { "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", "Next Hunk" },
     k = { "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", "Prev Hunk" },
-    g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr><cmd>LazyGitKeymap<cr>", "Lazygit" },
   },
   -- Search
   s = {

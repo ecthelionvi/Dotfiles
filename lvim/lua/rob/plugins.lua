@@ -200,10 +200,6 @@ lvim.plugins = {
     map("n", "zz", "<cmd>TSJToggle<cr>", opts)
   },
 
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-  },
-
   -- Symbols-Outline
   {
     "simrat39/symbols-outline.nvim",
@@ -214,6 +210,23 @@ lvim.plugins = {
         opts)
       map("x", "<m-s>", "<cmd>SymbolsOutline<cr>",
         opts)
+    end
+  },
+
+  -- Sticky-Buf
+  {
+    "stevearc/stickybuf.nvim",
+    event = "BufRead",
+    config = function()
+      require('stickybuf').setup()
+      autocmd({ "TermOpen", "TermEnter" }, {
+        group = augroup("sticky-buf", { clear = true }),
+        callback = function()
+          vim.schedule(function()
+            require("stickybuf").pin()
+          end)
+        end
+      })
     end
   },
 
@@ -370,6 +383,7 @@ lvim.plugins = {
         TelescopePrompt = false,
         TelescopeResults = false,
       }
+      vim.g.copilot_no_tab_map = true
       vim.cmd("imap <silent><script><expr> <s-cr> copilot#Accept('\\<CR>')")
     end
   },

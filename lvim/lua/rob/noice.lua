@@ -23,6 +23,9 @@ noice.setup {
       enabled = false,
       auto_open = { enabled = false },
     },
+    override = {
+      ["vim.lsp.rust_analyzer"] = false,
+    },
   },
   routes = {
     {
@@ -115,6 +118,10 @@ noice.setup {
     },
     {
       filter = { event = "notify", find = "Your last action was not put, ignoring cycle" },
+      opts = { skip = true },
+    },
+    {
+      filter = { event = "notify", find = "lsp_progress" },
       opts = { skip = true },
     },
   },

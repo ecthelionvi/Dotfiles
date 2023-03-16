@@ -2,49 +2,35 @@
 
 local M = {}
 
--- Modules
-local modules = {
-  "lsp",
-  "noice",
-  "remaps",
-  "lualine",
-  "plugins",
-  "project",
-  "commands",
-  "nvim-tree",
-  "functions",
-  "telescope",
-  "which-key",
-  "formatters",
-  "treesitter",
-  "toggleterm",
-  "autocommands",
-}
-
--- Options
-local options = {
-  tabstop = 2,
-  cmdheight = 0,
-  shiftwidth = 2,
-  timeoutlen = 300,
-  maxfuncdepth = 1000,
-  fillchars = "eob: ",
-  relativenumber = true,
-}
-
-local prefix = "rob."
-
 local load = function(module)
   package.loaded[module] = nil
   return require(module)
 end
 
-for _, mod in ipairs(modules) do
-  load(prefix .. mod)
-end
+-- Modules
+load("rob.lsp")
+load("rob.noice")
+load("rob.remaps")
+load("rob.lualine")
+load("rob.plugins")
+load("rob.project")
+load("rob.commands")
+load("rob.nvim-tree")
+load("rob.functions")
+load("rob.telescope")
+load("rob.which-key")
+load("rob.formatters")
+load("rob.treesitter")
+load("rob.toggleterm")
+load("rob.autocommands")
 
-for name, value in pairs(options) do
-  vim.o[name] = value
-end
+-- Options
+vim.o.tabstop = 2
+vim.o.cmdheight = 0
+vim.o.shiftwidth = 2
+vim.o.timeoutlen = 300
+vim.o.maxfuncdepth = 1000
+vim.o.fillchars = "eob: "
+vim.o.relativenumber = true
 
 return M

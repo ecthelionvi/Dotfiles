@@ -17,22 +17,6 @@ function M.trim()
   fn.winrestview(save)
 end
 
--- Toggle-Color-Column
-function M.toggle_color_column()
-  cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64")
-  fn.matchadd("ColorColumn", "\\%81v", 100)
-end
-
--- Auto-Save
-function M.auto_save()
-  local timer = vim.loop.new_timer()
-  timer:start(0, 135, vim.schedule_wrap(function()
-    if fn.getbufvar("%", "&modifiable") and fn.bufname("%") ~= "" then
-      cmd("silent! wall")
-    end
-  end))
-end
-
 -- Code-Runner
 function M.crunner_buffer()
   for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
@@ -43,6 +27,22 @@ function M.crunner_buffer()
   return "<cmd>RunCode<cr>"
 end
 
+-- Auto-Save
+function M.auto_save()
+  if vim.bo.modified then
+    vim.loop.new_timer():start(0, 135, vim.schedule_wrap(function()
+      if fn.getbufvar("%", "&modifiable") and fn.bufname("%") ~= "" then
+        cmd("silent! wall")
+      end
+    end))
+  end
+end
+
+-- Change-Directory
+function M.cwd()
+    local directory = vim.fn.expand('%:h')
+    return vim.fn.isdirectory(directory) == 1 and vim.fn.chdir(directory)
+end
 
 -- Project-Files
 function M.project_files()
@@ -191,20 +191,32 @@ end
 function M.backspace_improved()
   local curr_pos = vim.api.nvim_win_get_cursor(0)
   local curr_line = vim.api.nvim_get_current_line()
-  local command = curr_pos[2] == #curr_line - 1 and 'x' or 'X'
-  cmd(string.format('silent! normal! "_%s', fn.mode() == 'v' and 'x' or command))
+  local command = "x"
+  if curr_pos[2] == 0 and curr_line:sub(1, 1) == "" then
+    command = "X"
+  end
+  vim.cmd(string.format('silent! normal! "_%s', vim.fn.mode() == 'v' and 'x' or command))
 end
 
--- Excluded-Types
-function M.excluded_types()
-  local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text', 'lspinfo', 'checkhealth' }
-  return vim.tbl_contains(excluded_file_types, vim.bo.filetype) or vim.bo.buftype == 'terminal'
+-- Quit-Keymap
+function M.special_keymaps()
+  local buffer_name = vim.api.nvim_buf_get_name(0)
+  local included_filetypes = { "qf", "help", "man", "noice" }
+  if vim.tbl_contains(included_filetypes, vim.bo.filetype) then
+    vim.keymap.set("n", "q", "<cmd>q!<CR>", { noremap = true, silent = true, buffer = 0 })
+  end
+  if string.match(buffer_name, 'lazygit') then
+    vim.keymap.set("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 })
+    vim.keymap.set("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
+  end
 end
 
--- Lazygit
-function M.lazy()
-  vim.keymap.set("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 })
-  vim.keymap.set("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
+-- Toggle-Color-Column
+function M.toggle_color_column()
+    local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text', 'lspinfo', 'checkhealth' }
+    local excluded = vim.tbl_contains(excluded_file_types, vim.bo.filetype) or vim.bo.buftype == 'terminal'
+    vim.cmd("silent! " .. (excluded and "no" or "") .. "highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64")
+    return excluded and vim.fn.clearmatches() or vim.fn.matchadd("ColorColumn", "\\%81v", 100)
 end
 
 return M

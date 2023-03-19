@@ -16,13 +16,11 @@ autocmd({ "InsertLeave", "TextChanged" }, {
 })
 
 -- Change-Directory .. Copilot .. Format-Options 
-autocmd("BufEnter", {
+autocmd({ "BufEnter", "BufWinEnter" }, {
   group = augroup("format-options", { clear = true }),
   callback = function()
     vim.schedule(function()
-      require("rob.functions").cwd()
-      vim.g.copilot_no_tab_map = true
-      vim.o.fo = vim.o.fo:gsub("[cro]", "")
+      require("rob.functions").cwd_set_options()
     end)
   end,
 })
@@ -35,16 +33,6 @@ autocmd("FileType", {
      require("rob.functions").special_keymaps()
    end)
   end,
-})
-
--- Toggle-Color-Column
-autocmd({ "BufWinEnter", "BufWinLeave" }, {
-  group = augroup("toggle-color-column", { clear = true }),
-  callback = function()
-    vim.schedule(function()
-      require("rob.functions").toggle_color_column()
-    end)
-  end
 })
 
 return M

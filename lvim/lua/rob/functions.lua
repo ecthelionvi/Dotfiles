@@ -4,6 +4,8 @@ local M = {}
 
 local fn = vim.fn
 local cmd = vim.cmd
+local map = vim.keymap.set
+local timer = vim.loop.new_timer()
 
 -- Select-All
 function M.select_all()
@@ -12,41 +14,19 @@ end
 
 -- Trim
 function M.trim()
-  local save = vim.fn.winsaveview()
+  local save = fn.winsaveview()
   cmd("keeppatterns %s/\\s\\+$//e")
   fn.winrestview(save)
 end
 
--- Code-Runner
-function M.crunner_buffer()
-  for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
-    if string.match(vim.api.nvim_buf_get_name(buffer), 'crunner') then
-      return "<cmd>RunClose<cr>"
-    end
-  end
-  return "<cmd>RunCode<cr>"
-end
-
 -- Auto-Save
 function M.auto_save()
-  if vim.bo.modified then
-    vim.loop.new_timer():start(0, 135, vim.schedule_wrap(function()
-      if fn.getbufvar("%", "&modifiable") and fn.bufname("%") ~= "" then
-        cmd("silent! wall")
-      end
+  if vim.bo.modified and fn.bufname("%") ~= "" and
+      not timer:is_active() then
+    timer:start(135, 0, vim.schedule_wrap(function()
+      cmd("silent! wall")
     end))
   end
-end
-
--- Change-Directory
-function M.cwd()
-    local directory = vim.fn.expand('%:h')
-    return vim.fn.isdirectory(directory) == 1 and vim.fn.chdir(directory)
-end
-
--- Project-Files
-function M.project_files()
-  return require("lvim.core.telescope.custom-finders").find_project_files {}
 end
 
 -- Jump-Brackets
@@ -64,12 +44,39 @@ function M.move_next_pair()
   fn.setpos('.', { 0, lnum, col, 0 })
 end
 
+-- Code-Runner
+function M.crunner_buffer()
+  local crunner_buffers = vim.tbl_filter(function(buffer)
+    return string.match(vim.api.nvim_buf_get_name(buffer), 'crunner')
+  end, vim.api.nvim_list_bufs())
+  return #crunner_buffers > 0 and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
+end
+
+-- Terminal-Esc
+function M.terminal_esc(buffer)
+  return string.match(fn.bufname("%"), "lazygit") and "<esc>" or "<C-\\><C-n>"
+end
+
+-- Toggle-Color-Column
+function M.toggle_color_column()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local ns_id = vim.api.nvim_create_namespace("ColorColumnToggle")
+  local extmarks = vim.api.nvim_buf_get_extmarks(bufnr, ns_id, 0, -1, {})
+  local color_column_enabled = #extmarks > 0
+  if not color_column_enabled then
+    cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64")
+    for i = 1, vim.api.nvim_buf_line_count(bufnr) do
+      vim.api.nvim_buf_add_highlight(bufnr, ns_id, "ColorColumn", i - 1, 80, 81)
+    end
+  else
+    vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+  end
+end
+
 -- Clear-History
 function M.clear_history()
   local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-\"*+#"
-  for char in chars:gmatch(".") do
-    fn.setreg(char, {})
-  end
+  for char in chars:gmatch(".") do fn.setreg(char, {}) end
   fn.histdel(":")
 end
 
@@ -96,19 +103,19 @@ function M.swap_next(cursor_pos, type)
   local _in = entity_pattern[type]._in
   local out = entity_pattern[type].out
 
-  local current_word_start = vim.fn.match(line_before_cursor, _in .. "\\+$")
-  local current_word_end = vim.fn.match(line, _in .. out, current_word_start)
+  local current_word_start = fn.match(line_before_cursor, _in .. "\\+$")
+  local current_word_end = fn.match(line, _in .. out, current_word_start)
   if current_word_end == -1 then
     M.swap_prev()
     return
   end
 
-  local next_word_start = vim.fn.match(line, _in, current_word_end + 1)
+  local next_word_start = fn.match(line, _in, current_word_end + 1)
   if next_word_start == -1 then
     M.swap_prev()
     return
   end
-  local next_word_end = vim.fn.match(line, _in .. out, next_word_start)
+  local next_word_end = fn.match(line, _in .. out, next_word_start)
   next_word_end = next_word_end == -1 and #line - 1 or next_word_end
 
   local current_word = line:sub(current_word_start + 1, current_word_end + 1)
@@ -148,20 +155,20 @@ function M.swap_prev(cursor_pos, type)
   local out = entity_pattern[type].out
   local prev_end = entity_pattern[type].prev_end
 
-  local current_word_start = vim.fn.match(line_before_cursor, _in .. "\\+$")
+  local current_word_start = fn.match(line_before_cursor, _in .. "\\+$")
   if current_word_start == -1 then
     M.swap_next()
     return
   end
-  local current_word_end = vim.fn.match(line, _in .. out, current_word_start)
+  local current_word_end = fn.match(line, _in .. out, current_word_start)
   current_word_end = current_word_end == -1 and #line - 1 or current_word_end
 
-  local prev_word_end = vim.fn.match(line:sub(1, current_word_start), prev_end)
+  local prev_word_end = fn.match(line:sub(1, current_word_start), prev_end)
   if prev_word_end == -1 then
     M.swap_next()
     return
   end
-  local prev_word_start = vim.fn.match(line:sub(1, prev_word_end + 1), _in .. "\\+$")
+  local prev_word_start = fn.match(line:sub(1, prev_word_end + 1), _in .. "\\+$")
 
   local current_word = line:sub(current_word_start + 1, current_word_end + 1)
   local prev_word = line:sub(prev_word_start + 1, prev_word_end + 1)
@@ -189,34 +196,32 @@ end
 
 -- Backspace
 function M.backspace_improved()
+  local command = "x"
   local curr_pos = vim.api.nvim_win_get_cursor(0)
   local curr_line = vim.api.nvim_get_current_line()
-  local command = "x"
-  if curr_pos[2] == 0 and curr_line:sub(1, 1) == "" then
-    command = "X"
-  end
-  vim.cmd(string.format('silent! normal! "_%s', vim.fn.mode() == 'v' and 'x' or command))
+  if curr_pos[2] == 0 and curr_line:sub(1, 1) == "" then command = "X" end
+  cmd(string.format('silent! normal! "_%s', fn.mode() == 'v' and 'x' or command))
 end
 
 -- Quit-Keymap
 function M.special_keymaps()
-  local buffer_name = vim.api.nvim_buf_get_name(0)
   local included_filetypes = { "qf", "help", "man", "noice" }
   if vim.tbl_contains(included_filetypes, vim.bo.filetype) then
-    vim.keymap.set("n", "q", "<cmd>q!<CR>", { noremap = true, silent = true, buffer = 0 })
+    map("n", "q", "<cmd>q!<CR>", { noremap = true, silent = true, buffer = 0 })
   end
-  if string.match(buffer_name, 'lazygit') then
-    vim.keymap.set("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 })
-    vim.keymap.set("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
+  if string.match(fn.bufname("%"), 'lazygit') then
+    map("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
   end
 end
 
--- Toggle-Color-Column
-function M.toggle_color_column()
-    local excluded_file_types = { 'help', 'alpha', 'lazy', 'noice', 'qf', 'text', 'lspinfo', 'checkhealth' }
-    local excluded = vim.tbl_contains(excluded_file_types, vim.bo.filetype) or vim.bo.buftype == 'terminal'
-    vim.cmd("silent! " .. (excluded and "no" or "") .. "highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64")
-    return excluded and vim.fn.clearmatches() or vim.fn.matchadd("ColorColumn", "\\%81v", 100)
+-- Cwd-Set-Options
+function M.cwd_set_options()
+  local excluded_file_types = { 'harpoon' }
+  local excluded = vim.tbl_contains(excluded_file_types, vim.bo.filetype)
+      or vim.bo.buftype == 'terminal' or not vim.bo.modifiable
+  vim.g.copilot_no_tab_map = not excluded and true or nil
+  vim.o.fo = not excluded and vim.o.fo:gsub("[cro]", "") or vim.o.fo
+  if fn.isdirectory(fn.expand('%:h')) and not excluded then fn.chdir(fn.expand('%:h')) end
 end
 
 return M

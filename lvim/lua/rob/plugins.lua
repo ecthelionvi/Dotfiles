@@ -441,7 +441,7 @@ lvim.plugins = {
         --project_path = "", -- No default path defined
         --project = {},
         map("n", "<leader>r", function()
-          return require('rob.functions').crunner_buffer()
+          return require('rob.utils').crunner_bufs()
         end, { noremap = true, silent = true, expr = true, })
       }
     end,

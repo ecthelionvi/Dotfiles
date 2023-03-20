@@ -1,9 +1,10 @@
--- |||||||||||||||||||||||||||||||| Functions ||||||||||||||||||||||||||||||||| --
+-- |||||||||||||||||||||||||||||||||| Utils ||||||||||||||||||||||||||||||||||| --
 
 local M = {}
 
 local fn = vim.fn
 local cmd = vim.cmd
+local enabled_bufs = {}
 local map = vim.keymap.set
 local timer = vim.loop.new_timer()
 
@@ -30,47 +31,43 @@ function M.auto_save()
 end
 
 -- Jump-Brackets
-function M.move_prev_pair()
-  local backsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = fn.eval("searchpos('" .. backsearch .. "', 'b')")
-  local lnum, col = search_result[1], search_result[2]
-  fn.setpos('.', { 0, lnum, col, 0 })
-end
-
-function M.move_next_pair()
-  local forwardsearch = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
-  local search_result = fn.eval("searchpos('" .. forwardsearch .. "', 'n')")
-  local lnum, col = search_result[1], search_result[2]
+function M.jump_brackets(dir)
+  local pattern = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
+  dir = dir == "prev" and "b" or "n"
+  local result = fn.eval("searchpos('" .. pattern .. "', '" .. dir .. "')")
+  local lnum, col = result[1], result[2]
   fn.setpos('.', { 0, lnum, col, 0 })
 end
 
 -- Code-Runner
-function M.crunner_buffer()
-  local crunner_buffers = vim.tbl_filter(function(buffer)
-    return string.match(vim.api.nvim_buf_get_name(buffer), 'crunner')
+function M.crunner_bufs()
+  local crunner_bufs = vim.tbl_filter(function(buffer)
+    return string.match(fn.bufname(buffer), 'crunner')
   end, vim.api.nvim_list_bufs())
-  return #crunner_buffers > 0 and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
+  return #crunner_bufs > 0 and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
 end
 
--- Terminal-Esc
-function M.terminal_esc(buffer)
-  return string.match(fn.bufname("%"), "lazygit") and "<esc>" or "<C-\\><C-n>"
+-- Cwd-Set-Options
+function M.cwd_set_options()
+  if M.cwd_excluded() then return end
+  vim.g.copilot_no_tab_map = true
+  vim.o.fo = vim.o.fo:gsub("[cro]", "")
+  if fn.isdirectory(fn.expand('%:h')) then fn.chdir(fn.expand('%:h')) end
 end
 
--- Toggle-Color-Column
-function M.toggle_color_column()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local ns_id = vim.api.nvim_create_namespace("ColorColumnToggle")
-  local extmarks = vim.api.nvim_buf_get_extmarks(bufnr, ns_id, 0, -1, {})
-  local color_column_enabled = #extmarks > 0
-  if not color_column_enabled then
-    cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64")
-    for i = 1, vim.api.nvim_buf_line_count(bufnr) do
-      vim.api.nvim_buf_add_highlight(bufnr, ns_id, "ColorColumn", i - 1, 80, 81)
-    end
-  else
-    vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-  end
+-- Cwd-Excluded
+function M.cwd_excluded()
+  local excluded_ft = { 'harpoon' }
+  return vim.tbl_contains(excluded_ft, vim.bo.filetype) or not vim.bo.modifiable
+end
+
+-- Backspace
+function M.backspace_improved()
+  local command = "x"
+  local curr_pos = vim.api.nvim_win_get_cursor(0)
+  local curr_line = vim.api.nvim_get_current_line()
+  if curr_pos[2] == 0 and curr_line:sub(1, 1) == "" then command = "X" end
+  cmd(string.format('silent! normal! "_%s', fn.mode() == 'v' and 'x' or command))
 end
 
 -- Clear-History
@@ -194,15 +191,6 @@ function M.swap_prev(cursor_pos, type)
   vim.api.nvim_win_set_cursor(0, { cursor[1], new_c - 1 })
 end
 
--- Backspace
-function M.backspace_improved()
-  local command = "x"
-  local curr_pos = vim.api.nvim_win_get_cursor(0)
-  local curr_line = vim.api.nvim_get_current_line()
-  if curr_pos[2] == 0 and curr_line:sub(1, 1) == "" then command = "X" end
-  cmd(string.format('silent! normal! "_%s', fn.mode() == 'v' and 'x' or command))
-end
-
 -- Quit-Keymap
 function M.special_keymaps()
   local included_filetypes = { "qf", "help", "man", "noice" }
@@ -210,18 +198,34 @@ function M.special_keymaps()
     map("n", "q", "<cmd>q!<CR>", { noremap = true, silent = true, buffer = 0 })
   end
   if string.match(fn.bufname("%"), 'lazygit') then
+    map("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 })
     map("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
   end
 end
 
--- Cwd-Set-Options
-function M.cwd_set_options()
-  local excluded_file_types = { 'harpoon' }
-  local excluded = vim.tbl_contains(excluded_file_types, vim.bo.filetype)
-      or vim.bo.buftype == 'terminal' or not vim.bo.modifiable
-  vim.g.copilot_no_tab_map = not excluded and true or nil
-  vim.o.fo = not excluded and vim.o.fo:gsub("[cro]", "") or vim.o.fo
-  if fn.isdirectory(fn.expand('%:h')) and not excluded then fn.chdir(fn.expand('%:h')) end
+-- Toggle-Color-Column
+function M.toggle_color_column()
+  if M.excluded_bufs() then return end
+  enabled_bufs[fn.bufnr('%')] = not enabled_bufs[fn.bufnr('%')]
+  M.notify_color_column()
+  M.apply_color_column()
+end
+
+-- Excluded-Buf
+function M.excluded_bufs()
+  local excluded_ft = { 'checkhealth', 'TelescopePrompt' }
+  return vim.tbl_contains(excluded_ft, vim.bo.filetype) or not vim.bo.modifiable
+end
+
+-- Notify-Color-Column
+function M.notify_color_column()
+  vim.notify("ColorColumn " .. (enabled_bufs[fn.bufnr('%')] and "Enabled" or "Disabled"))
+end
+
+-- Apply-Color-Column
+function M.apply_color_column()
+  vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64 | call clearmatches()")
+  if not M.excluded_bufs() and enabled_bufs[fn.bufnr('%')] then fn.matchadd("ColorColumn", "\\%81v", 100) end
 end
 
 return M

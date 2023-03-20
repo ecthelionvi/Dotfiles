@@ -10,7 +10,7 @@ autocmd({ "InsertLeave", "TextChanged" }, {
   group = augroup("auto-save", { clear = true }),
   callback = function()
     vim.schedule(function()
-      require("rob.functions").auto_save()
+      require("rob.utils").auto_save()
     end)
   end
 })
@@ -20,7 +20,7 @@ autocmd({ "BufEnter", "BufWinEnter" }, {
   group = augroup("format-options", { clear = true }),
   callback = function()
     vim.schedule(function()
-      require("rob.functions").cwd_set_options()
+      require("rob.utils").cwd_set_options()
     end)
   end,
 })
@@ -30,9 +30,19 @@ autocmd("FileType", {
   group = augroup("special-keymaps", { clear = true }),
   callback = function()
     vim.schedule(function()
-     require("rob.functions").special_keymaps()
+     require("rob.utils").special_keymaps()
    end)
   end,
+})
+
+-- Apply-Color-Column
+autocmd({ "BufWinEnter" }, {
+  group = augroup("apply-color-column", { clear = true }),
+  callback = function()
+    vim.schedule(function()
+      require("rob.utils").apply_color_column()
+    end)
+  end
 })
 
 return M

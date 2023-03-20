@@ -39,8 +39,11 @@ map("n", "<leader>j", "mzJ`z", opts)
 -- Command Mode
 map("n", ";", ":", { noremap = true })
 
+-- Terminal-ESC
+map("t", "<esc>", "<C-\\><C-n>", opts)
+
 -- New-Buffer
-map("n", "<c-t>", "<cmd>enew<cr>", opts)
+map("n", "<m-t>", "<cmd>enew<cr>", opts)
 
 -- Trim
 map("n", "<c-bs>", "<cmd>Trim<cr>", opts)
@@ -77,9 +80,6 @@ map({ "n", "x" }, "<bs>", "<cmd>Backspace<cr>", opts)
 -- Clear-History
 map({ "n", "x" }, "Z", "<cmd>ClearHistory<cr>", opts)
 
--- Color-Column
-map("n", "<m-t>", "<cmd>ToggleColorColumn<cr>", opts)
-
 -- Search-Movement
 map("n", "n", "'Nn'[v:searchforward]", { expr = true })
 map("n", "N", "'nN'[v:searchforward]", { expr = true })
@@ -99,9 +99,6 @@ map("n", "<leader>x", "<cmd>silent exec '!(chmod +x % &)'<cr>", opts)
 
 -- Visual-Comment
 map("x", "<leader>/", "<Plug>(comment_toggle_linewise_visual)", opts)
-
--- Terminal-ESC
-map("t", "<esc>", function() return require('rob.functions').terminal_esc() end, { expr = true })
 
 -- Wildmenu-Navigation
 map("c", "<up>", function() return vim.fn.wildmenumode() and '<left>' or '<up>' end, { expr = true })

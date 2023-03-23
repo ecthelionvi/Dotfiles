@@ -24,7 +24,4 @@ cmd("MovePrev", "lua require('rob.utils').jump_brackets('prev')", {})
 -- Backspace
 cmd("Backspace", "lua require('rob.utils').backspace_improved()", {})
 
--- Toggle-Color-Column
-cmd("ToggleColorColumn", "lua require('rob.utils').toggle_color_column()", {})
-
 return M

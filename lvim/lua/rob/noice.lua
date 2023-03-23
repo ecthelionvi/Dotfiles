@@ -117,11 +117,15 @@ noice.setup {
       opts = { skip = true },
     },
     {
+      filter = { event = "msg_show", find = "Error executing vim.schedule lua callback" },
+      opts = { skip = true },
+    },
+    {
       filter = { event = "notify", find = "Your last action was not put, ignoring cycle" },
       opts = { skip = true },
     },
     {
-      filter = { event = "notify", find = "lsp_progress" },
+      filter = { event = "notify", find = [[Cannot "join" node longer than 120 symbols. Check your settings to change it.]] },
       opts = { skip = true },
     },
   },

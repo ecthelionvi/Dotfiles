@@ -126,12 +126,12 @@ lvim.builtin.which_key.mappings = {
 
   -- Dashboard
   ["q"] = { "<cmd>silent! q<cr>", "Quit" },
-  [";"] = { "<cmd>Alpha<cr>", "Dashboard" },
-  ["k"] = { "<cmd>BufferKill<cr>", "Close Buffer" },
   ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
   ["P"] = { "<cmd>Telescope projects<cr>", "Projects" },
-  ["h"] = { "<cmd>ToggleColorColumn<cr>", "ColorColumn" },
+  ["h"] = { "<cmd>ToggleNeoColumn<cr>", "ColorColumn" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment" },
+  [";"] = { function() require('rob.utils').toggle_alpha() end, "Dashboard" },
+  ["k"] = { function() require('rob.utils').close_or_alpha() end, "Close Buffer" },
   ["f"] = { function() require("lvim.core.telescope.custom-finders").find_project_files() end, "Find File" },
 
   -- LunarVim

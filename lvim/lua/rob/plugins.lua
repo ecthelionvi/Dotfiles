@@ -27,6 +27,16 @@ lvim.plugins = {
     event = "VeryLazy",
   },
 
+  -- NeoSave
+  {
+    "ecthelionvi/NeoSave",
+    event = "BufRead",
+    opts = {
+      write_all_bufs = true,
+      notify = true,
+    }
+  },
+
   -- LazyGit
   {
     "kdheepak/lazygit.nvim",
@@ -228,6 +238,16 @@ lvim.plugins = {
         end
       })
     end
+  },
+
+  -- NeoColumn
+  {
+    "ecthelionvi/NeoColumn",
+     event = "BufEnter",
+     opts = {
+      notify = true,
+      excluded_ft = { 'checkhealth', 'TelescopePrompt' },
+     }
   },
 
   -- Quick-Fix

@@ -3,21 +3,21 @@
 local M = {}
 
 -- Modules
-require("rob.lsp")
-require("rob.noice")
-require("rob.utils")
-require("rob.remaps")
-require("rob.lualine")
-require("rob.plugins")
-require("rob.project")
-require("rob.commands")
-require("rob.nvim-tree")
-require("rob.telescope")
-require("rob.which-key")
-require("rob.formatters")
-require("rob.treesitter")
-require("rob.toggleterm")
-require("rob.autocommands")
+reload("rob.lsp")
+reload("rob.noice")
+reload("rob.utils")
+reload("rob.remaps")
+reload("rob.lualine")
+reload("rob.plugins")
+reload("rob.project")
+reload("rob.commands")
+reload("rob.nvim-tree")
+reload("rob.telescope")
+reload("rob.which-key")
+reload("rob.formatters")
+reload("rob.treesitter")
+reload("rob.toggleterm")
+reload("rob.autocommands")
 
 -- Options
 vim.o.tabstop = 2

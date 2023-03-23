@@ -6,7 +6,6 @@ local fn = vim.fn
 local cmd = vim.cmd
 local enabled_bufs = {}
 local map = vim.keymap.set
-local timer = vim.loop.new_timer()
 
 -- Select-All
 function M.select_all()
@@ -20,14 +19,40 @@ function M.trim()
   fn.winrestview(save)
 end
 
--- Auto-Save
-function M.auto_save()
-  if vim.bo.modified and fn.bufname("%") ~= "" and
-      not timer:is_active() then
-    timer:start(135, 0, vim.schedule_wrap(function()
-      cmd("silent! wall")
-    end))
+-- Count-Buffers
+function M.count_buffers(buffers)
+  local count = 0
+  for _, bufnr in ipairs(buffers) do
+    if vim.fn.buflisted(bufnr) == 1 then
+      count = count + 1
+    end
   end
+  return count
+end
+
+-- Close-or-Alpha
+function M.close_or_alpha()
+  local buffers = vim.api.nvim_list_bufs()
+  local cur_bufnr = vim.api.nvim_get_current_buf()
+  local buf_count = M.count_buffers(buffers)
+
+  if buf_count == 1 then
+    vim.cmd('Alpha')
+    vim.cmd('bwipeout ' .. cur_bufnr)
+  else
+    vim.cmd('BufferKill')
+  end
+end
+
+-- Toggle-Alpha
+function M.toggle_alpha()
+  local current_filetype = vim.bo.filetype
+  local buffers = vim.api.nvim_list_bufs()
+  local buf_count = M.count_buffers(buffers)
+  if buf_count == 0 and current_filetype == "alpha" then
+    return
+  end
+  vim.cmd("Alpha")
 end
 
 -- Jump-Brackets
@@ -201,31 +226,6 @@ function M.special_keymaps()
     map("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 })
     map("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
   end
-end
-
--- Toggle-Color-Column
-function M.toggle_color_column()
-  if M.excluded_bufs() then return end
-  enabled_bufs[fn.bufnr('%')] = not enabled_bufs[fn.bufnr('%')]
-  M.notify_color_column()
-  M.apply_color_column()
-end
-
--- Excluded-Buf
-function M.excluded_bufs()
-  local excluded_ft = { 'checkhealth', 'TelescopePrompt' }
-  return vim.tbl_contains(excluded_ft, vim.bo.filetype) or not vim.bo.modifiable
-end
-
--- Notify-Color-Column
-function M.notify_color_column()
-  vim.notify("ColorColumn " .. (enabled_bufs[fn.bufnr('%')] and "Enabled" or "Disabled"))
-end
-
--- Apply-Color-Column
-function M.apply_color_column()
-  vim.cmd("silent! highlight ColorColumn guifg=#1a1b26 guibg=#ff9e64 | call clearmatches()")
-  if not M.excluded_bufs() and enabled_bufs[fn.bufnr('%')] then fn.matchadd("ColorColumn", "\\%81v", 100) end
 end
 
 return M

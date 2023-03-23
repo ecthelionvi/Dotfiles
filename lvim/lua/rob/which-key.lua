@@ -131,7 +131,7 @@ lvim.builtin.which_key.mappings = {
   ["h"] = { "<cmd>ToggleNeoColumn<cr>", "ColorColumn" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment" },
   [";"] = { function() require('rob.utils').toggle_alpha() end, "Dashboard" },
-  ["k"] = { function() require('rob.utils').close_or_alpha() end, "Close Buffer" },
+  ["k"] = { function() require('rob.utils').toggle_close() end, "Close Buffer" },
   ["f"] = { function() require("lvim.core.telescope.custom-finders").find_project_files() end, "Find File" },
 
   -- LunarVim

@@ -19,23 +19,15 @@ function M.trim()
   fn.winrestview(save)
 end
 
--- Count-Buffers
-function M.count_buffers(buffers)
-  local count = 0
-  for _, bufnr in ipairs(buffers) do
-    if vim.fn.buflisted(bufnr) == 1 then
-      count = count + 1
-    end
-  end
-  return count
+-- Count-Windows
+function M.count_windows()
+  return vim.tbl_count(vim.api.nvim_list_wins())
 end
 
 -- Close-or-Alpha
-function M.close_or_alpha()
-  local buffers = vim.api.nvim_list_bufs()
+function M.toggle_close()
+  local buf_count = M.count_buffers()
   local cur_bufnr = vim.api.nvim_get_current_buf()
-  local buf_count = M.count_buffers(buffers)
-
   if buf_count == 1 then
     vim.cmd('Alpha')
     vim.cmd('bwipeout ' .. cur_bufnr)
@@ -44,11 +36,17 @@ function M.close_or_alpha()
   end
 end
 
+-- Count-Buffers
+function M.count_buffers()
+  return vim.tbl_count(vim.tbl_filter(function(bufnr)
+    return vim.fn.buflisted(bufnr) == 1
+  end, vim.api.nvim_list_bufs()))
+end
+
 -- Toggle-Alpha
 function M.toggle_alpha()
   local current_filetype = vim.bo.filetype
-  local buffers = vim.api.nvim_list_bufs()
-  local buf_count = M.count_buffers(buffers)
+  local buf_count = M.count_buffers()
   if buf_count == 0 and current_filetype == "alpha" then
     return
   end
@@ -93,6 +91,22 @@ function M.backspace_improved()
   local curr_line = vim.api.nvim_get_current_line()
   if curr_pos[2] == 0 and curr_line:sub(1, 1) == "" then command = "X" end
   cmd(string.format('silent! normal! "_%s', fn.mode() == 'v' and 'x' or command))
+end
+
+-- Special-Keymaps
+function M.special_keymaps()
+  local bufname = fn.bufname("%")
+  if vim.tbl_contains({ "qf", "help", "man", "noice" }, vim.bo.filetype) then
+    map("n", "q", "<cmd>q!<cr>", { noremap = true, silent = true })
+  end
+  if string.match(bufname, 'lazygit') then
+    map("t", "<esc>", "<esc>", { noremap = true, silent = true })
+    map("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true })
+  end
+  if string.match(bufname, 'NvimTree') then
+    map("n", "<leader>k", "<cmd>NvimTreeToggle<cr>", { noremap = true, silent = true })
+    map("n", "<leader>q", "<cmd>NvimTreeToggle<cr>", { noremap = true, silent = true })
+  end
 end
 
 -- Clear-History
@@ -216,15 +230,14 @@ function M.swap_prev(cursor_pos, type)
   vim.api.nvim_win_set_cursor(0, { cursor[1], new_c - 1 })
 end
 
--- Quit-Keymap
-function M.special_keymaps()
-  local included_filetypes = { "qf", "help", "man", "noice" }
-  if vim.tbl_contains(included_filetypes, vim.bo.filetype) then
-    map("n", "q", "<cmd>q!<CR>", { noremap = true, silent = true, buffer = 0 })
-  end
-  if string.match(fn.bufname("%"), 'lazygit') then
-    map("t", "<esc>", "<esc>", { noremap = true, silent = true, buffer = 0 })
-    map("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true, buffer = 0 })
+-- Toggle-Nvim-Tree
+function M.toggle_nvim_tree()
+  if M.count_windows() == 1 and vim.fn.bufname("%"):match("NvimTree_") then
+    vim.cmd("quit")
+  elseif M.count_buffers() == 0 and vim.bo.filetype ~= 'NvimTree' and vim.tbl_count(vim.tbl_filter(function(win_id)
+        return vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(win_id), 'filetype') == 'NvimTree'
+      end, vim.api.nvim_list_wins())) > 0 then
+    vim.cmd('NvimTreeToggle')
   end
 end
 

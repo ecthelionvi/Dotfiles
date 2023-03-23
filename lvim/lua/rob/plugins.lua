@@ -9,6 +9,15 @@ local opts = { noremap = true, silent = true }
 
 lvim.plugins = {
 
+  {
+  "folke/persistence.nvim",
+  event = "BufReadPre", -- this will only start session saving when an actual file was opened
+  config = function()
+    require("persistence").setup()
+  end,
+  vim.api.nvim_set_keymap("n", "<leader>,", [[<cmd>lua require("persistence").load({ last = true })<cr>]], {})
+},
+
   -- Repeat
   {
     "tpope/vim-repeat",

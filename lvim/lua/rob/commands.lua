@@ -7,10 +7,6 @@ local cmd = vim.api.nvim_create_user_command
 -- Trim
 cmd("Trim", "lua require('rob.utils').trim()", {})
 
--- Swap
-cmd("SwapNext", "lua require('rob.utils').swap_next()", {})
-cmd("SwapPrev", "lua require('rob.utils').swap_prev()", {})
-
 -- Select-All
 cmd("SelectAll", "lua require('rob.utils').select_all()", {})
 
@@ -21,7 +17,7 @@ cmd("ClearHistory", "lua require('rob.utils').clear_history()", {})
 cmd("MoveNext", "lua require('rob.utils').jump_brackets('next')", {})
 cmd("MovePrev", "lua require('rob.utils').jump_brackets('prev')", {})
 
--- Backspace
-cmd("Backspace", "lua require('rob.utils').backspace_improved()", {})
+-- Clear-Hover
+cmd("ClearHover", "lua require('rob.utils').close_hover_windows()", {})
 
 return M

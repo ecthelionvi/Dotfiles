@@ -14,6 +14,9 @@ map("n", "Q", "@q", opts)
 -- Undo
 map("n", "U", "<c-r>", opts)
 
+-- Visual Backspace
+map("x", "<bs>", '"_x', opts)
+
 -- Movement
 map({ "n", "x" }, "J", "}", opts)
 map({ "n", "x" }, "K", "{", opts)
@@ -49,8 +52,8 @@ map("n", "<m-t>", "<cmd>enew<cr>", opts)
 map("n", "<c-bs>", "<cmd>Trim<cr>", opts)
 
 -- Swap
-map("n", "zh", "<cmd>SwapPrev<cr>", opts)
-map("n", "zl", "<cmd>SwapNext<cr>", opts)
+map("n", "zh", "<cmd>NeoSwapPrev<cr>", opts)
+map("n", "zl", "<cmd>NeoSwapNext<cr>", opts)
 
 -- Open-File
 map("n", "gf", "<cmd>e <cfile><cr>", opts)
@@ -63,9 +66,6 @@ map("n", "<s-cr>", "<cmd>normal! O<cr>", opts)
 map("n", "<tab>", "<cmd>MoveNext<cr>", opts)
 map("n", "<s-tab>", "<cmd>MovePrev<cr>", opts)
 
--- Highlight
-map("n", "<esc>", "<cmd>nohlsearch<cr>", opts)
-
 -- Accelerated-JK
 map("n", "j", "<Plug>(accelerated_jk_gj)", opts)
 map("n", "k", "<Plug>(accelerated_jk_gk)", opts)
@@ -73,9 +73,6 @@ map("n", "k", "<Plug>(accelerated_jk_gk)", opts)
 -- Select-All
 map("x", "<leader>a", "<esc>", opts)
 map("n", "<leader>a", "<cmd>SelectAll<cr>", opts)
-
--- Backspace
-map({ "n", "x" }, "<bs>", "<cmd>Backspace<cr>", opts)
 
 -- Clear-History
 map({ "n", "x" }, "Z", "<cmd>ClearHistory<cr>", opts)
@@ -94,11 +91,18 @@ map("n", "cN", "*``cgN", opts)
 map("x", "cn", "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgn", opts)
 map("x", "cN", "y/\\V<c-r>=escape(@\", '/')<cr><cr>``cgN", opts)
 
+-- Highlight
+map("n", "<esc>", "<cmd>nohlsearch<cr><cmd>ClearHover<cr>", opts)
+
 -- Chmod-X
 map("n", "<leader>x", "<cmd>silent exec '!(chmod +x % &)'<cr>", opts)
 
 -- Visual-Comment
 map("x", "<leader>/", "<Plug>(comment_toggle_linewise_visual)", opts)
+
+-- Toggle-Diagnostics-Float
+map("n", "gk", function() require('rob.utils').toggle_lsp_buf_hover() end, opts)
+map("n", "gl", function() require('rob.utils').toggle_diagnostic_hover() end, opts)
 
 -- Wildmenu-Navigation
 map("c", "<up>", function() return vim.fn.wildmenumode() and '<left>' or '<up>' end, { expr = true })

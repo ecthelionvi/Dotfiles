@@ -57,6 +57,10 @@ noice.setup {
       opts = { skip = true },
     },
     {
+      filter = { event = "msg_show", find = "E444" },
+      opts = { skip = true },
+    },
+    {
       filter = { event = "msg_show", find = "E486" },
       opts = { skip = true },
     },

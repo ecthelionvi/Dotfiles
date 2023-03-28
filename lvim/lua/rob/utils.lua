@@ -3,9 +3,10 @@
 local M = {}
 
 local fn = vim.fn
+local api = vim.api
 local cmd = vim.cmd
-local enabled_bufs = {}
 local map = vim.keymap.set
+local opts = { noremap = true, silent = true, buffer = 0 }
 
 -- Select-All
 function M.select_all()
@@ -19,38 +20,112 @@ function M.trim()
   fn.winrestview(save)
 end
 
--- Count-Windows
-function M.count_windows()
-  return vim.tbl_count(vim.api.nvim_list_wins())
+-- Toggle-Hover
+function M.toggle_lsp_buf_hover()
+  if M.close_hover_windows() then return end
+  vim.lsp.buf.hover()
 end
 
--- Close-or-Alpha
-function M.toggle_close()
-  local buf_count = M.count_buffers()
-  local cur_bufnr = vim.api.nvim_get_current_buf()
-  if buf_count == 1 then
-    vim.cmd('Alpha')
-    vim.cmd('bwipeout ' .. cur_bufnr)
-  else
-    vim.cmd('BufferKill')
+-- Toggle-Diagnostic-Float
+function M.toggle_diagnostic_hover()
+  if M.close_hover_windows() then return end
+  local config = lvim.lsp.diagnostics.float
+  config.scope = "line"
+  vim.diagnostic.open_float(0, config)
+end
+
+-- Cwd-Set-Options
+function M.cwd_set_options()
+  local dir = fn.expand('%:h')
+  vim.g.copilot_no_tab_map = true
+  vim.o.fo = vim.o.fo:gsub("[cro]", "")
+  if fn.isdirectory(dir) then fn.chdir(dir) end
+end
+
+-- Hide_Filetype
+function M.hide_filetype()
+  local ft = { "lazy", "harpoon",
+    "NvimTree", "toggleterm", "TelescopePrompt" }
+  if vim.tbl_contains(ft, vim.bo.filetype)
+  then
+    api.nvim_buf_set_option(0, 'filetype', '')
   end
+end
+
+-- Dashboard
+function M.dashboard()
+  local ft = vim.bo.filetype
+  if M.count_buffers() == 0 and ft == "alpha" then
+    return
+  end
+  cmd("Alpha")
 end
 
 -- Count-Buffers
 function M.count_buffers()
   return vim.tbl_count(vim.tbl_filter(function(bufnr)
-    return vim.fn.buflisted(bufnr) == 1
-  end, vim.api.nvim_list_bufs()))
+    return fn.buflisted(bufnr) == 1
+  end, api.nvim_list_bufs()))
 end
 
--- Toggle-Alpha
-function M.toggle_alpha()
-  local current_filetype = vim.bo.filetype
-  local buf_count = M.count_buffers()
-  if buf_count == 0 and current_filetype == "alpha" then
-    return
+-- Close
+function M.close_buffer()
+  local bufnr = fn.bufnr("%")
+  return M.count_buffers() == 1 and
+      cmd('Alpha | bd ' .. bufnr) or cmd('BufferKill')
+end
+
+-- Close-Hover-Windows
+function M.close_hover_windows()
+  local win_ids = api.nvim_list_wins()
+  local floating_wins = vim.tbl_filter(function(win_id)
+    local win_config = api.nvim_win_get_config(win_id)
+    return win_config.relative ~= ''
+  end, win_ids)
+  if vim.tbl_isempty(floating_wins) then return false end
+  vim.tbl_map(function(bufnr)
+    local buftype = api.nvim_buf_get_option(bufnr, 'buftype')
+    local filetype = api.nvim_buf_get_option(bufnr, 'filetype')
+    if buftype == 'nofile' and filetype ~= 'alpha' then
+      api.nvim_buf_delete(bufnr, { force = true })
+    end
+  end, api.nvim_list_bufs())
+  return true
+end
+
+-- Special-Keymaps
+function M.special_keymaps()
+  local bt = vim.bo.buftype
+  local ft = vim.bo.filetype
+  local bn = fn.bufname("%")
+
+  if bt:match("acwrite") then
+    map("n", "|", "<nop>", opts)
   end
-  vim.cmd("Alpha")
+  if bn:match("lazygit") then
+    map("t", "<esc>", "<esc>", opts)
+  end
+  if bn:match("ranger") then
+    map("t", "<esc>", "<cmd>clo!<cr>", opts)
+  end
+  if bt:match("nofile") and ft ~= "alpha" then
+    map("n", "<esc>", "<cmd>clo!<cr>", opts)
+  end
+  if bn:match("NvimTree_") then
+    map("n", "<leader>k", "<cmd>NvimTreeToggle<cr>", opts)
+    map("n", "<leader>q", "<cmd>NvimTreeToggle<cr>", opts)
+  end
+  if vim.tbl_contains({ "qf", "help", "man", "noice" }, ft) then
+    map("n", "q", "<cmd>clo!<cr>", opts)
+  end
+end
+
+-- Code-Runner
+function M.code_runner()
+  local crunner_bufs = vim.tbl_filter(function(buffer)
+    return string.match(fn.bufname(buffer), 'crunner')
+  end, api.nvim_list_bufs())
+  return #crunner_bufs > 0 and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
 end
 
 -- Jump-Brackets
@@ -62,182 +137,30 @@ function M.jump_brackets(dir)
   fn.setpos('.', { 0, lnum, col, 0 })
 end
 
--- Code-Runner
-function M.crunner_bufs()
-  local crunner_bufs = vim.tbl_filter(function(buffer)
-    return string.match(fn.bufname(buffer), 'crunner')
-  end, vim.api.nvim_list_bufs())
-  return #crunner_bufs > 0 and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
-end
-
--- Cwd-Set-Options
-function M.cwd_set_options()
-  if M.cwd_excluded() then return end
-  vim.g.copilot_no_tab_map = true
-  vim.o.fo = vim.o.fo:gsub("[cro]", "")
-  if fn.isdirectory(fn.expand('%:h')) then fn.chdir(fn.expand('%:h')) end
-end
-
--- Cwd-Excluded
-function M.cwd_excluded()
-  local excluded_ft = { 'harpoon' }
-  return vim.tbl_contains(excluded_ft, vim.bo.filetype) or not vim.bo.modifiable
-end
-
--- Backspace
-function M.backspace_improved()
-  local command = "x"
-  local curr_pos = vim.api.nvim_win_get_cursor(0)
-  local curr_line = vim.api.nvim_get_current_line()
-  if curr_pos[2] == 0 and curr_line:sub(1, 1) == "" then command = "X" end
-  cmd(string.format('silent! normal! "_%s', fn.mode() == 'v' and 'x' or command))
-end
-
--- Special-Keymaps
-function M.special_keymaps()
-  local bufname = fn.bufname("%")
-  if vim.tbl_contains({ "qf", "help", "man", "noice" }, vim.bo.filetype) then
-    map("n", "q", "<cmd>q!<cr>", { noremap = true, silent = true })
-  end
-  if string.match(bufname, 'lazygit') then
-    map("t", "<esc>", "<esc>", { noremap = true, silent = true })
-    map("t", "<leader>gg", "<esc>:q!<cr>", { noremap = true, silent = true })
-  end
-  if string.match(bufname, 'NvimTree') then
-    map("n", "<leader>k", "<cmd>NvimTreeToggle<cr>", { noremap = true, silent = true })
-    map("n", "<leader>q", "<cmd>NvimTreeToggle<cr>", { noremap = true, silent = true })
-  end
+-- Toggle-Diagnostics
+function M.toggle_lsp_diagnostics()
+  local bufnr = api.nvim_get_current_buf()
+  local diagnostics_hidden = pcall(api.nvim_buf_get_var, bufnr, 'diagnostics_hidden')
+      and api.nvim_buf_get_var(bufnr, 'diagnostics_hidden')
+  api.nvim_buf_set_var(bufnr, 'diagnostics_hidden', not diagnostics_hidden)
+  if diagnostics_hidden then vim.diagnostic.show() return end
+  vim.diagnostic.hide()
 end
 
 -- Clear-History
 function M.clear_history()
   local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-\"*+#"
-  for char in chars:gmatch(".") do fn.setreg(char, {}) end
+  for char in chars:gmatch(".") do fn.setreg(char, {}) end 
+  vim.cmd("messages clear")
   fn.histdel(":")
 end
 
--- Swap
-local entity_pattern = {}
-entity_pattern.w = {}
-entity_pattern.w._in = "\\w"
-entity_pattern.w.out = "\\W"
-entity_pattern.w.prev_end = "\\zs\\w\\W\\+$"
-entity_pattern.k = {}
-entity_pattern.k._in = "\\k"
-entity_pattern.k.out = "\\k\\@!"
-entity_pattern.k.prev_end = "\\k\\(\\k\\@!.\\)\\+$"
-
-function M.swap_next(cursor_pos, type)
-  type = type or "w"
-  cursor_pos = cursor_pos or "follow"
-
-  local line = vim.api.nvim_get_current_line()
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local c = cursor[2]
-  local line_before_cursor = line:sub(1, c + 1)
-
-  local _in = entity_pattern[type]._in
-  local out = entity_pattern[type].out
-
-  local current_word_start = fn.match(line_before_cursor, _in .. "\\+$")
-  local current_word_end = fn.match(line, _in .. out, current_word_start)
-  if current_word_end == -1 then
-    M.swap_prev()
-    return
-  end
-
-  local next_word_start = fn.match(line, _in, current_word_end + 1)
-  if next_word_start == -1 then
-    M.swap_prev()
-    return
-  end
-  local next_word_end = fn.match(line, _in .. out, next_word_start)
-  next_word_end = next_word_end == -1 and #line - 1 or next_word_end
-
-  local current_word = line:sub(current_word_start + 1, current_word_end + 1)
-  local next_word = line:sub(next_word_start + 1, next_word_end + 1)
-
-  local new_line = (current_word_start > 0 and line:sub(1, current_word_start) or "")
-      .. next_word
-      .. line:sub(current_word_end + 2, next_word_start)
-      .. current_word
-      .. line:sub(next_word_end + 2)
-
-  local new_c = c
-  if cursor_pos == "keep" then
-    new_c = c + 1
-  elseif cursor_pos == "follow" then
-    new_c = c + next_word:len() + next_word_start - current_word_end
-  elseif cursor_pos == "left" then
-    new_c = current_word_start + 1
-  elseif cursor_pos == "follow" then
-    new_c = c + next_word:len() + next_word_start - current_word_end + current_word_start
-  end
-
-  vim.api.nvim_set_current_line(new_line)
-  vim.api.nvim_win_set_cursor(0, { cursor[1], new_c - 1 })
-end
-
-function M.swap_prev(cursor_pos, type)
-  type = type or "w"
-  cursor_pos = cursor_pos or "follow"
-
-  local line = vim.api.nvim_get_current_line()
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local c = cursor[2]
-  local line_before_cursor = line:sub(1, c + 1)
-
-  local _in = entity_pattern[type]._in
-  local out = entity_pattern[type].out
-  local prev_end = entity_pattern[type].prev_end
-
-  local current_word_start = fn.match(line_before_cursor, _in .. "\\+$")
-  if current_word_start == -1 then
-    M.swap_next()
-    return
-  end
-  local current_word_end = fn.match(line, _in .. out, current_word_start)
-  current_word_end = current_word_end == -1 and #line - 1 or current_word_end
-
-  local prev_word_end = fn.match(line:sub(1, current_word_start), prev_end)
-  if prev_word_end == -1 then
-    M.swap_next()
-    return
-  end
-  local prev_word_start = fn.match(line:sub(1, prev_word_end + 1), _in .. "\\+$")
-
-  local current_word = line:sub(current_word_start + 1, current_word_end + 1)
-  local prev_word = line:sub(prev_word_start + 1, prev_word_end + 1)
-
-  local new_line = (prev_word_start > 0 and line:sub(1, prev_word_start) or "")
-      .. current_word
-      .. line:sub(prev_word_end + 2, current_word_start)
-      .. prev_word
-      .. line:sub(current_word_end + 2)
-
-  local new_c = c
-  if cursor_pos == "keep" then
-    new_c = c + 1
-  elseif cursor_pos == "follow" then
-    new_c = c + prev_word_start - current_word_start + 1
-  elseif cursor_pos == "left" then
-    new_c = prev_word_start + 1
-  elseif cursor_pos == "follow" then
-    new_c = current_word:len() + current_word_start - prev_word_end + prev_word_start
-  end
-
-  vim.api.nvim_set_current_line(new_line)
-  vim.api.nvim_win_set_cursor(0, { cursor[1], new_c - 1 })
-end
-
--- Toggle-Nvim-Tree
-function M.toggle_nvim_tree()
-  if M.count_windows() == 1 and vim.fn.bufname("%"):match("NvimTree_") then
-    vim.cmd("quit")
-  elseif M.count_buffers() == 0 and vim.bo.filetype ~= 'NvimTree' and vim.tbl_count(vim.tbl_filter(function(win_id)
-        return vim.api.nvim_buf_get_option(vim.api.nvim_win_get_buf(win_id), 'filetype') == 'NvimTree'
-      end, vim.api.nvim_list_wins())) > 0 then
-    vim.cmd('NvimTreeToggle')
+-- Close-Nvim-Tree
+function M.close_nvim_tree()
+  if M.count_buffers() == 0 and vim.tbl_count(vim.tbl_filter(function(win_id)
+        return api.nvim_buf_get_name(api.nvim_win_get_buf(win_id)):match('NvimTree_')
+      end, api.nvim_list_wins())) > 0 then
+    cmd('NvimTreeToggle')
   end
 end
 

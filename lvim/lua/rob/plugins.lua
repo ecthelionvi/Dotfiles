@@ -9,15 +9,6 @@ local opts = { noremap = true, silent = true }
 
 lvim.plugins = {
 
-  {
-  "folke/persistence.nvim",
-  event = "BufReadPre", -- this will only start session saving when an actual file was opened
-  config = function()
-    require("persistence").setup()
-  end,
-  vim.api.nvim_set_keymap("n", "<leader>,", [[<cmd>lua require("persistence").load({ last = true })<cr>]], {})
-},
-
   -- Repeat
   {
     "tpope/vim-repeat",
@@ -36,20 +27,16 @@ lvim.plugins = {
     event = "VeryLazy",
   },
 
-  -- NeoSave
-  {
-    "ecthelionvi/NeoSave",
-    event = "BufRead",
-    opts = {
-      write_all_bufs = true,
-      notify = true,
-    }
-  },
-
   -- LazyGit
   {
     "kdheepak/lazygit.nvim",
     cmd = "LazyGit",
+  },
+
+  {
+    "ecthelionvi/NeoSwap",
+    event = "BufRead",
+    opts = {},
   },
 
   -- Noice
@@ -71,6 +58,13 @@ lvim.plugins = {
   {
     "ThePrimeagen/vim-be-good",
     cmd = "VimBeGood",
+  },
+
+  -- NeoSave
+  {
+    "ecthelionvi/NeoSave.nvim",
+    event = "BufRead",
+    opts = {},
   },
 
   -- Numb
@@ -105,6 +99,13 @@ lvim.plugins = {
         exclude = { "ns", "nS" },
       })
     end
+  },
+
+  -- NeoColumn
+  {
+    "ecthelionvi/NeoColumn.nvim",
+    event = "BufRead",
+    opts = {},
   },
 
   -- Mini
@@ -201,8 +202,8 @@ lvim.plugins = {
     event = "BufRead",
     config = function()
       require("hop").setup()
-      map("n", "S", "<cmd>HopWord<cr>", opts)
-      map("n", "s", "<cmd>HopChar2<cr>", opts)
+      map("n", "M", "<cmd>HopWord<cr>", opts)
+      map("n", "m", "<cmd>HopChar2<cr>", opts)
     end,
   },
 
@@ -247,16 +248,6 @@ lvim.plugins = {
         end
       })
     end
-  },
-
-  -- NeoColumn
-  {
-    "ecthelionvi/NeoColumn",
-     event = "BufEnter",
-     opts = {
-      notify = true,
-      excluded_ft = { 'checkhealth', 'TelescopePrompt' },
-     }
   },
 
   -- Quick-Fix
@@ -323,9 +314,9 @@ lvim.plugins = {
     "mbbill/undotree",
     event = "VeryLazy",
     config = function()
-      vim.g.undotree_SetFocusWhenToggle = 1,
-          map("n", "<leader>u", "<cmd>UndotreeToggle<cr>", opts)
-    end,
+      vim.g.undotree_SetFocusWhenToggle = 1
+      map("n", "<leader>u", "<cmd>UndotreeToggle<cr>", opts)
+    end
   },
 
   -- Dial
@@ -371,20 +362,6 @@ lvim.plugins = {
     end
   },
 
-  --Rnvimr
-  {
-    "ecthelionvi/rnvimr",
-    event = "VeryLazy",
-    config = function()
-      vim.g.rnvimr_bw_enable = 1
-      vim.g.rnvimr_draw_border = 1
-      vim.g.rnvimr_pick_enable = 1
-      vim.g.rnvimr_presets = { { width = 0.800, height = 0.800 } }
-      map("n", "<leader>.", "<cmd>RnvimrToggle<cr>",
-        opts)
-    end
-  },
-
   -- Nvim-Colorizer
   {
     "norcalli/nvim-colorizer.lua",
@@ -408,6 +385,7 @@ lvim.plugins = {
     event = "BufRead",
     config = function()
       vim.g.copilot_filetypes = {
+        [""] = false,
         lazy = false,
         TelescopePrompt = false,
         TelescopeResults = false,
@@ -417,18 +395,26 @@ lvim.plugins = {
     end
   },
 
+  --Rnvimr
+  {
+    "kevinhwang91/rnvimr",
+    event = "VeryLazy",
+    config = function()
+      vim.g.rnvimr_bw_enable = 1
+      vim.g.rnvimr_draw_border = 1
+      vim.g.rnvimr_pick_enable = 1
+      vim.g.rnvimr_presets = { { width = 0.800, height = 0.800 } }
+      map("n", "<leader>.", "<cmd>RnvimrToggle<cr><cmd>setlocal filetype=<cr>",
+        opts)
+    end
+  },
+
   -- Harpoon
   {
     "ThePrimeagen/harpoon",
     event = "VeryLazy",
     config = function()
-      autocmd("filetype", {
-        pattern = "harpoon",
-        callback = function()
-          map("n", "m", "<nop>", { buffer = 0 })
-        end
-      })
-      map("n", "m", "<cmd>lua require('harpoon.mark').add_file()<cr>", opts)
+      map("n", "|", "<cmd>lua require('harpoon.mark').add_file()<cr>", opts)
       map("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", opts)
     end
   },
@@ -446,6 +432,14 @@ lvim.plugins = {
         map("n", "cx", "<cmd>lua require('substitute.exchange').operator()<cr>", opts),
       })
     end
+  },
+
+  -- Persistence
+  {
+    "folke/persistence.nvim",
+    event = "BufReadPre",
+    opts = {},
+    map("n", "<leader>,", "<cmd>lua require('persistence').load({ last = true })<cr>", opts)
   },
 
   -- Code-Runner
@@ -470,7 +464,7 @@ lvim.plugins = {
         --project_path = "", -- No default path defined
         --project = {},
         map("n", "<leader>r", function()
-          return require('rob.utils').crunner_bufs()
+          return require('rob.utils').code_runner()
         end, { noremap = true, silent = true, expr = true, })
       }
     end,

@@ -71,8 +71,6 @@ lvim.builtin.which_key.mappings = {
   l = {
     name = "LSP",
     i = { "<cmd>LspInfo<cr>", "Info" },
-    o = { vim.diagnostic.show, "󰐍 Play" },
-    p = { vim.diagnostic.hide, "󰏦 Pause" },
     r = { vim.lsp.buf.rename, "Rename" },
     I = { "<cmd>Mason<cr>", "Mason Info" },
     q = { vim.diagnostic.setloclist, "Quickfix" },
@@ -84,6 +82,7 @@ lvim.builtin.which_key.mappings = {
     e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
     a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
+    p = { function() require('rob.utils').toggle_lsp_diagnostics() end, "Show/Hide" },
     S = { "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "Workspace Symbols" },
     d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
   },
@@ -96,7 +95,7 @@ lvim.builtin.which_key.mappings = {
     o = { "<cmd>Telescope git_status<cr>", "Open Changed File" },
     b = { "<cmd>Telescope git_branches<cr>", "Checkout Branch" },
     l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
-    C = { "<cmd>Telescope git_bcommits<cr>", "Commit Current File" },
+    C = { "<cmd>Telescope git_bcommits<cr>", "Commit File" },
     r = { "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", "Reset Hunk" },
     s = { "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", "Stage Hunk" },
     p = { "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", "Preview Hunk" },
@@ -130,8 +129,8 @@ lvim.builtin.which_key.mappings = {
   ["P"] = { "<cmd>Telescope projects<cr>", "Projects" },
   ["h"] = { "<cmd>ToggleNeoColumn<cr>", "ColorColumn" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment" },
-  [";"] = { function() require('rob.utils').toggle_alpha() end, "Dashboard" },
-  ["k"] = { function() require('rob.utils').toggle_close() end, "Close Buffer" },
+  [";"] = { function() require('rob.utils').dashboard() end, "Dashboard" },
+  ["k"] = { function() require('rob.utils').close_buffer() end, "Close Buffer" },
   ["f"] = { function() require("lvim.core.telescope.custom-finders").find_project_files() end, "Find File" },
 
   -- LunarVim

@@ -34,14 +34,6 @@ function M.toggle_diagnostic_hover()
   vim.diagnostic.open_float(0, config)
 end
 
--- Cwd-Set-Options
-function M.cwd_set_options()
-  local dir = fn.expand('%:h')
-  vim.g.copilot_no_tab_map = true
-  vim.o.fo = vim.o.fo:gsub("[cro]", "")
-  if fn.isdirectory(dir) then fn.chdir(dir) end
-end
-
 -- Hide_Filetype
 function M.hide_filetype()
   local ft = { "lazy", "harpoon",
@@ -61,6 +53,18 @@ function M.dashboard()
   cmd("Alpha")
 end
 
+-- Close-All-Hidden
+function M.close_all_hidden()
+  local bufnums = vim.api.nvim_list_bufs()
+  for _, bufnr in ipairs(bufnums) do
+    local bufname = vim.fn.bufname(bufnr)
+    local is_term = bufname:match('^term://')
+    if is_term and vim.fn.bufwinnr(bufnr) == -1 then
+      vim.cmd('bwipeout ' .. bufnr)
+    end
+  end
+end
+
 -- Count-Buffers
 function M.count_buffers()
   return vim.tbl_count(vim.tbl_filter(function(bufnr)
@@ -73,6 +77,16 @@ function M.close_buffer()
   local bufnr = fn.bufnr("%")
   return M.count_buffers() == 1 and
       cmd('Alpha | bd ' .. bufnr) or cmd('BufferKill')
+end
+
+-- Cwd-Set-Options
+function M.cwd_set_options()
+  local ft = vim.bo.filetype
+  local dir = fn.expand('%:h')
+  vim.g.copilot_no_tab_map = true
+  vim.o.fo = vim.o.fo:gsub("[cro]", "")
+  if ft == "alpha" and M.count_buffers() > 0 then return end
+  if fn.isdirectory(dir) and ft ~= "" then fn.chdir(dir) end
 end
 
 -- Close-Hover-Windows
@@ -98,18 +112,21 @@ function M.special_keymaps()
   local bt = vim.bo.buftype
   local ft = vim.bo.filetype
   local bn = fn.bufname("%")
-
   if bt:match("acwrite") then
     map("n", "|", "<nop>", opts)
   end
+  if ft == "alpha" then return end
   if bn:match("lazygit") then
     map("t", "<esc>", "<esc>", opts)
   end
   if bn:match("ranger") then
     map("t", "<esc>", "<cmd>clo!<cr>", opts)
   end
-  if bt:match("nofile") and ft ~= "alpha" then
+  if bt:match("nofile") then
     map("n", "<esc>", "<cmd>clo!<cr>", opts)
+  end
+  if bn:match("crunner_") then
+    map("n", "<leader>q", "<cmd>RunClose<cr>", opts)
   end
   if bn:match("NvimTree_") then
     map("n", "<leader>k", "<cmd>NvimTreeToggle<cr>", opts)
@@ -118,14 +135,6 @@ function M.special_keymaps()
   if vim.tbl_contains({ "qf", "help", "man", "noice" }, ft) then
     map("n", "q", "<cmd>clo!<cr>", opts)
   end
-end
-
--- Code-Runner
-function M.code_runner()
-  local crunner_bufs = vim.tbl_filter(function(buffer)
-    return string.match(fn.bufname(buffer), 'crunner')
-  end, api.nvim_list_bufs())
-  return #crunner_bufs > 0 and "<cmd>RunClose<cr>" or "<cmd>RunCode<cr>"
 end
 
 -- Jump-Brackets
@@ -143,16 +152,11 @@ function M.toggle_lsp_diagnostics()
   local diagnostics_hidden = pcall(api.nvim_buf_get_var, bufnr, 'diagnostics_hidden')
       and api.nvim_buf_get_var(bufnr, 'diagnostics_hidden')
   api.nvim_buf_set_var(bufnr, 'diagnostics_hidden', not diagnostics_hidden)
-  if diagnostics_hidden then vim.diagnostic.show() return end
+  if diagnostics_hidden then
+    vim.diagnostic.show()
+    return
+  end
   vim.diagnostic.hide()
-end
-
--- Clear-History
-function M.clear_history()
-  local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-\"*+#"
-  for char in chars:gmatch(".") do fn.setreg(char, {}) end 
-  vim.cmd("messages clear")
-  fn.histdel(":")
 end
 
 -- Close-Nvim-Tree
@@ -164,4 +168,21 @@ function M.close_nvim_tree()
   end
 end
 
+-- Clear-History
+function M.clear_history()
+  local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/-\"*+#"
+  for char in chars:gmatch(".") do fn.setreg(char, {}) end
+  vim.cmd("messages clear")
+  fn.histdel(":")
+end
+
+-- Code-Runner
+function M.code_runner()
+  local crunner_bufs = vim.tbl_filter(function(buffer)
+    return string.match(vim.fn.bufname(buffer), 'crunner_')
+  end, vim.api.nvim_list_bufs())
+  return #crunner_bufs > 0 and "<cmd>bd " .. crunner_bufs[1] .. "<cr>" or "<cmd>RunCode<cr>"
+end
+
 return M
+

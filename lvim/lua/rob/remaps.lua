@@ -51,6 +51,12 @@ map("n", "<m-t>", "<cmd>enew<cr>", opts)
 -- Trim
 map("n", "<c-bs>", "<cmd>Trim<cr>", opts)
 
+-- Text-Object-Line
+map("o", "il", "<Plug>(inner_line)", opts)
+map("o", "al", "<Plug>(inner_line)", opts)
+map("x", "il", "<Plug>(inner_line)o", opts)
+map("x", "al", "<Plug>(inner_line)o", opts)
+
 -- Swap
 map("n", "zh", "<cmd>NeoSwapPrev<cr>", opts)
 map("n", "zl", "<cmd>NeoSwapNext<cr>", opts)

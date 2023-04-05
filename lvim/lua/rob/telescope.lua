@@ -10,7 +10,7 @@ end
 lvim.builtin.telescope.defaults.layout_config = { preview_width = 59 }
 lvim.builtin.telescope.defaults.file_ignore_patterns = {
   ".git", ".npm", ".ssh", ".cups", ".cache", ".cargo", ".pyenv", ".vscode",
-  ".rustup", ".android", ".DS_Store", ".localized", "site", "mason", "Caches",
+  ".rustup", ".android", ".DS_Store", ".localized", "mason", "Caches",
   "Movies", "Library", "ftplugin", "sessions", "Reminders", "LaunchAgents",
   "node_modules", "nvim-lspconfig", "Mobile Documents", "com.apple.ProtectedCloudStorage",
 }

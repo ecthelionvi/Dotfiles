@@ -15,6 +15,12 @@ lvim.plugins = {
     event = "VeryLazy",
   },
 
+  -- Vim-Line
+  {
+    "vim-utils/vim-line",
+    event = "VeryLazy",
+  },
+
   -- Trouble
   {
     "folke/trouble.nvim",
@@ -25,6 +31,13 @@ lvim.plugins = {
   {
     "rhysd/accelerated-jk",
     event = "VeryLazy",
+  },
+
+  -- Neoscroll
+  {
+    "karb94/neoscroll.nvim",
+    event = "BufRead",
+    opts = {}
   },
 
   -- LazyGit
@@ -114,7 +127,14 @@ lvim.plugins = {
     version = false,
     event = "VeryLazy",
     config = function()
-      require("mini.ai").setup()
+      require("mini.ai").setup({
+        mappings = {
+          around_next = '',
+          inside_next = '',
+          around_last = '',
+          inside_last = '',
+        },
+      })
       require("mini.move").setup({
         mappings = {
           left = '<m-left>',

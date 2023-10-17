@@ -1,18 +1,20 @@
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
-
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export HISTFILE=$HOME/.cache/zsh/zsh_history
 export VISUAL=$HOME/.local/bin/lvim
 export EDITOR=$HOME/.local/bin/lvim
 export PATH=$HOME/.local/bin:$PATH
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
-eval "$(pyenv init --path)"
 eval "$(starship init zsh)"
 
+
+alias grep="grep -rn --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.fig"
 alias rn='py /Users/rob/Documents/scripts/rename.py'
 alias ch='py /Users/rob/Documents/scripts/clean.py'
 alias lv='silent_running lvim'
+alias python=/usr/bin/python3
 alias ls='exa --icons -1'
 alias hm='cd $HOME'
 alias py='python3'

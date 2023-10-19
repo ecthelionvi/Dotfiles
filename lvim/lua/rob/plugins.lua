@@ -21,6 +21,7 @@ lvim.plugins = {
     event = "VeryLazy",
   },
 
+
   -- Trouble
   {
     "folke/trouble.nvim",
@@ -37,7 +38,7 @@ lvim.plugins = {
   {
     "karb94/neoscroll.nvim",
     event = "BufRead",
-    opts = {}
+    opts = { mappings = {}, }
   },
 
   -- LazyGit
@@ -46,10 +47,23 @@ lvim.plugins = {
     cmd = "LazyGit",
   },
 
+  -- NeoSwap
   {
     "ecthelionvi/NeoSwap",
     event = "BufRead",
     opts = {},
+  },
+
+  -- AutoSave
+  {
+    "Pocco81/auto-save.nvim",
+    opts = {
+      execution_message = {
+        message = function()
+          return ("")
+        end,
+      },
+    }
   },
 
   -- Noice
@@ -59,6 +73,12 @@ lvim.plugins = {
     dependencies = {
       "MunifTanjim/nui.nvim",
     }
+  },
+
+  -- Neoview
+  {
+    "ecthelionvi/NeoView.nvim",
+    opts = {}
   },
 
   -- Diffview
@@ -71,13 +91,6 @@ lvim.plugins = {
   {
     "ThePrimeagen/vim-be-good",
     cmd = "VimBeGood",
-  },
-
-  -- NeoSave
-  {
-    "ecthelionvi/NeoSave.nvim",
-    event = "BufRead",
-    opts = {},
   },
 
   -- Numb
@@ -183,23 +196,10 @@ lvim.plugins = {
     end
   },
 
-  -- Treesitter-Context
+  -- Context
   {
-    "romgrk/nvim-treesitter-context",
-    config = function()
-      require("treesitter-context").setup {
-        enable = true,
-        throttle = true,
-        max_lines = 0,
-        patterns = {
-          default = {
-            'class',
-            'function',
-            'method',
-          },
-        },
-      }
-    end
+    "ecthelionvi/nvim-treesitter-context",
+    opts = {}
   },
 
   -- CamelCaseMotion
@@ -222,15 +222,15 @@ lvim.plugins = {
     event = "BufRead",
     config = function()
       require("hop").setup()
-      map("n", "M", "<cmd>HopWord<cr>", opts)
-      map("n", "m", "<cmd>HopChar2<cr>", opts)
+      map("n", "S", "<cmd>HopWord<cr>", opts)
+      map("n", "s", "<cmd>HopChar2<cr>", opts)
     end,
   },
 
   -- TreeSJ
   {
     'Wansmer/treesj',
-    event = "VeryLazy",
+    event = "BufRead",
     dependencies = { 'nvim-treesitter' },
     config = function()
       require('treesj').setup({
@@ -435,7 +435,7 @@ lvim.plugins = {
     event = "VeryLazy",
     config = function()
       map("n", "|", "<cmd>lua require('harpoon.mark').add_file()<cr>", opts)
-      map("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", opts)
+      map("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>^", opts)
     end
   },
 
@@ -477,7 +477,7 @@ lvim.plugins = {
           java = "cd $dir && javac $fileName && java $fileNameWithoutExt",
           c = "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
           cpp = "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir/$fileNameWithoutExt",
-          python = "python -u",
+          python = "python3 -u",
           sh = "bash",
           rust = "cd $dir && rustc $fileName && $dir/$fileNameWithoutExt",
         },

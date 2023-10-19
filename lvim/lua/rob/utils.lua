@@ -8,6 +8,12 @@ local cmd = vim.cmd
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true, buffer = 0 }
 
+
+-- Relative Number
+function M.toggle_relative_number()
+  vim.o.relativenumber = not vim.o.relativenumber
+end
+
 -- Select-All
 function M.select_all()
   cmd("normal! VGo1G | gg0")
@@ -29,15 +35,15 @@ end
 -- Toggle-Diagnostic-Float
 function M.toggle_diagnostic_hover()
   if M.close_hover_windows() then return end
-  local config = lvim.lsp.diagnostics.float
-  config.scope = "line"
-  vim.diagnostic.open_float(0, config)
+  -- local config = lvim.lsp.diagnostics.float
+  -- config.scope = "line"
+  vim.diagnostic.open_float(0)
 end
 
 -- Hide_Filetype
 function M.hide_filetype()
-  local ft = { "lazy", "harpoon",
-    "NvimTree", "toggleterm", "TelescopePrompt" }
+  local ft = { "lazy", "harpoon", "noice",
+    --[[ "NvimTree", ]] "toggleterm", "TelescopePrompt" }
   if vim.tbl_contains(ft, vim.bo.filetype)
   then
     api.nvim_buf_set_option(0, 'filetype', '')
@@ -129,6 +135,7 @@ function M.special_keymaps()
     map("n", "<leader>q", "<cmd>RunClose<cr>", opts)
   end
   if bn:match("NvimTree_") then
+    map("n", "<leader>;", "<Nop>", opts)
     map("n", "<leader>k", "<cmd>NvimTreeToggle<cr>", opts)
     map("n", "<leader>q", "<cmd>NvimTreeToggle<cr>", opts)
   end
@@ -176,13 +183,37 @@ function M.clear_history()
   fn.histdel(":")
 end
 
+-- Cursor-Column
+function M.toggle_cursor_column()
+  local success, column_active = pcall(vim.api.nvim_buf_get_var, 0, 'color_column_active')
+
+  if not success then
+    column_active = false
+  end
+
+  if column_active then
+    fn.clearmatches()
+    vim.api.nvim_buf_set_var(0, 'color_column_active', false)
+  else
+    local fg_color = fn.synIDattr(fn.hlID("IncSearch"), "fg#")
+    local bg_color = fn.synIDattr(fn.hlID("IncSearch"), "bg#")
+
+    cmd("silent! highlight ColorColumn guifg=" .. fg_color .. " guibg=" .. bg_color)
+
+    local col = fn.col('.')
+
+    fn.matchadd("ColorColumn", "\\%" .. col .. "v.", 100)
+
+    vim.api.nvim_buf_set_var(0, 'color_column_active', true)
+  end
+end
+
 -- Code-Runner
 function M.code_runner()
   local crunner_bufs = vim.tbl_filter(function(buffer)
     return string.match(vim.fn.bufname(buffer), 'crunner_')
   end, vim.api.nvim_list_bufs())
-  return #crunner_bufs > 0 and "<cmd>bd " .. crunner_bufs[1] .. "<cr>" or "<cmd>RunCode<cr>"
+  return #crunner_bufs > 0 and "<cmd>silent! bd " .. crunner_bufs[1] .. "<cr>" or "<cmd>silent! RunCode<cr>"
 end
 
 return M
-

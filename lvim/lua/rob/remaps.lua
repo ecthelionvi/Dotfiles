@@ -11,9 +11,6 @@ local opts = { noremap = true, silent = true }
 -- Macro
 map("n", "Q", "@q", opts)
 
--- Undo
-map("n", "U", "<c-r>", opts)
-
 -- Visual Backspace
 map("x", "<bs>", '"_x', opts)
 
@@ -45,6 +42,10 @@ map("n", ";", ":", { noremap = true })
 -- Terminal-ESC
 map("t", "<esc>", "<C-\\><C-n>", opts)
 
+-- Undo
+map("n", "u", ":silent! undo<cr>", opts)
+map("n", "U", ":silent! redo<cr>", opts)
+
 -- New-Buffer
 map("n", "<m-t>", "<cmd>enew<cr>", opts)
 
@@ -56,6 +57,8 @@ map("o", "il", "<Plug>(inner_line)", opts)
 map("o", "al", "<Plug>(inner_line)", opts)
 map("x", "il", "<Plug>(inner_line)o", opts)
 map("x", "al", "<Plug>(inner_line)o", opts)
+map("o", "ol", ":<c-u>normal! v0<cr>", opts)
+map("o", "pl", ":<c-u>normal! vg_<cr>", opts)
 
 -- Swap
 map("n", "zh", "<cmd>NeoSwapPrev<cr>", opts)

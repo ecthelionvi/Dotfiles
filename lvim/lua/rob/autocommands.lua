@@ -45,37 +45,37 @@ autocmd({ "BufNew", "BufWinEnter" }, {
   end,
 })
 
--- Python-Fstring
-vim.api.nvim_create_augroup("py-fstring", { clear = true })
-vim.api.nvim_create_autocmd("InsertCharPre", {
-  pattern = { "*.py" },
-  group = "py-fstring",
-  callback = function(opts)
-    -- Only run if f-string escape character is typed
-    if vim.v.char ~= "{" then return end
+-- -- Python-Fstring
+-- vim.api.nvim_create_augroup("py-fstring", { clear = true })
+-- vim.api.nvim_create_autocmd("InsertCharPre", {
+--   pattern = { "*.py" },
+--   group = "py-fstring",
+--   callback = function(opts)
+--     -- Only run if f-string escape character is typed
+--     if vim.v.char ~= "{" then return end
 
-    -- Get node and return early if not in a string
-    local node = vim.treesitter.get_node()
+--     -- Get node and return early if not in a string
+--     local node = vim.treesitter.get_node()
 
-    if not node then return end
-    if node:type() ~= "string" then node = node:parent() end
-    if not node or node:type() ~= "string" then return end
+--     if not node then return end
+--     if node:type() ~= "string" then node = node:parent() end
+--     if not node or node:type() ~= "string" then return end
 
-    local row, col, _, _ = vim.treesitter.get_node_range(node)
+--     local row, col, _, _ = vim.treesitter.get_node_range(node)
 
-    -- Return early if string is already a format string
-    local first_char = vim.api.nvim_buf_get_text(opts.buf, row, col - 1, row, col, {})[1]
-    if first_char == "f" then return end
+--     -- Return early if string is already a format string
+--     local first_char = vim.api.nvim_buf_get_text(opts.buf, row, col - 1, row, col, {})[1]
+--     if first_char == "f" then return end
 
-    -- Move cursor to before the opening quote and insert 'f'
-    vim.api.nvim_input("<Esc>")
-    vim.api.nvim_input(string.format("%sG", row + 1)) -- move to row
-    vim.api.nvim_input(string.format("%s|", col))     -- move to col
-    vim.api.nvim_input("hi")                          -- move one position left and enter insert mode
-    vim.api.nvim_input("f")                           -- insert 'f'
-    vim.api.nvim_input("<Esc>")
-    vim.api.nvim_input('f{a')                         -- escape back to normal mode
-  end,
-})
+--     -- Move cursor to before the opening quote and insert 'f'
+--     vim.api.nvim_input("<Esc>")
+--     vim.api.nvim_input(string.format("%sG", row + 1)) -- move to row
+--     vim.api.nvim_input(string.format("%s|", col))     -- move to col
+--     vim.api.nvim_input("hi")                          -- move one position left and enter insert mode
+--     vim.api.nvim_input("f")                           -- insert 'f'
+--     vim.api.nvim_input("<Esc>")
+--     vim.api.nvim_input('f{a')                         -- escape back to normal mode
+--   end,
+-- })
 
 return M

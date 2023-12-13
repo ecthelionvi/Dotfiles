@@ -7,14 +7,15 @@ export VISUAL=$HOME/.local/bin/lvim
 export EDITOR=$HOME/.local/bin/lvim
 export PATH=$HOME/.local/bin:$PATH
 
-eval "$(pyenv init --path)"
 eval "$(/opt/homebrew/bin/brew shellenv)"
+eval "$(pyenv init --path)"
 eval "$(starship init zsh)"
 
 alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude .fig/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
 alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!.fig/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
-alias rn='py /Users/rob/Documents/scripts/rename.py'
-alias ch='py /Users/rob/Documents/scripts/clean.py'
+alias cds='py /Users/rob/Documents/Scripts/clean_DS.py'
+alias rn='py /Users/rob/Documents/Scripts/rename.py'
+alias ch='py /Users/rob/Documents/Scripts/clean.py'
 alias lv='silent_running lvim'
 alias python=/usr/bin/python3
 alias ls='exa --icons -1'

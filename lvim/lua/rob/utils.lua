@@ -8,12 +8,6 @@ local cmd = vim.cmd
 local map = vim.keymap.set
 local opts = { noremap = true, silent = true, buffer = 0 }
 
-
--- Relative Number
-function M.toggle_relative_number()
-  vim.o.relativenumber = not vim.o.relativenumber
-end
-
 -- Select-All
 function M.select_all()
   cmd("normal! VGo1G | gg0")
@@ -37,7 +31,12 @@ function M.toggle_diagnostic_hover()
   if M.close_hover_windows() then return end
   -- local config = lvim.lsp.diagnostics.float
   -- config.scope = "line"
-  vim.diagnostic.open_float(0)
+  vim.diagnostic.open_float()
+end
+
+-- Relative Number
+function M.toggle_relative_number()
+  vim.o.relativenumber = not vim.o.relativenumber
 end
 
 -- Hide_Filetype
@@ -52,9 +51,13 @@ end
 
 -- Dashboard
 function M.dashboard()
+  local bt = vim.bo.buftype
   local ft = vim.bo.filetype
   if M.count_buffers() == 0 and ft == "alpha" then
     return
+  end
+  if bt == "terminal" then
+    cmd("ToggleTerm")
   end
   cmd("Alpha")
 end

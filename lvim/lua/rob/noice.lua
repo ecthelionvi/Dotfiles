@@ -97,11 +97,11 @@ noice.setup {
       opts = { skip = true },
     },
     {
-      filter = { event = "msg_show", find = "more lines" },
+      filter = { event = "msg_show", find = "substitutions" },
       opts = { skip = true },
     },
     {
-      filter = { event = "msg_show", find = "substitutions" },
+      filter = { event = "msg_show", find = "AutoSave: saved at" },
       opts = { skip = true },
     },
     {
@@ -129,7 +129,10 @@ noice.setup {
       opts = { skip = true },
     },
     {
-      filter = { event = "notify", find = [[Cannot "join" node longer than 120 symbols. Check your settings to change it.]] },
+      filter = {
+        event = "notify",
+        find = [[Cannot "join" node longer than 120 symbols. Check your settings to change it.]]
+      },
       opts = { skip = true },
     },
   },

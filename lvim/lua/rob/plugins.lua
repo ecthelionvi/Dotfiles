@@ -21,13 +21,6 @@ lvim.plugins = {
     event = "VeryLazy",
   },
 
-
-  -- Trouble
-  {
-    "folke/trouble.nvim",
-    cmd = "TroubleToggle",
-  },
-
   -- Accerlated-JK
   {
     "rhysd/accelerated-jk",
@@ -45,13 +38,6 @@ lvim.plugins = {
   {
     "kdheepak/lazygit.nvim",
     cmd = "LazyGit",
-  },
-
-  -- NeoSwap
-  {
-    "ecthelionvi/NeoSwap",
-    event = "BufRead",
-    opts = {},
   },
 
   -- AutoSave
@@ -81,17 +67,17 @@ lvim.plugins = {
     opts = {}
   },
 
-  -- Diffview
-  {
-    "sindrets/diffview.nvim",
-    event = "BufRead",
-  },
+  -- -- Diffview
+  -- {
+  --   "sindrets/diffview.nvim",
+  --   event = "BufRead",
+  -- },
 
-  -- Vim-Be-Good
-  {
-    "ThePrimeagen/vim-be-good",
-    cmd = "VimBeGood",
-  },
+  -- -- Vim-Be-Good
+  -- {
+  --   "ThePrimeagen/vim-be-good",
+  --   cmd = "VimBeGood",
+  -- },
 
   -- Numb
   {
@@ -116,6 +102,12 @@ lvim.plugins = {
     end
   },
 
+  -- -- Puppeteer
+  -- {
+  --   "chrisgrieser/nvim-puppeteer",
+  --   event = "BufEnter",
+  -- },
+
   -- Cutlass
   {
     "gbprod/cutlass.nvim",
@@ -123,16 +115,17 @@ lvim.plugins = {
     config = function()
       require("cutlass").setup({
         exclude = { "ns", "nS" },
+        cut_key = "x",
       })
     end
   },
 
-  -- NeoColumn
-  {
-    "ecthelionvi/NeoColumn.nvim",
-    event = "BufRead",
-    opts = {},
-  },
+  -- -- NeoColumn
+  -- {
+  --   "ecthelionvi/NeoColumn.nvim",
+  --   event = "BufRead",
+  --   opts = {},
+  -- },
 
   -- Mini
   {
@@ -216,6 +209,7 @@ lvim.plugins = {
       opts),
   },
 
+
   -- Hop
   {
     "phaazon/hop.nvim",
@@ -240,18 +234,18 @@ lvim.plugins = {
     map("n", "zz", "<cmd>TSJToggle<cr>", opts)
   },
 
-  -- Symbols-Outline
-  {
-    "simrat39/symbols-outline.nvim",
-    event = "VeryLazy",
-    config = function()
-      require('symbols-outline').setup()
-      map("n", "<m-s>", "<cmd>SymbolsOutline<cr>",
-        opts)
-      map("x", "<m-s>", "<cmd>SymbolsOutline<cr>",
-        opts)
-    end
-  },
+  -- -- Symbols-Outline
+  -- {
+  --   "simrat39/symbols-outline.nvim",
+  --   event = "VeryLazy",
+  --   config = function()
+  --     require('symbols-outline').setup()
+  --     map("n", "<m-s>", "<cmd>SymbolsOutline<cr>",
+  --       opts)
+  --     map("x", "<m-s>", "<cmd>SymbolsOutline<cr>",
+  --       opts)
+  --   end
+  -- },
 
   -- Sticky-Buf
   {
@@ -270,22 +264,32 @@ lvim.plugins = {
     end
   },
 
-  -- Quick-Fix
+  -- Undotree
   {
-    "romainl/vim-qf",
+    "mbbill/undotree",
     event = "VeryLazy",
     config = function()
-      autocmd("filetype", {
-        group = augroup("quickfix", { clear = true }),
-        pattern = "qf",
-        callback = function()
-          vim.g.qf_auto_resize = 0
-          map("n", "dd", "<cmd>.Reject<cr>", { buffer = 0 })
-          map("n", "bd", "<cmd>Keep ''<cr>", { buffer = 0 })
-        end
-      })
+      vim.g.undotree_SetFocusWhenToggle = 1
+      map("n", "<leader>u", "<cmd>UndotreeToggle<cr>", opts)
     end
   },
+
+  -- -- Quick-Fix
+  -- {
+  --   "romainl/vim-qf",
+  --   event = "VeryLazy",
+  --   config = function()
+  --     autocmd("filetype", {
+  --       group = augroup("quickfix", { clear = true }),
+  --       pattern = "qf",
+  --       callback = function()
+  --         vim.g.qf_auto_resize = 0
+  --         map("n", "dd", "<cmd>.Reject<cr>", { buffer = 0 })
+  --         map("n", "bd", "<cmd>Keep ''<cr>", { buffer = 0 })
+  --       end
+  --     })
+  --   end
+  -- },
 
   -- Yanky
   {
@@ -329,15 +333,6 @@ lvim.plugins = {
     end
   },
 
-  -- Undotree
-  {
-    "mbbill/undotree",
-    event = "VeryLazy",
-    config = function()
-      vim.g.undotree_SetFocusWhenToggle = 1
-      map("n", "<leader>u", "<cmd>UndotreeToggle<cr>", opts)
-    end
-  },
 
   -- Dial
   {
@@ -373,12 +368,12 @@ lvim.plugins = {
           },
         },
       }
-      map("n", "<c-a>", require("dial.map").inc_normal(), opts)
-      map("n", "<c-x>", require("dial.map").dec_normal(), opts)
-      map("x", "<c-a>", require("dial.map").inc_visual(), opts)
-      map("x", "<c-x>", require("dial.map").dec_visual(), opts)
-      map("x", "g<c-a>", require("dial.map").inc_gvisual(), opts)
-      map("x", "g<c-x>", require("dial.map").dec_gvisual(), opts)
+      map("n", "<c-'>", require("dial.map").inc_normal(), opts)
+      map("n", "<c-;>", require("dial.map").dec_normal(), opts)
+      map("x", "<c-'>", require("dial.map").inc_visual(), opts)
+      map("x", "<c-;>", require("dial.map").dec_visual(), opts)
+      map("x", "g<c-'>", require("dial.map").inc_gvisual(), opts)
+      map("x", "g<c-;>", require("dial.map").dec_gvisual(), opts)
     end
   },
 
@@ -429,15 +424,15 @@ lvim.plugins = {
     end
   },
 
-  -- Harpoon
-  {
-    "ThePrimeagen/harpoon",
-    event = "VeryLazy",
-    config = function()
-      map("n", "|", "<cmd>lua require('harpoon.mark').add_file()<cr>", opts)
-      map("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>^", opts)
-    end
-  },
+  -- -- Harpoon
+  -- {
+  --   "ThePrimeagen/harpoon",
+  --   event = "VeryLazy",
+  --   config = function()
+  --     map("n", "|", "<cmd>lua require('harpoon.mark').add_file()<cr>", opts)
+  --     map("n", "\\", "<cmd>lua require('harpoon.ui').toggle_quick_menu()<cr>", opts)
+  --   end
+  -- },
 
   -- Substitute
   {
@@ -470,6 +465,13 @@ lvim.plugins = {
     config = function()
       require('code_runner').setup {
         mode = "term",
+        term = {
+          --  Position to open the terminal, this option is ignored if mode ~= term
+          position = "bot",
+          -- window size, this option is ignored if mode == tab
+          size = 18,
+        },
+        startinsert = false,
         focus = true,
         --filetype_path = "", -- No default path defined
         filetype = {

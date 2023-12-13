@@ -33,7 +33,7 @@ M.base_exclusions = {
   '.rustup', '.nox', '.npm', '.python_history', '.coverage',
   '.gitignore', 'Movies', 'Music', 'Pictures', 'Applications (Parallels)',
   '.cargo', '.cups', '.ssh', 'Parallels', '.Trash', '.hushlogin',
-  '.pytest_cache', '.dat', 'mason', '.fig.dotfiles.bak'
+  '.pytest_cache', '.dat', 'mason', '.fig.dotfiles.bak', '.pyenv',
 }
 
 lvim.builtin.telescope.pickers.find_files.find_command = M.construct_command_fd(

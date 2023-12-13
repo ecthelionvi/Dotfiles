@@ -23,13 +23,15 @@ reload("rob.autocommands")
 -- Options
 vim.o.verbose = 0
 vim.o.tabstop = 2
+vim.o.title = true
 vim.o.cmdheight = 0
 vim.o.shiftwidth = 2
 vim.o.timeoutlen = 300
+vim.o.shortmess = "FOW"
 vim.o.maxfuncdepth = 1000
 vim.o.fillchars = "eob: "
 vim.g.color_column = true
 vim.o.relativenumber = true
-vim.opt.shortmess:append("FOW")
+vim.o.titlestring = "%f - LunarVim"
 
 return M

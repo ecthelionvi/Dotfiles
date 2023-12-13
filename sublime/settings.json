@@ -3,5 +3,11 @@
  	"remember_open_files": false,
  	"close_windows_when_empty": true,
  	"create_window_at_startup": false,
-	"default_dir" : "/Users/rob/Library/Mobile Documents/com~apple~CloudDocs/Downloads/"
+ 	"save_on_focus_lost": true,
+ 	"keys": ["ctrl+shift+s"], "command": "auto_save",
+ 	"default_dir" : "/Users/rob/Library/Mobile Documents/com~apple~CloudDocs/Downloads/",
+	"ignored_packages":
+	[
+		"Vintage",
+	],
 }

@@ -139,11 +139,21 @@ function M.special_keymaps()
   end
   if bn:match("NvimTree_") then
     map("n", "<leader>;", "<Nop>", opts)
+    map("n", "<s-cr>", "<cmd>MacOpen<cr>", opts)
     map("n", "<leader>k", "<cmd>NvimTreeToggle<cr>", opts)
     map("n", "<leader>q", "<cmd>NvimTreeToggle<cr>", opts)
   end
   if vim.tbl_contains({ "qf", "help", "man", "noice" }, ft) then
     map("n", "q", "<cmd>clo!<cr>", opts)
+  end
+end
+
+-- Nvim-Tree-Open
+function M.open_file_with_system_app()
+  local lib = require 'nvim-tree.lib'
+  local node = lib.get_node_at_cursor()
+  if node and node.fs_stat then   -- Verify whether it's a file
+    vim.cmd('silent !open ' .. vim.fn.shellescape(node.absolute_path))
   end
 end
 

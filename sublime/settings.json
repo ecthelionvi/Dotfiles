@@ -1,5 +1,5 @@
 {
-	"hot_exit": false,
+	"hot_exit": "always",
  	"remember_open_files": false,
  	"close_windows_when_empty": true,
  	"create_window_at_startup": false,

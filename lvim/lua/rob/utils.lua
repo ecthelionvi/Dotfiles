@@ -83,7 +83,7 @@ end
 
 -- Close
 function M.close_buffer()
-  local bufnr = fn.bufnr("%")
+  local bufnr = api.nvim_get_current_buf()
   return M.count_buffers() == 1 and
       cmd('Alpha | bd ' .. bufnr) or cmd('BufferKill')
 end
@@ -120,7 +120,8 @@ end
 function M.special_keymaps()
   local bt = vim.bo.buftype
   local ft = vim.bo.filetype
-  local bn = fn.bufname("%")
+  local bf = api.nvim_get_current_buf()
+  local bn = api.nvim_buf_get_name(bf)
   if bt:match("acwrite") then
     map("n", "|", "<nop>", opts)
   end
@@ -152,7 +153,7 @@ end
 function M.open_file_with_system_app()
   local lib = require 'nvim-tree.lib'
   local node = lib.get_node_at_cursor()
-  if node and node.fs_stat then   -- Verify whether it's a file
+  if node and node.fs_stat then -- Verify whether it's a file
     vim.cmd('silent !open ' .. vim.fn.shellescape(node.absolute_path))
   end
 end
@@ -161,9 +162,12 @@ end
 function M.jump_brackets(dir)
   local pattern = [[(\|)\|\[\|\]\|{\|}\|"\|`\|''\|<\|>]]
   dir = dir == "prev" and "b" or "n"
-  local result = fn.eval("searchpos('" .. pattern .. "', '" .. dir .. "')")
-  local lnum, col = result[1], result[2]
-  fn.setpos('.', { 0, lnum, col, 0 })
+  local result = vim.fn.searchpos(pattern, dir)
+  if result and #result >= 2 then
+    local lnum, col = result[1], result[2]
+    if lnum == 0 and col == 0 then return end
+    vim.fn.setpos('.', { 0, lnum, col, 0 })
+  end
 end
 
 -- Toggle-Diagnostics
@@ -194,31 +198,6 @@ function M.clear_history()
   for char in chars:gmatch(".") do fn.setreg(char, {}) end
   vim.cmd("messages clear")
   fn.histdel(":")
-end
-
--- Cursor-Column
-function M.toggle_cursor_column()
-  local success, column_active = pcall(vim.api.nvim_buf_get_var, 0, 'color_column_active')
-
-  if not success then
-    column_active = false
-  end
-
-  if column_active then
-    fn.clearmatches()
-    vim.api.nvim_buf_set_var(0, 'color_column_active', false)
-  else
-    local fg_color = fn.synIDattr(fn.hlID("IncSearch"), "fg#")
-    local bg_color = fn.synIDattr(fn.hlID("IncSearch"), "bg#")
-
-    cmd("silent! highlight ColorColumn guifg=" .. fg_color .. " guibg=" .. bg_color)
-
-    local col = fn.col('.')
-
-    fn.matchadd("ColorColumn", "\\%" .. col .. "v.", 100)
-
-    vim.api.nvim_buf_set_var(0, 'color_column_active', true)
-  end
 end
 
 -- Code-Runner

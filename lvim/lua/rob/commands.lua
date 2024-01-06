@@ -20,9 +20,6 @@ cmd("MovePrev", "lua require('rob.utils').jump_brackets('prev')", {})
 -- Clear-Hover
 cmd("ClearHover", "lua require('rob.utils').close_hover_windows()", {})
 
--- Toggle-Cursor-Column
-cmd("ToggleCursorColumn", "lua require('rob.utils').toggle_cursor_column()", {})
-
 -- Toggle-Relative-Number
 cmd("ToggleRelativeNumber", "lua require('rob.utils').toggle_relative_number()", {})
 

@@ -8,7 +8,7 @@ lvim.builtin.which_key.setup.ignore_missing = true
 lvim.builtin.which_key.setup.layout.align = "center"
 
 lvim.builtin.which_key.mappings = {
-  
+
   -- Plugins
   p = {
     name = "Plugins",
@@ -144,7 +144,8 @@ lvim.builtin.which_key.mappings = {
     i = { "<cmd>lua require('lvim.core.info').toggle_popup(vim.bo.filetype)<cr>", "Toggle LunarVim Info" },
     f = { "<cmd>lua require('lvim.core.telescope.custom-finders').find_lunarvim_files()<cr>", "Find LunarVim Files" },
     g = { "<cmd>lua require('lvim.core.telescope.custom-finders').grep_lunarvim_files()<cr>", "Grep LunarVim Files" },
-    I = { "<cmd>lua require('lvim.core.telescope.custom-finders').view_lunarvim_changelog()<cr>", "View LunarVim Changelog" },
+    I = { "<cmd>lua require('lvim.core.telescope.custom-finders').view_lunarvim_changelog()<cr>",
+      "View LunarVim Changelog" },
     l = {
       name = "+Logs",
       N = { "<cmd>edit $NVIM_LOG_FILE<cr>", "Open Neovim Logfile" },
@@ -152,7 +153,8 @@ lvim.builtin.which_key.mappings = {
       l = { "<cmd>lua require('lvim.core.terminal').toggle_log_view(vim.lsp.get_log_path())<cr>", "View LSP Log" },
       D = { "<cmd>lua vim.fn.execute('edit ' .. require('lvim.core.log').get_path())<cr>", "Open Default Logfile" },
       n = { "<cmd>lua require('lvim.core.terminal').toggle_log_view(os.getenv('NVIM_LOG_FILE'))<cr>", "View Neovim Log" },
-      d = { "<cmd>lua require('lvim.core.terminal').toggle_log_view(require('lvim.core.log').get_path())<cr>", "View Default Log" },
+      d = { "<cmd>lua require('lvim.core.terminal').toggle_log_view(require('lvim.core.log').get_path())<cr>",
+        "View Default Log" },
     },
   },
 }

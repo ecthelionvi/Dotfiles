@@ -22,7 +22,7 @@ def find_and_delete_files(pattern, root_dir):
             try:
                 os.remove(file_path)
                 deleted_files_count += 1
-                print(f"\rDeleted {file_path}")
+                # print(f"\rDeleted {file_path}")
             except OSError as e:
                 print(f"\rError deleting {file_path}: {e}")
     return deleted_files_count

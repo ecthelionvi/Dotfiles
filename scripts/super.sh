@@ -3,6 +3,7 @@
 SCRIPT_DIR="$(dirname "$0")"
 BREWFILE_PATH="$SCRIPT_DIR/Brewfile"
 CARGO_PACKAGES_FILE="$SCRIPT_DIR/CargoPackages.txt"
+PIP_FILE_PATH="$SCRIPT_DIR/pip.txt" # Added line for pip.txt file path
 
 # Check if the Brewfile exists in the same directory as the script
 if [[ -f "$BREWFILE_PATH" ]]; then
@@ -39,5 +40,14 @@ fi
 # Run python.sh script
 echo "Running python.sh for Python setup..."
 ./python.sh
+
+# Added section for pip.sh script execution
+# Check if the pip.txt exists in the same directory as the script
+if [[ -f "$PIP_FILE_PATH" ]]; then
+    echo "pip.txt found. Running pip.sh with $PIP_FILE_PATH"
+    ./pip.sh "$PIP_FILE_PATH" # This assumes pip.sh is designed to take the file path as an argument
+else
+    echo "pip.txt not found in script directory, skipping pip package installations."
+fi
 
 echo "All setup scripts have been executed."

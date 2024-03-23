@@ -19,8 +19,12 @@ fi
 # Install Cargo packages from list
 echo "Installing Cargo packages from list..."
 while IFS= read -r line; do
-    package_name=$(echo "$line" | awk '{print $1}') # Modify this line as needed to parse your CargoPackages.txt correctly
+    # Extract just the package name (before the first space)
+    package_name=$(echo "$line" | awk '{print $1}')
+    # Remove potential trailing colon
+    package_name=${package_name%:}
     if [ ! -z "$package_name" ]; then
+        echo "Installing $package_name..."
         cargo install "$package_name"
     fi
 done < "$CARGO_PACKAGES_FILE"

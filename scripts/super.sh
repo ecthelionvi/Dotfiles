@@ -50,4 +50,8 @@ else
     echo "pip.txt not found in script directory, skipping pip package installations."
 fi
 
+# Run lazygit.sh script
+echo "Running lazygit.sh for lazygit setup..."
+./lazygit.sh
+
 echo "All setup scripts have been executed."

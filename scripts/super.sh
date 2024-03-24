@@ -12,9 +12,14 @@ LAZYGIT_CONFIG_DIR="$HOME/Library/Application Support/lazygit"
 GITCONFIG_URL="${REPO_URL}git/.gitconfig"
 GITIGNORE_GLOBAL_URL="${REPO_URL}git/.gitignore_global"
 
-# Download and setup Homebrew and Brewfile
+# Check if Homebrew is installed
+if ! command -v brew &> /dev/null; then
+    # Install Homebrew if it's not found
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Download and setup Brewfile
 curl -fsSL "$BREWFILE_URL" -o "$HOME/Brewfile"
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew bundle --file="$HOME/Brewfile"
 rm "$HOME/Brewfile" # Cleanup
 

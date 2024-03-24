@@ -65,4 +65,8 @@ curl -fsSL "$SUBLIME_SETTINGS_URL" -o "$SUBLIME_SETTINGS_DIR/Preferences.sublime
 # Download and install the JetBrains Mono Nerd Font
 curl -fsSL "$FONT_URL" -o "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf"
 
+# Clone ranger_devicons plugin and modify ranger configuration
+git clone https://github.com/alexanderjeurissen/ranger_devicons ~/.config/ranger/plugins/ranger_devicons
+echo "default_linemode devicons" >> $HOME/.config/ranger/rc.conf
+
 echo "Setup completed. Please restart your shell."

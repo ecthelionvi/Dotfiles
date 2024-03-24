@@ -11,6 +11,8 @@ LAZYGIT_CONFIG_URL="${REPO_URL}lazygit/config.yml"
 LAZYGIT_CONFIG_DIR="$HOME/Library/Application Support/lazygit"
 GITCONFIG_URL="${REPO_URL}git/.gitconfig"
 GITIGNORE_GLOBAL_URL="${REPO_URL}git/.gitignore_global"
+SUBLIME_SETTINGS_URL="${REPO_URL}sublime/Preferences.sublime-settings"
+SUBLIME_SETTINGS_DIR="$HOME/Library/Application Support/Sublime Text/Packages/User"
 
 # Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
@@ -54,6 +56,9 @@ curl -fsSL "$LAZYGIT_CONFIG_URL" -o "$LAZYGIT_CONFIG_DIR/config.yml"
 # Download and apply git config files (.gitconfig and .gitignore_global)
 curl -fsSL "$GITCONFIG_URL" -o "$HOME/.gitconfig"
 curl -fsSL "$GITIGNORE_GLOBAL_URL" -o "$HOME/.gitignore_global"
+
+# Download and apply Sublime Text settings
+curl -fsSL "$SUBLIME_SETTINGS_URL" -o "$SUBLIME_SETTINGS_DIR/Preferences.sublime-settings"
 
 echo "Setup completed. Please restart your shell."
 

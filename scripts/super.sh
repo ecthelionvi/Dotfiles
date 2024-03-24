@@ -22,6 +22,7 @@ fi
 curl -fsSL "$BREWFILE_URL" -o "$HOME/Brewfile"
 brew bundle --file="$HOME/Brewfile"
 rm "$HOME/Brewfile" # Cleanup
+rm "$HOME/Brewfile.lock.json" # Cleanup Brewfile.lock.json
 
 # Setup Cargo and download CargoPackages.txt
 curl -fsSL "$CARGOPACKAGES_URL" -o "$HOME/CargoPackages.txt"
@@ -43,7 +44,7 @@ while IFS= read -r package; do
 done < "$HOME/pip.txt"
 rm "$HOME/pip.txt" # Cleanup
 
-# Download and apply Zsh congig files (.zshrc and .hushlogin)
+# Download and apply Dotfiles (.zshrc and .hushlogin)
 curl -fsSL "$ZSHRC_URL" -o "$HOME/.zshrc"
 curl -fsSL "$HUSHLOGIN_URL" -o "$HOME/.hushlogin"
 

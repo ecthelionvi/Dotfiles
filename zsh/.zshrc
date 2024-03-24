@@ -32,6 +32,7 @@ alias ch='py /Users/rob/Documents/Scripts/clean.py'
 
 # Utility Aliases
 alias lv='silent_running lvim'
+alias lv.='lv_dot'
 alias python=/usr/bin/python3
 alias ls='exa --icons -1'
 alias ran='ranger_clear'
@@ -43,6 +44,10 @@ alias cc='clear'
 alias cat='bat'
 
 ### Function Definitions ###
+function lv_dot {
+    silent_running lvim -c 'set hidden | Explore'
+}
+
 function silent_running {
   set +e
   "$@" 2>/dev/null

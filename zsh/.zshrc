@@ -26,9 +26,9 @@ eval "$(starship init zsh)"
 ### Aliases ###
 alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude .fig/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
 alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!.fig/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
-alias cds='py /Users/rob/Documents/Scripts/clean_DS.py'
-alias touch='py /Users/rob/Documents/Scripts/touch.py'
-alias ch='py /Users/rob/Documents/Scripts/clean.py'
+alias cds='py /Users/rob/Documents/Dotfiles/scripts/clean_DS.py'
+alias touch='py /Users/rob/Documents/Dotfiles/scripts/touch.py'
+alias ch='py /Users/rob/Documents/Dotfiles/scripts/clean.py'
 
 # Utility Aliases
 alias lv='silent_running lvim'

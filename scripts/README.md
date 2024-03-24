@@ -49,12 +49,19 @@ The `super.sh` script performs the following tasks:
    - Downloads the `.gitconfig` and `.gitignore_global` files from the GitHub repository.
    - Applies the downloaded files to the home directory.
 
+7. Sublime Configuration
+   - Downloads the `Preferences.sublime-settings` file from the GitHub repository.
+   - Applies the downloaded file to the Sublime Text configuration directory.
+
+9. Font Installation
+   - Downloads the JetBrainsMonoNerdFont-Regular from the Github repository.
+
 After the script finishes executing, it will display a message indicating that the setup is completed and prompts you to restart your shell for the changes to take effect.
 
 ## Notes
 
 - Make sure you have a stable internet connection while running the script, as it downloads files from the GitHub repository.
 - The script assumes that the necessary directories for lazygit and other configurations already exist. If they don't, you may need to create them manually.
-- Review the contents of the files being downloaded (`Brewfile`, `CargoPackages.txt`, `pip.txt`, `.zshrc`, `.hushlogin`, `config.yml`, `.gitconfig`, `.gitignore_global`) to ensure they align with your requirements.
+- Review the contents of the files being downloaded (`Brewfile`, `CargoPackages.txt`, `pip.txt`, `.zshrc`, `.hushlogin`, `config.yml`, `.gitconfig`, `.gitignore_global`, `Preferences.sublime-settings`) to ensure they align with your requirements.
 
 If you encounter any issues or have questions, please refer to the GitHub repository or contact the maintainer for assistance.

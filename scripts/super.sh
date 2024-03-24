@@ -38,7 +38,7 @@ while IFS= read -r package; do
 done < "$HOME/pip.txt"
 rm "$HOME/pip.txt" # Cleanup
 
-# Download and apply Dotfiles (.zshrc and .hushlogin)
+# Download and apply Zsh congig files (.zshrc and .hushlogin)
 curl -fsSL "$ZSHRC_URL" -o "$HOME/.zshrc"
 curl -fsSL "$HUSHLOGIN_URL" -o "$HOME/.hushlogin"
 
@@ -50,3 +50,6 @@ curl -fsSL "$GITCONFIG_URL" -o "$HOME/.gitconfig"
 curl -fsSL "$GITIGNORE_GLOBAL_URL" -o "$HOME/.gitignore_global"
 
 echo "Setup completed. Please restart your shell."
+
+# Clean up the script itself
+rm -- "$0"

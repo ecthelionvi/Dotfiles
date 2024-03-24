@@ -10,5 +10,6 @@ def delete_file(file_path):
     except OSError as e:
         print(f"Error deleting {file_path}: {e}")
 if __name__ == "__main__":
-    file_path = "/Users/rob/.cache/lvim/lvim.shada"
-    delete_file(file_path)
+    files = ["/Users/rob/.cache/lvim/lvim.shada", "/Users/rob/.cache/lvim/project_nvim/project_history"]
+    for file_path in files:
+        delete_file(file_path)

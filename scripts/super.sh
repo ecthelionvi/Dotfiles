@@ -13,6 +13,8 @@ GITCONFIG_URL="${REPO_URL}git/.gitconfig"
 GITIGNORE_GLOBAL_URL="${REPO_URL}git/.gitignore_global"
 SUBLIME_SETTINGS_URL="${REPO_URL}sublime/Preferences.sublime-settings"
 SUBLIME_SETTINGS_DIR="$HOME/Library/Application Support/Sublime Text/Packages/User"
+FONT_URL="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMono%20Regular%20Nerd%20Font%20Complete%20Mono.ttf"
+FONT_DIR="$HOME/Library/Fonts"
 
 # Check if Homebrew is installed
 if ! command -v brew &> /dev/null; then
@@ -60,7 +62,7 @@ curl -fsSL "$GITIGNORE_GLOBAL_URL" -o "$HOME/.gitignore_global"
 # Download and apply Sublime Text settings
 curl -fsSL "$SUBLIME_SETTINGS_URL" -o "$SUBLIME_SETTINGS_DIR/Preferences.sublime-settings"
 
-echo "Setup completed. Please restart your shell."
+# Download and install the JetBrains Mono Nerd Font
+curl -fsSL "$FONT_URL" -o "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf"
 
-# Clean up the script itself
-# rm -- "$0"
+echo "Setup completed. Please restart your shell."

@@ -1,57 +1,52 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(dirname "$0")"
-BREWFILE_PATH="$SCRIPT_DIR/Brewfile"
-CARGO_PACKAGES_FILE="$SCRIPT_DIR/CargoPackages.txt"
-PIP_FILE_PATH="$SCRIPT_DIR/pip.txt" # Added line for pip.txt file path
+# URLs for the raw files in the GitHub repository
+REPO_URL="https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/"
+BREWFILE_URL="${REPO_URL}brew/Brewfile"
+CARGOPACKAGES_URL="${REPO_URL}cargo/CargoPackages.txt"
+PIPFILE_URL="${REPO_URL}python/pip.txt"
+ZSHRC_URL="${REPO_URL}zsh/.zshrc"
+HUSHLOGIN_URL="${REPO_URL}zsh/.hushlogin"
+LAZYGIT_CONFIG_URL="${REPO_URL}lazygit/config.yml"
+LAZYGIT_CONFIG_DIR="$HOME/Library/Application Support/lazygit"
+GITCONFIG_URL="${REPO_URL}git/.gitconfig"
+GITIGNORE_GLOBAL_URL="${REPO_URL}git/.gitignore_global"
 
-# Check if the Brewfile exists in the same directory as the script
-if [[ -f "$BREWFILE_PATH" ]]; then
-    echo "Brewfile found. Running brew.sh with $BREWFILE_PATH"
-    ./brew.sh "$BREWFILE_PATH"
-else
-    # If not found, prompt user for the path
-    echo "Brewfile not found in script directory. Please enter the path to your Brewfile:"
-    read BREWFILE_PATH
-    if [[ -f "$BREWFILE_PATH" ]]; then
-        echo "Running brew.sh with $BREWFILE_PATH"
-        ./brew.sh "$BREWFILE_PATH"
-    else
-        echo "Brewfile not found at $BREWFILE_PATH, skipping Homebrew setup."
-    fi
-fi
+# Download and setup Homebrew and Brewfile
+curl -fsSL "$BREWFILE_URL" -o "$HOME/Brewfile"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew bundle --file="$HOME/Brewfile"
+rm "$HOME/Brewfile" # Cleanup
 
-# Check if the CargoPackages.txt exists in the same directory as the script
-if [[ -f "$CARGO_PACKAGES_FILE" ]]; then
-    echo "CargoPackages.txt found. Running cargo.sh with $CARGO_PACKAGES_FILE"
-    ./cargo.sh "$CARGO_PACKAGES_FILE"
-else
-    # If not found, prompt user for the path
-    echo "CargoPackages.txt not found in script directory. Please enter the path to your CargoPackages.txt:"
-    read CARGO_PACKAGES_FILE
-    if [[ -f "$CARGO_PACKAGES_FILE" ]]; then
-        echo "Running cargo.sh with $CARGO_PACKAGES_FILE"
-        ./cargo.sh "$CARGO_PACKAGES_FILE"
-    else
-        echo "CargoPackages.txt not found at $CARGO_PACKAGES_FILE, skipping Cargo setup."
-    fi
-fi
+# Setup Cargo and download CargoPackages.txt
+curl -fsSL "$CARGOPACKAGES_URL" -o "$HOME/CargoPackages.txt"
+command -v cargo &>/dev/null || brew install rust
+while IFS= read -r line; do
+    package_name=$(echo "$line" | awk '{print $1}' | sed 's/://')
+    cargo install "$package_name"
+done < "$HOME/CargoPackages.txt"
+rm "$HOME/CargoPackages.txt" # Cleanup
 
-# Run python.sh script
-echo "Running python.sh for Python setup..."
-./python.sh
+# Python setup with pyenv and pip
+command -v pyenv &>/dev/null || brew install pyenv
+pyenv install 3.12.0 --skip-existing
+pyenv global 3.12.0
+echo 'eval "$(pyenv init --path)"' >> "$HOME/.zprofile"
+curl -fsSL "$PIPFILE_URL" -o "$HOME/pip.txt"
+while IFS= read -r package; do
+    pip install "$package"
+done < "$HOME/pip.txt"
+rm "$HOME/pip.txt" # Cleanup
 
-# Added section for pip.sh script execution
-# Check if the pip.txt exists in the same directory as the script
-if [[ -f "$PIP_FILE_PATH" ]]; then
-    echo "pip.txt found. Running pip.sh with $PIP_FILE_PATH"
-    ./pip.sh "$PIP_FILE_PATH" # This assumes pip.sh is designed to take the file path as an argument
-else
-    echo "pip.txt not found in script directory, skipping pip package installations."
-fi
+# Download and apply Dotfiles (.zshrc and .hushlogin)
+curl -fsSL "$ZSHRC_URL" -o "$HOME/.zshrc"
+curl -fsSL "$HUSHLOGIN_URL" -o "$HOME/.hushlogin"
 
-# Run lazygit.sh script
-echo "Running lazygit.sh for lazygit setup..."
-./lazygit.sh
+# Download and apply lazygit config
+curl -fsSL "$LAZYGIT_CONFIG_URL" -o "$LAZYGIT_CONFIG_DIR/config.yml"
 
-echo "All setup scripts have been executed."
+# Download and apply git config files (.gitconfig and .gitignore_global)
+curl -fsSL "$GITCONFIG_URL" -o "$HOME/.gitconfig"
+curl -fsSL "$GITIGNORE_GLOBAL_URL" -o "$HOME/.gitignore_global"
+
+echo "Setup completed. Please restart your shell."

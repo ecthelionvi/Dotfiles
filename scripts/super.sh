@@ -63,4 +63,4 @@ curl -fsSL "$SUBLIME_SETTINGS_URL" -o "$SUBLIME_SETTINGS_DIR/Preferences.sublime
 echo "Setup completed. Please restart your shell."
 
 # Clean up the script itself
-rm -- "$0"
+# rm -- "$0"

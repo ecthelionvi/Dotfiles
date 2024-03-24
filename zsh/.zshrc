@@ -32,13 +32,13 @@ alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 
 # Utility Aliases
 alias lv='silent_running lvim'
-alias lv.='lv_dot'
 alias python=/usr/bin/python3
 alias ls='exa --icons -1'
 alias ran='ranger_clear'
 alias mkdir='mkdir -p'
 alias hm='cd $HOME'
 alias py='python3'
+alias lv.='lv_dot'
 alias rm='rm -rf'
 alias cc='clear'
 alias cat='bat'
@@ -48,14 +48,14 @@ function lv_dot {
     silent_running lvim -c 'set hidden | Explore'
 }
 
-function silent_running {
-  set +e
-  "$@" 2>/dev/null
+function ranger_clear {
+  /Users/rob/.pyenv/shims/ranger
   clear
 }
 
-function ranger_clear {
-  /Users/rob/.pyenv/shims/ranger
+function silent_running {
+  set +e
+  "$@" 2>/dev/null
   clear
 }
 

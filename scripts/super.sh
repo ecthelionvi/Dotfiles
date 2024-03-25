@@ -16,57 +16,148 @@ SUBLIME_SETTINGS_DIR="$HOME/Library/Application Support/Sublime Text/Packages/Us
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMono%20Regular%20Nerd%20Font%20Complete%20Mono.ttf"
 FONT_DIR="$HOME/Library/Fonts"
 
-# Check if Homebrew is installed
-if ! command -v brew &> /dev/null; then
-    # Install Homebrew if it's not found
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+function setup_homebrew() {
+  echo "Setting up Homebrew..."
+  if ! command -v brew &> /dev/null; then
+    echo "Homebrew not found. Installing Homebrew..."
+    if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+      echo "Homebrew installation completed."
+    else
+      echo "Failed to install Homebrew. Skipping Homebrew setup."
+      return 1
+    fi
+  fi
+
+  echo "Downloading and setting up Brewfile..."
+  if curl -fsSL "$BREWFILE_URL" -o "$HOME/Brewfile"; then
+    if brew bundle --file="$HOME/Brewfile"; then
+      echo "Brewfile setup completed."
+      rm "$HOME/Brewfile" # Cleanup
+      rm "$HOME/Brewfile.lock.json" # Cleanup Brewfile.lock.json
+    else
+      echo "Failed to setup Brewfile. Skipping Homebrew setup."
+      return 1
+    fi
+  else
+    echo "Failed to download Brewfile. Skipping Homebrew setup."
+    return 1
+  fi
+}
+
+function setup_cargo() {
+  echo "Setting up Cargo..."
+  if curl -fsSL "$CARGOPACKAGES_URL" -o "$HOME/CargoPackages.txt"; then
+    if ! command -v cargo &>/dev/null; then
+      echo "Rust not found. Installing Rust..."
+      if ! brew install rust; then
+        echo "Failed to install Rust. Skipping Cargo setup."
+        return 1
+      fi
+    fi
+
+    while IFS= read -r line; do
+      package_name=$(echo "$line" | awk '{print $1}' | sed 's/://')
+      echo "Installing Cargo package: $package_name"
+      cargo install "$package_name" || echo "Failed to install Cargo package: $package_name. Skipping."
+    done < "$HOME/CargoPackages.txt"
+
+    rm "$HOME/CargoPackages.txt" # Cleanup
+  else
+    echo "Failed to download CargoPackages.txt. Skipping Cargo setup."
+    return 1
+  fi
+}
+
+function setup_python() {
+  echo "Setting up Python with pyenv and pip..."
+  if ! command -v pyenv &>/dev/null; then
+    echo "pyenv not found. Installing pyenv..."
+    if ! brew install pyenv; then
+      echo "Failed to install pyenv. Skipping Python setup."
+      return 1
+    fi
+  fi
+
+  pyenv install 3.12.0 --skip-existing || echo "Failed to install Python 3.12.0. Skipping Python setup."
+
+  pyenv global 3.12.0
+  echo 'eval "$(pyenv init --path)"' >> "$HOME/.zprofile"
+
+  if curl -fsSL "$PIPFILE_URL" -o "$HOME/pip.txt"; then
+    while IFS= read -r package; do
+      echo "Installing Python package: $package"
+      pip install "$package" || echo "Failed to install Python package: $package. Skipping."
+    done < "$HOME/pip.txt"
+
+    rm "$HOME/pip.txt" # Cleanup
+  else
+    echo "Failed to download pip.txt. Skipping Python setup."
+    return 1
+  fi
+}
+
+function download_and_apply_dotfiles() {
+  echo "Downloading and applying dotfiles..."
+  curl -fsSL "$ZSHRC_URL" -o "$HOME/.zshrc" || echo "Failed to download .zshrc. Skipping."
+  curl -fsSL "$HUSHLOGIN_URL" -o "$HOME/.hushlogin" || echo "Failed to download .hushlogin. Skipping."
+  curl -fsSL "$LAZYGIT_CONFIG_URL" -o "$LAZYGIT_CONFIG_DIR/config.yml" || echo "Failed to download lazygit config. Skipping."
+  curl -fsSL "$GITCONFIG_URL" -o "$HOME/.gitconfig" || echo "Failed to download .gitconfig. Skipping."
+  curl -fsSL "$GITIGNORE_GLOBAL_URL" -o "$HOME/.gitignore_global" || echo "Failed to download .gitignore_global. Skipping."
+  curl -fsSL "$SUBLIME_SETTINGS_URL" -o "$SUBLIME_SETTINGS_DIR/Preferences.sublime-settings" || echo "Failed to download Sublime Text settings. Skipping."
+}
+
+function install_font() {
+  echo "Downloading and installing the JetBrains Mono Nerd Font..."
+  curl -fsSL "$FONT_URL" -o "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" || echo "Failed to download JetBrains Mono Nerd Font. Skipping."
+}
+
+function setup_ranger_devicons() {
+  echo "Setting up ranger_devicons plugin..."
+  git clone https://github.com/alexanderjeurissen/ranger_devicons ~/.config/ranger/plugins/ranger_devicons || echo "Failed to clone ranger_devicons plugin. Skipping."
+  echo "default_linemode devicons" >> $HOME/.config/ranger/rc.conf
+}
+
+function prompt_user() {
+  local question=$1
+  local default_choice=$2
+
+  read -p "$question [Y/N]: " choice
+  choice=${choice:-$default_choice}
+
+  case "$choice" in
+    y|Y ) return 0 ;;
+    n|N ) return 1 ;;
+    * ) echo "Invalid choice. Defaulting to $default_choice." ;;
+  esac
+
+  return 0
+}
+
+# Interactive menu
+echo "Select the setup tasks to perform:"
+
+if prompt_user "Setup Homebrew?" "Y"; then
+  setup_homebrew
 fi
 
-# Download and setup Brewfile
-curl -fsSL "$BREWFILE_URL" -o "$HOME/Brewfile"
-brew bundle --file="$HOME/Brewfile"
-rm "$HOME/Brewfile" # Cleanup
-rm "$HOME/Brewfile.lock.json" # Cleanup Brewfile.lock.json
+if prompt_user "Setup Cargo?" "Y"; then
+  setup_cargo
+fi
 
-# Setup Cargo and download CargoPackages.txt
-curl -fsSL "$CARGOPACKAGES_URL" -o "$HOME/CargoPackages.txt"
-command -v cargo &>/dev/null || brew install rust
-while IFS= read -r line; do
-    package_name=$(echo "$line" | awk '{print $1}' | sed 's/://')
-    cargo install "$package_name"
-done < "$HOME/CargoPackages.txt"
-rm "$HOME/CargoPackages.txt" # Cleanup
+if prompt_user "Setup Python?" "Y"; then
+  setup_python
+fi
 
-# Python setup with pyenv and pip
-command -v pyenv &>/dev/null || brew install pyenv
-pyenv install 3.12.0 --skip-existing
-pyenv global 3.12.0
-echo 'eval "$(pyenv init --path)"' >> "$HOME/.zprofile"
-curl -fsSL "$PIPFILE_URL" -o "$HOME/pip.txt"
-while IFS= read -r package; do
-    pip install "$package"
-done < "$HOME/pip.txt"
-rm "$HOME/pip.txt" # Cleanup
+if prompt_user "Download and apply dotfiles?" "Y"; then
+  download_and_apply_dotfiles
+fi
 
-# Download and apply Dotfiles (.zshrc and .hushlogin)
-curl -fsSL "$ZSHRC_URL" -o "$HOME/.zshrc"
-curl -fsSL "$HUSHLOGIN_URL" -o "$HOME/.hushlogin"
+if prompt_user "Install JetBrains Mono Nerd Font?" "Y"; then
+  install_font
+fi
 
-# Download and apply lazygit config
-curl -fsSL "$LAZYGIT_CONFIG_URL" -o "$LAZYGIT_CONFIG_DIR/config.yml"
-
-# Download and apply git config files (.gitconfig and .gitignore_global)
-curl -fsSL "$GITCONFIG_URL" -o "$HOME/.gitconfig"
-curl -fsSL "$GITIGNORE_GLOBAL_URL" -o "$HOME/.gitignore_global"
-
-# Download and apply Sublime Text settings
-curl -fsSL "$SUBLIME_SETTINGS_URL" -o "$SUBLIME_SETTINGS_DIR/Preferences.sublime-settings"
-
-# Download and install the JetBrains Mono Nerd Font
-curl -fsSL "$FONT_URL" -o "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf"
-
-# Clone ranger_devicons plugin and modify ranger configuration
-git clone https://github.com/alexanderjeurissen/ranger_devicons ~/.config/ranger/plugins/ranger_devicons
-echo "default_linemode devicons" >> $HOME/.config/ranger/rc.conf
+if prompt_user "Setup ranger_devicons plugin?" "Y"; then
+  setup_ranger_devicons
+fi
 
 echo "Setup completed. Please restart your shell."

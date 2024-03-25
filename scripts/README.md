@@ -7,7 +7,7 @@ This script automates the setup process for your development environment by inst
 To execute the script using curl, run the following command in your terminal:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/scripts/super.sh | bash
+bash <(curl -fsSL https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/scripts/super.sh) --interactive
 ```
 
 This command fetches the `super.sh` script from the GitHub repository and executes it using bash.

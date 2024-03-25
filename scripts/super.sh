@@ -119,44 +119,52 @@ function setup_ranger_devicons() {
 
 function prompt_user() {
   local question=$1
-  local default_choice=$2
 
-  read -p "$question [Y/N]: " choice
-  choice=${choice:-$default_choice}
-
-  case "$choice" in
-    y|Y ) return 0 ;;
-    n|N ) return 1 ;;
-    * ) echo "Invalid choice. Defaulting to $default_choice." ;;
-  esac
-
-  return 0
+  while true; do
+    read -p "$question [Y/N]: " choice
+    case "$choice" in
+      y|Y ) return 0 ;;
+      n|N ) return 1 ;;
+      * ) echo "Invalid choice. Please enter Y or N." ;;
+    esac
+  done
 }
 
-# Interactive menu
-echo "Select the setup tasks to perform:"
+# Check if the --interactive flag is provided
+if [[ "$1" == "--interactive" ]]; then
+  # Interactive menu
+  echo "Select the setup tasks to perform:"
 
-if prompt_user "Setup Homebrew?" "Y"; then
+  if prompt_user "Setup Homebrew?"; then
+    setup_homebrew
+  fi
+
+  if prompt_user "Setup Cargo?"; then
+    setup_cargo
+  fi
+
+  if prompt_user "Setup Python?"; then
+    setup_python
+  fi
+
+  if prompt_user "Download and apply dotfiles?"; then
+    download_and_apply_dotfiles
+  fi
+
+  if prompt_user "Install JetBrains Mono Nerd Font?"; then
+    install_font
+  fi
+
+  if prompt_user "Setup ranger_devicons plugin?"; then
+    setup_ranger_devicons
+  fi
+else
+  # Non-interactive mode, run all setup tasks
   setup_homebrew
-fi
-
-if prompt_user "Setup Cargo?" "Y"; then
   setup_cargo
-fi
-
-if prompt_user "Setup Python?" "Y"; then
   setup_python
-fi
-
-if prompt_user "Download and apply dotfiles?" "Y"; then
   download_and_apply_dotfiles
-fi
-
-if prompt_user "Install JetBrains Mono Nerd Font?" "Y"; then
   install_font
-fi
-
-if prompt_user "Setup ranger_devicons plugin?" "Y"; then
   setup_ranger_devicons
 fi
 

@@ -168,4 +168,6 @@ else
   setup_ranger_devicons
 fi
 
-echo "Setup completed. Please restart your shell."
+echo "Setup completed."
+echo "Restarting the shell..."
+exec zsh

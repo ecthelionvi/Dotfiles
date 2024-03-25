@@ -119,12 +119,12 @@ function setup_git() {
 }
 
 function install_font() {
-  echo "Downloading and installing the JetBrains Mono Nerd Font..."
+  echo "Downloading and installing JetBrains Mono Nerd Font..."
   curl -fsSL "$FONT_URL" -o "$FONT_DIR/JetBrainsMonoNerdFont-Regular.ttf" || echo "Failed to download JetBrains Mono Nerd Font. Skipping."
 }
 
 function setup_ranger_devicons() {
-  echo "Setting up ranger_devicons plugin..."
+  echo "Setting up ranger..."
   git clone https://github.com/alexanderjeurissen/ranger_devicons ~/.config/ranger/plugins/ranger_devicons || echo "Failed to clone ranger_devicons plugin. Skipping."
   echo "default_linemode devicons" >> $HOME/.config/ranger/rc.conf
 }

@@ -33,7 +33,7 @@ alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 # Utility Aliases
 alias lv='silent_running lvim'
 alias python=/usr/bin/python3
-alias ls='exa --icons -1'
+alias ls='eza --icons -1'
 alias ran='ranger_clear'
 alias mkdir='mkdir -p'
 alias hm='cd $HOME'

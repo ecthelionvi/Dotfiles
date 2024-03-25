@@ -15,6 +15,8 @@ SUBLIME_SETTINGS_URL="${REPO_URL}sublime/Preferences.sublime-settings"
 SUBLIME_SETTINGS_DIR="$HOME/Library/Application Support/Sublime Text/Packages/User"
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMono%20Regular%20Nerd%20Font%20Complete%20Mono.ttf"
 FONT_DIR="$HOME/Library/Fonts"
+REDQUITS_URL="https://github.com/ecthelionvi/Dotfiles/raw/main/redquits/RedQuits.app.zip"
+REDQUITS_DIR="$HOME/Applications"
 
 function setup_homebrew() {
   echo "Setting up Homebrew..."
@@ -117,6 +119,14 @@ function setup_ranger_devicons() {
   echo "default_linemode devicons" >> $HOME/.config/ranger/rc.conf
 }
 
+function install_redquits() {
+  echo "Downloading and installing RedQuits..."
+  curl -fsSL "$REDQUITS_URL" -o "$HOME/RedQuits.app.zip"
+  unzip -q "$HOME/RedQuits.app.zip" -d "$REDQUITS_DIR"
+  rm "$HOME/RedQuits.app.zip"
+  echo "RedQuits installed successfully."
+}
+
 function prompt_user() {
   local question=$1
 
@@ -158,6 +168,10 @@ if [[ "$1" == "--interactive" ]]; then
   if prompt_user "Setup ranger_devicons plugin?"; then
     setup_ranger_devicons
   fi
+
+  if prompt_user "Install RedQuits?"; then
+      install_redquits
+  fi
 else
   # Non-interactive mode, run all setup tasks
   setup_homebrew
@@ -166,6 +180,7 @@ else
   download_and_apply_dotfiles
   install_font
   setup_ranger_devicons
+  install_redquits
 fi
 
 echo "Setup completed."

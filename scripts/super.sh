@@ -15,8 +15,6 @@ SUBLIME_SETTINGS_URL="${REPO_URL}sublime/Preferences.sublime-settings"
 SUBLIME_SETTINGS_DIR="$HOME/Library/Application Support/Sublime Text/Packages/User"
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMono%20Regular%20Nerd%20Font%20Complete%20Mono.ttf"
 FONT_DIR="$HOME/Library/Fonts"
-REDQUITS_URL="https://github.com/ecthelionvi/Dotfiles/raw/main/redquits/RedQuits.app.zip"
-REDQUITS_DIR="$HOME/Applications"
 
 function setup_homebrew() {
   echo "Setting up Homebrew..."
@@ -98,14 +96,26 @@ function setup_python() {
   fi
 }
 
-function download_and_apply_dotfiles() {
-  echo "Downloading and applying dotfiles..."
+function setup_zsh() {
+  echo "Downloading and applying Zsh configuration..."
   curl -fsSL "$ZSHRC_URL" -o "$HOME/.zshrc" || echo "Failed to download .zshrc. Skipping."
   curl -fsSL "$HUSHLOGIN_URL" -o "$HOME/.hushlogin" || echo "Failed to download .hushlogin. Skipping."
-  curl -fsSL "$LAZYGIT_CONFIG_URL" -o "$LAZYGIT_CONFIG_DIR/config.yml" || echo "Failed to download lazygit config. Skipping."
+}
+
+function setup_lazygit() {
+  echo "Downloading and applying Lazygit configuration..."
+  curl -fsSL "$LAZYGIT_CONFIG_URL" -o "$LAZYGIT_CONFIG_DIR/config.yml" || echo "Failed to download Lazygit config. Skipping."
+}
+
+function setup_sublime() {
+  echo "Downloading and applying Sublime Text configuration..."
+  curl -fsSL "$SUBLIME_SETTINGS_URL" -o "$SUBLIME_SETTINGS_DIR/Preferences.sublime-settings" || echo "Failed to download Sublime Text settings. Skipping."
+}
+
+function setup_git() {
+  echo "Downloading and applying Git configuration..."
   curl -fsSL "$GITCONFIG_URL" -o "$HOME/.gitconfig" || echo "Failed to download .gitconfig. Skipping."
   curl -fsSL "$GITIGNORE_GLOBAL_URL" -o "$HOME/.gitignore_global" || echo "Failed to download .gitignore_global. Skipping."
-  curl -fsSL "$SUBLIME_SETTINGS_URL" -o "$SUBLIME_SETTINGS_DIR/Preferences.sublime-settings" || echo "Failed to download Sublime Text settings. Skipping."
 }
 
 function install_font() {
@@ -157,30 +167,40 @@ if [[ "$1" == "--interactive" ]]; then
     setup_python
   fi
 
-  if prompt_user "Download and apply dotfiles?"; then
-    download_and_apply_dotfiles
+  if prompt_user "Setup Zsh"; then
+    setup_zsh
+  fi
+
+  if prompt_user "Setup Lazygit"; then
+    setup_lazygit
+  fi
+
+  if prompt_user "Setup Sublime Text"; then
+    setup_sublime
+  fi
+
+  if prompt_user "Setup Git"; then
+    setup_git
   fi
 
   if prompt_user "Install JetBrains Mono Nerd Font?"; then
     install_font
   fi
 
-  if prompt_user "Setup ranger_devicons plugin?"; then
+  if prompt_user "Install ranger_devicons plugin?"; then
     setup_ranger_devicons
-  fi
-
-  if prompt_user "Install RedQuits?"; then
-      install_redquits
   fi
 else
   # Non-interactive mode, run all setup tasks
   setup_homebrew
   setup_cargo
   setup_python
-  download_and_apply_dotfiles
+  setup_zsh
+  setup_lazygit
+  setup_sublime
+  setup_git
   install_font
   setup_ranger_devicons
-  install_redquits
 fi
 
 echo "Setup completed."

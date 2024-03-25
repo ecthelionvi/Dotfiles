@@ -175,7 +175,7 @@ if [[ "$1" == "--interactive" ]]; then
     setup_git
   fi
 
-  if prompt_user "Setup Lazygit?"; then
+  if prompt_user "Setup Ranger?"; then
     setup_ranger_devicons
   fi
 

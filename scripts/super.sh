@@ -129,14 +129,6 @@ function setup_ranger_devicons() {
   echo "default_linemode devicons" >> $HOME/.config/ranger/rc.conf
 }
 
-function install_redquits() {
-  echo "Downloading and installing RedQuits..."
-  curl -fsSL "$REDQUITS_URL" -o "$HOME/RedQuits.app.zip"
-  unzip -q "$HOME/RedQuits.app.zip" -d "$REDQUITS_DIR"
-  rm "$HOME/RedQuits.app.zip"
-  echo "RedQuits installed successfully."
-}
-
 function prompt_user() {
   local question=$1
 

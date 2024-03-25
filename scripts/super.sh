@@ -179,7 +179,7 @@ if [[ "$1" == "--interactive" ]]; then
     setup_ranger_devicons
   fi
 
-  if prompt_user "Install JetBrains Mono Nerd Font?"; then
+  if prompt_user "Setup Font?"; then
     install_font
   fi
 else

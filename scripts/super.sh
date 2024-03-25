@@ -145,8 +145,6 @@ function prompt_user() {
 # Check if the --interactive flag is provided
 if [[ "$1" == "--interactive" ]]; then
   # Interactive menu
-  echo "Select the setup tasks to perform:"
-
   if prompt_user "Setup Homebrew?"; then
     setup_homebrew
   fi

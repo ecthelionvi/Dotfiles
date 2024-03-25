@@ -167,28 +167,28 @@ if [[ "$1" == "--interactive" ]]; then
     setup_python
   fi
 
-  if prompt_user "Setup Zsh"; then
+  if prompt_user "Setup Zsh?"; then
     setup_zsh
   fi
 
-  if prompt_user "Setup Lazygit"; then
+  if prompt_user "Setup Lazygit?"; then
     setup_lazygit
   fi
 
-  if prompt_user "Setup Sublime Text"; then
+  if prompt_user "Setup Sublime Text?"; then
     setup_sublime
   fi
 
-  if prompt_user "Setup Git"; then
+  if prompt_user "Setup Git?"; then
     setup_git
+  fi
+
+  if prompt_user "Setup Lazygit?"; then
+    setup_ranger_devicons
   fi
 
   if prompt_user "Install JetBrains Mono Nerd Font?"; then
     install_font
-  fi
-
-  if prompt_user "Install ranger_devicons plugin?"; then
-    setup_ranger_devicons
   fi
 else
   # Non-interactive mode, run all setup tasks

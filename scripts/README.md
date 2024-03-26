@@ -7,7 +7,7 @@ This script automates the setup process for your development environment by inst
 To execute the script using curl, run the following command in your terminal:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/scripts/super.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/scripts/super.sh) --interactive
 ```
 
 This command fetches the `super.sh` script from the GitHub repository and executes it using bash.
@@ -69,7 +69,7 @@ This script automates the process of generating an SSH key, adding it to the ssh
 To execute the script directly from the terminal, run the following command:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/scripts/ssh.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/scripts/ssh.sh) --interactive
 ```
 
 This command downloads the `ssh.sh` script from the GitHub repository and executes it using bash.

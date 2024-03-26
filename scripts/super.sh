@@ -133,6 +133,12 @@ function setup_ranger_devicons() {
 
 function setup_iterm2() {
     echo "Setting up iTerm2..."
+    # Check if the file exists and delete it if it does
+    if [ -f "$PLIST_DIR/com.googlecode.iterm2.plist" ]; then
+        echo "Existing iTerm2 preferences found. Deleting..."
+        rm "$PLIST_DIR/com.googlecode.iterm2.plist"
+    fi
+    # Attempt to download the new preferences file
     curl -fsSL "$PLIST_URL" -o "$PLIST_DIR/com.googlecode.iterm2.plist" || echo "Failed to fetch the iTerm2 preferences. Skipping."
     echo "Preferences fetched and copied. Restart iTerm2 to apply changes."
 }

@@ -15,7 +15,7 @@ SUBLIME_SETTINGS_URL="${REPO_URL}sublime/Preferences.sublime-settings"
 SUBLIME_SETTINGS_DIR="$HOME/Library/Application Support/Sublime Text/Packages/User"
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMono%20Regular%20Nerd%20Font%20Complete%20Mono.ttf"
 FONT_DIR="$HOME/Library/Fonts"
-PROFILE_JSON_URL="https://raw.githubusercontent.com/ecthelionvi/.config/main/iterm2/rob.json"
+PROFILE_JSON_URL="${REPO_URL}iterm2/rob.json"
 DYNAMIC_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
 
 function setup_homebrew() {

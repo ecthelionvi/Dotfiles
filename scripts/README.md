@@ -58,10 +58,43 @@ The `super.sh` script performs the following tasks:
 
 After the script finishes executing, it will display a message indicating that the setup is completed and prompts you to restart your shell for the changes to take effect.
 
-## Notes
+---
 
-- Make sure you have a stable internet connection while running the script, as it downloads files from the GitHub repository.
-- The script assumes that the necessary directories for lazygit and other configurations already exist. If they don't, you may need to create them manually.
-- Review the contents of the files being downloaded (`Brewfile`, `CargoPackages.txt`, `pip.txt`, `.zshrc`, `.hushlogin`, `config.yml`, `.gitconfig`, `.gitignore_global`, `Preferences.sublime-settings`) to ensure they align with your requirements.
+# SSH Setup Script
 
-If you encounter any issues or have questions, please refer to the GitHub repository or contact the maintainer for assistance.
+This script automates the process of generating an SSH key, adding it to the ssh-agent, and configuring the SSH client for macOS and other Unix-like systems.
+
+## Usage
+
+To execute the script directly from the terminal, run the following command:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/scripts/ssh.sh)
+```
+
+This command downloads the `ssh.sh` script from the GitHub repository and executes it using bash.
+
+## Script Explanation
+
+The `ssh.sh` script performs the following tasks:
+
+1. **Prompt for Email Address**
+   - Asks the user to input their email address, which is associated with the SSH key as a label.
+
+2. **SSH Key Generation**
+   - Checks for the existence of the default SSH directory and creates it if necessary.
+   - Checks if an SSH key already exists to avoid overwriting it and provides instructions if one is found.
+   - Generates a new SSH key using the Ed25519 algorithm with the provided email as the label.
+
+3. **ssh-agent Integration**
+   - Starts the ssh-agent if it is not already running.
+   - Adds the new SSH key to the ssh-agent. On macOS, it also adds the key to the macOS keychain for secure passphrase storage.
+
+4. **SSH Configuration for GitHub**
+   - Ensures the SSH config file exists, creating it if necessary.
+   - Configures the SSH client to automatically use the new SSH key for connections to GitHub and to use the macOS keychain if available.
+
+5. **Next Steps Guidance**
+   - Provides instructions on how to copy the public SSH key to the clipboard based on the user's operating system.
+   - Explains the steps for adding the SSH key to the user's GitHub account.
+   - Includes a command for testing the SSH connection to GitHub.

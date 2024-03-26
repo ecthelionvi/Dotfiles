@@ -133,7 +133,7 @@ function setup_ranger_devicons() {
 
 function setup_iterm2() {
     echo "Setting up iTerm2..."
-    curl -fsSL "$PLIST_URL" -o "$PLIST_DIR/com.googlecode.iterm2" || echo "Failed to fetch the iTerm2 preferences. Skipping."
+    curl -fsSL "$PLIST_URL" -o "$PLIST_DIR/com.googlecode.iterm2.plist" || echo "Failed to fetch the iTerm2 preferences. Skipping."
     echo "Preferences fetched and copied. Restart iTerm2 to apply changes."
 }
 

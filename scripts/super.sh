@@ -132,7 +132,7 @@ function setup_ranger_devicons() {
 }
 
 function setup_iterm2() {
-    echo "Setting up iterm2..."
+    echo "Setting up iTerm2..."
     curl -fsSL "$PROFILE_JSON_URL" -o "$DYNAMIC_PROFILES_DIR/rob.json" || echo "Failed to fetch the iTerm2 profile. Skipping."
     echo "Profile fetched and copied to DynamicProfiles. Restart iTerm2 to apply changes."
 }
@@ -185,7 +185,7 @@ if [[ "$1" == "--interactive" ]]; then
     setup_ranger_devicons
   fi
 
-  if prompt_user "Setup iterm2?"; then
+  if prompt_user "Setup iTerm2?"; then
     setup_iterm2
   fi
 

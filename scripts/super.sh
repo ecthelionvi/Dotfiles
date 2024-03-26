@@ -15,8 +15,8 @@ SUBLIME_SETTINGS_URL="${REPO_URL}sublime/Preferences.sublime-settings"
 SUBLIME_SETTINGS_DIR="$HOME/Library/Application Support/Sublime Text/Packages/User"
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/JetBrainsMono/Ligatures/Regular/JetBrainsMono%20Regular%20Nerd%20Font%20Complete%20Mono.ttf"
 FONT_DIR="$HOME/Library/Fonts"
-PROFILE_JSON_URL="${REPO_URL}iterm2/rob.jsn"
-DYNAMIC_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+PLIST_URL="${REPO_URL}iterm2/com.googlecode.iterm2.plist"
+PLIST_DIR="$HOME/Library/Preferences"
 
 function setup_homebrew() {
   echo "Setting up Homebrew..."
@@ -133,8 +133,8 @@ function setup_ranger_devicons() {
 
 function setup_iterm2() {
     echo "Setting up iTerm2..."
-    curl -fsSL "$PROFILE_JSON_URL" -o "$DYNAMIC_PROFILES_DIR/rob.json" || echo "Failed to fetch the iTerm2 profile. Skipping."
-    echo "Profile fetched and copied to DynamicProfiles. Restart iTerm2 to apply changes."
+    curl -fsSL "$PLIST_URL" -o "$PLIST_DIR/rob.json" || echo "Failed to fetch the iTerm2 preferences. Skipping."
+    echo "Preferences fetched and copied. Restart iTerm2 to apply changes."
 }
 
 function prompt_user() {

@@ -1,7 +1,4 @@
-# CodeWhisperer pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.pre.zsh"
-
-### Environment Configuration ###
+# ### Environment Configuration ###
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
@@ -17,6 +14,10 @@ export EDITOR=$HOME/.local/bin/lvim
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Zsh Auto Suggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+ZSH_AUTOSUGGEST_STRATEGY=(completion history)
+
 # Python
 eval "$(pyenv init --path)"
 
@@ -26,9 +27,10 @@ eval "$(starship init zsh)"
 ### Aliases ###
 alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude .fig/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
 alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!.fig/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
+alias tt='noglob python3 $HOME/Documents/Dotfiles/scripts/touch.py'
 alias cds='py $HOME/Documents/Dotfiles/scripts/clean_DS.py'
-alias touch='py $HOME/Documents/Dotfiles/scripts/touch.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
+alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
 
 # Utility Aliases
 alias lv='silent_running lvim'
@@ -60,7 +62,7 @@ function silent_running {
   clear
 }
 
-### Key Bindings ###
+## Key Bindings ###
 export FUNCNEST=500
 
 autoload -Uz edit-command-line
@@ -70,6 +72,4 @@ bindkey '^O' edit-command-line
 # Environment Flags
 OP_BIOMETRIC_UNLOCK_ENABLED=true
 RANGER_LOAD_DEFAULT_RC=false
-
-# CodeWhisperer post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/codewhisperer/shell/zshrc.post.zsh"
+export PATH="/opt/homebrew/opt/node@20/bin:$PATH"

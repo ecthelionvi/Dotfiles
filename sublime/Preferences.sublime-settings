@@ -6,9 +6,6 @@
  	"save_on_focus_lost": true,
  	"keys": ["ctrl+shift+s"], "command": "auto_save",
  	"default_dir" : "/Users/rob/Library/Mobile Documents/com~apple~CloudDocs/Downloads/",
-	"ignored_packages":
-	[
-		"Vintage",
-	],
+	"font_face": "JetBrainsMono Nerd Font",
 	"font_size": 16,
 }

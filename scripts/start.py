@@ -26,7 +26,7 @@ def run_command_in_directory(command, directory):
         end tell
     end tell
     """
-    subprocess.run(["osascript", "-e", apple_script], check=True)
+    subprocess.run(["osascript", "-e", apple_script], check=False)
 
 
 def main():

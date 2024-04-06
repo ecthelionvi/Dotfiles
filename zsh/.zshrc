@@ -27,6 +27,7 @@ eval "$(starship init zsh)"
 ### Aliases ###
 alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude .fig/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
 alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!.fig/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
+alias st='silent_running py $HOME/Documents/Dotfiles/scripts/start.py'
 alias tt='noglob python3 $HOME/Documents/Dotfiles/scripts/touch.py'
 alias cds='py $HOME/Documents/Dotfiles/scripts/clean_DS.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
@@ -35,6 +36,7 @@ alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
 # Utility Aliases
 alias lv='silent_running lvim'
 alias python=/usr/bin/python3
+alias dd='noglob custom_cd'
 alias ls='eza --icons -1'
 alias ran='ranger_clear'
 alias mkdir='mkdir -p'
@@ -60,6 +62,28 @@ function silent_running {
   set +e
   "$@" 2>/dev/null
   clear
+}
+
+function custom_cd {
+    # Remove bracketed content before counting dots for levels
+    local cleaned_path=$(echo "$1" | sed 's/\[\[.*\]\]//g')
+    local dots="${cleaned_path//[^.]}"
+    local up_levels=$((${#dots} - 1))
+    
+    if [ $up_levels -gt 0 ]; then
+        # Now, directly use the original path for cd, as we've already calculated up_levels
+        local new_path="${1#$dots}"
+        new_path="${new_path#/}"
+        local i=0
+        local up_dir=""
+        while [ $i -lt $up_levels ]; do
+            up_dir="../$up_dir"
+            i=$((i+1))
+        done
+        cd "$up_dir$new_path" || return
+    else
+        cd "$1" || return
+    fi
 }
 
 ## Key Bindings ###

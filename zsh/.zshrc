@@ -27,11 +27,12 @@ eval "$(starship init zsh)"
 ### Aliases ###
 alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude .fig/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
 alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!.fig/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
-alias st='silent_running py $HOME/Documents/Dotfiles/scripts/start.py'
+alias st='silent_running python3 $HOME/Documents/Dotfiles/scripts/start.py'
 alias tt='noglob python3 $HOME/Documents/Dotfiles/scripts/touch.py'
 alias cds='py $HOME/Documents/Dotfiles/scripts/clean_DS.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
+alias clear="clear && printf '\e[3J'"
 
 # Utility Aliases
 alias lv='silent_running lvim'

@@ -21,12 +21,13 @@ def run_command_in_directory(command, directory):
         tell current window
             create tab with default profile
             tell the current session
+                write text "clear"
                 write text "cd '{directory}' && {command}"
             end tell
         end tell
     end tell
     """
-    subprocess.run(["osascript", "-e", apple_script], check=False)
+    subprocess.run(["osascript", "-e", apple_script], check=True)
 
 
 def main():

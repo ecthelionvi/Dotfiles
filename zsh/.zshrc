@@ -33,6 +33,7 @@ alias cds='py $HOME/Documents/Dotfiles/scripts/clean_DS.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
 alias clear="clear && printf '\e[3J'"
+alias php='php -S localhost:8000'
 
 # Utility Aliases
 alias lv='silent_running lvim'
@@ -46,6 +47,7 @@ alias py='python3'
 alias lv.='lv_dot'
 alias rn='rename'
 alias rm='rm -rf'
+alias gls='gitls'
 alias cc='clear'
 alias cat='bat'
 
@@ -85,6 +87,21 @@ function custom_cd {
     else
         cd "$1" || return
     fi
+}
+
+function gitls {
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    # Get directories and files from git, separating directories with a trailing slash
+    local entries=$(git ls-tree --name-only HEAD | sed 's:/$::' | xargs -I {} sh -c 'if [ -d "{}" ]; then echo "{}/"; else echo "{}"; fi')
+
+    # Use ls for directories (appending a slash to indicate a directory)
+    echo "$entries" | grep '/$' | sed 's:/$::' | xargs -I {} eza --icons -1 -d {} 2>/dev/null
+
+    # Use ls for files
+    echo "$entries" | grep -v '/$' | xargs eza --icons -1 2>/dev/null
+  else
+    eza --icons -1
+  fi
 }
 
 ## Key Bindings ###

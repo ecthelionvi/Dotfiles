@@ -59,9 +59,7 @@ def main():
     if command:
         run_command_in_directory(command, project_directory)
     else:
-        print(
-            "Unable to start project: No valid 'package.json' or 'index.html' found."
-        )
+        print("Unable to start project: No valid 'package.json' or 'index.html' found.")
 
 
 if __name__ == "__main__":

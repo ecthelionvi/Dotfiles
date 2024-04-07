@@ -36,45 +36,40 @@ alias clear="clear && printf '\e[3J'"
 alias php='php -S localhost:8000'
 
 # Utility Aliases
-alias lv='silent_running lvim'
 alias python=/usr/bin/python3
-alias dd='noglob custom_cd'
 alias ls='eza --icons -1'
-alias ran='ranger_clear'
+alias lv='silent lvim'
 alias mkdir='mkdir -p'
+alias dd='noglob dd'
 alias hm='cd $HOME'
 alias py='python3'
-alias lv.='lv_dot'
 alias rn='rename'
 alias rm='rm -rf'
-alias gls='gitls'
+alias lv.='lv .'
 alias cc='clear'
+alias ran='ran'
+alias gls='gls'
 alias cat='bat'
 
 ### Function Definitions ###
-function lv_dot {
-    silent_running lvim -c 'set hidden | Explore'
+function gls {
+  if git rev-parse --git-dir > /dev/null 2>&1; then
+    local entries=$(git ls-tree --name-only HEAD | sed 's:/$::' | xargs -I {} sh -c 'if [ -d "{}" ]; then echo "{}/"; else echo "{}"; fi')
+
+    echo "$entries" | grep '/$' | sed 's:/$::' | xargs -I {} eza --icons -1 -d {} 2>/dev/null
+
+    echo "$entries" | grep -v '/$' | xargs eza --icons -1 2>/dev/null
+  else
+    eza --icons -1
+  fi
 }
 
-function ranger_clear {
-  /Users/rob/.pyenv/shims/ranger
-  clear
-}
-
-function silent_running {
-  set +e
-  "$@" 2>/dev/null
-  clear
-}
-
-function custom_cd {
-    # Remove bracketed content before counting dots for levels
+function dd {
     local cleaned_path=$(echo "$1" | sed 's/\[\[.*\]\]//g')
     local dots="${cleaned_path//[^.]}"
     local up_levels=$((${#dots} - 1))
     
     if [ $up_levels -gt 0 ]; then
-        # Now, directly use the original path for cd, as we've already calculated up_levels
         local new_path="${1#$dots}"
         new_path="${new_path#/}"
         local i=0
@@ -89,19 +84,15 @@ function custom_cd {
     fi
 }
 
-function gitls {
-  if git rev-parse --git-dir > /dev/null 2>&1; then
-    # Get directories and files from git, separating directories with a trailing slash
-    local entries=$(git ls-tree --name-only HEAD | sed 's:/$::' | xargs -I {} sh -c 'if [ -d "{}" ]; then echo "{}/"; else echo "{}"; fi')
+function ran {
+  /Users/rob/.pyenv/shims/ranger
+  clear
+}
 
-    # Use ls for directories (appending a slash to indicate a directory)
-    echo "$entries" | grep '/$' | sed 's:/$::' | xargs -I {} eza --icons -1 -d {} 2>/dev/null
-
-    # Use ls for files
-    echo "$entries" | grep -v '/$' | xargs eza --icons -1 2>/dev/null
-  else
-    eza --icons -1
-  fi
+function silent {
+  set +e
+  "$@" 2>/dev/null
+  clear
 }
 
 ## Key Bindings ###

@@ -1,9 +1,9 @@
 # ### Environment Configuration ###
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
-
 # History
 export HISTFILE=$HOME/.cache/zsh/zsh_history
 
@@ -105,4 +105,3 @@ bindkey '^O' edit-command-line
 # Environment Flags
 OP_BIOMETRIC_UNLOCK_ENABLED=true
 RANGER_LOAD_DEFAULT_RC=false
-export PATH="/opt/homebrew/opt/node@20/bin:$PATH"

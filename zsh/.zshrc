@@ -1,4 +1,4 @@
-# ### Environment Configuration ###
+### Environment Configuration ###
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -28,7 +28,7 @@ eval "$(starship init zsh)"
 ### Aliases ###
 alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude .fig/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
 alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!.fig/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
-alias st='silent_running python3 $HOME/Documents/Dotfiles/scripts/start.py'
+alias st='silent python3 $HOME/Documents/Dotfiles/scripts/start.py'
 alias tt='noglob python3 $HOME/Documents/Dotfiles/scripts/touch.py'
 alias cds='py $HOME/Documents/Dotfiles/scripts/clean_DS.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
@@ -39,7 +39,6 @@ alias php='php -S localhost:8000'
 # Utility Aliases
 alias python=/usr/bin/python3
 alias ls='eza --icons -1'
-alias lv='silent lvim'
 alias mkdir='mkdir -p'
 alias dd='noglob dd'
 alias hm='cd $HOME'
@@ -48,6 +47,7 @@ alias rn='rename'
 alias rm='rm -rf'
 alias lv.='lv .'
 alias cc='clear'
+alias lv='lvim'
 alias ran='ran'
 alias gls='gls'
 alias cat='bat'
@@ -106,3 +106,4 @@ bindkey '^O' edit-command-line
 # Environment Flags
 OP_BIOMETRIC_UNLOCK_ENABLED=true
 RANGER_LOAD_DEFAULT_RC=false
+

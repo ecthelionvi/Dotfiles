@@ -90,12 +90,6 @@ function ran {
   clear
 }
 
-function silent {
-  set +e
-  "$@" 2>/dev/null
-  clear
-}
-
 ## Key Bindings ###
 export FUNCNEST=500
 

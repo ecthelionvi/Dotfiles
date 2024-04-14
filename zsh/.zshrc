@@ -26,10 +26,10 @@ eval "$(pyenv init --path)"
 eval "$(starship init zsh)"
 
 ### Aliases ###
-alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude .fig/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
-alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!.fig/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
-alias st='silent python3 $HOME/Documents/Dotfiles/scripts/start.py'
+alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
+alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
 alias tt='noglob python3 $HOME/Documents/Dotfiles/scripts/touch.py'
+alias st='python3 $HOME/Documents/Dotfiles/scripts/start.py'
 alias cds='py $HOME/Documents/Dotfiles/scripts/clean_DS.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
@@ -38,17 +38,17 @@ alias php='php -S localhost:8000'
 
 # Utility Aliases
 alias python=/usr/bin/python3
+alias ran='run_clear ranger'
 alias ls='eza --icons -1'
+alias lv='run_clear lvim'
 alias mkdir='mkdir -p'
 alias dd='noglob dd'
 alias hm='cd $HOME'
 alias py='python3'
 alias rn='rename'
 alias rm='rm -rf'
-alias lv.='lv .'
 alias cc='clear'
-alias lv='lvim'
-alias ran='ran'
+alias lv.='lv .'
 alias gls='gls'
 alias cat='bat'
 
@@ -85,9 +85,9 @@ function dd {
     fi
 }
 
-function ran {
-  /Users/rob/.pyenv/shims/ranger
-  clear
+function run_clear() {
+    $@
+    clear
 }
 
 ## Key Bindings ###

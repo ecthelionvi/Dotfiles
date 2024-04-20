@@ -75,6 +75,8 @@ def empty_trash():
             clear_screen()
             success_message = f"Removed - {GREEN_TEXT}{readable_size}{RESET_COLOR}"
             draw_boxed_message([success_message], show_success=True)
+        else:
+            clear_screen()
     except KeyboardInterrupt:
         clear_screen()
 

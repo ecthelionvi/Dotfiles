@@ -79,5 +79,7 @@ if __name__ == "__main__":
                 f"Removed {GREEN_TEXT}{deleted_count}{RESET_COLOR} .DS_Store Files"
             )
             draw_boxed_message([success_message], show_success=True)
+        else:
+            clear_screen()
     except KeyboardInterrupt:
         clear_screen()

@@ -1,6 +1,5 @@
 colorama==0.4.6
 greenlet==3.0.3
-halo==0.0.31
 log-symbols==0.0.14
 msgpack==1.0.8
 pynvim==0.5.0

@@ -31,21 +31,22 @@ alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!Library/ --glo
 alias tt='noglob python3 $HOME/Documents/Dotfiles/scripts/touch.py'
 alias st='python3 $HOME/Documents/Dotfiles/scripts/start.py'
 alias cds='py $HOME/Documents/Dotfiles/scripts/clean_DS.py'
+alias trash='py $HOME/Documents/Dotfiles/scripts/trash.py'
+alias pj='py $HOME/Documents/Dotfiles/scripts/project.py'
+alias rn='py $HOME/Documents/Dotfiles/scripts/rename.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
 alias clear="clear && printf '\e[3J'"
 alias php='php -S localhost:8000'
-
-# Utility Aliases
-alias python=/usr/bin/python3
+alias python='/usr/bin/python3'
 alias ran='run_clear ranger'
 alias ls='eza --icons -1'
 alias lv='run_clear lvim'
 alias mkdir='mkdir -p'
+alias path='realpath'
 alias dd='noglob dd'
 alias hm='cd $HOME'
 alias py='python3'
-alias rn='rename'
 alias rm='rm -rf'
 alias cc='clear'
 alias lv.='lv .'
@@ -66,16 +67,21 @@ function gls {
 }
 
 function dd {
+    if [[ "$1" == "." ]]; then
+        cd - > /dev/null || return
+        return
+    fi
+
     local cleaned_path=$(echo "$1" | sed 's/\[\[.*\]\]//g')
     local dots="${cleaned_path//[^.]}"
     local up_levels=$((${#dots} - 1))
     
-    if [ $up_levels -gt 0 ]; then
+    if [[ $up_levels -gt 0 ]]; then
         local new_path="${1#$dots}"
         new_path="${new_path#/}"
         local i=0
         local up_dir=""
-        while [ $i -lt $up_levels ]; do
+        while [[ $i -lt $up_levels ]]; do
             up_dir="../$up_dir"
             i=$((i+1))
         done
@@ -88,6 +94,12 @@ function dd {
 function run_clear() {
     $@
     clear
+}
+
+function silent() {
+  set +e
+  "$@" 2>/dev/null
+  clear
 }
 
 ## Key Bindings ###

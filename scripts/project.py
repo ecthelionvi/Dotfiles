@@ -1,6 +1,6 @@
-import questionary
 import subprocess
 import sys
+import questionary
 
 
 def clear_screen():
@@ -12,7 +12,7 @@ def create_project():
         choice = questionary.select(
             "Select the technology you want to use:",
             choices=[
-                "Vite",
+                "React",
                 "Next",
                 "Angular",
             ],
@@ -25,12 +25,15 @@ def create_project():
         if project_name is None:
             raise KeyboardInterrupt
 
-        if choice == "Vite":
-            command = f"npm create vite@latest {project_name.lower()}"
-        elif choice == "Next.js":
-            command = f"npx create-next-app@latest {project_name.lower()} --use-vite"
+        # Only lowercase the first character and keep the rest as is
+        formatted_project_name = project_name[0].lower() + project_name[1:]
+
+        if choice == "React":
+            command = f"npx create-react-app {formatted_project_name}"
+        elif choice == "Next":
+            command = f"npx create-next-app {formatted_project_name}"
         elif choice == "Angular":
-            command = f"npx @angular/cli new {project_name.lower()}"
+            command = f"npx @angular/cli new {formatted_project_name}"
         else:
             sys.exit(1)
 

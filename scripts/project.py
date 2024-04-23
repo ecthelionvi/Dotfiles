@@ -25,15 +25,12 @@ def create_project():
         if project_name is None:
             raise KeyboardInterrupt
 
-        # Only lowercase the first character and keep the rest as is
-        formatted_project_name = project_name[0].lower() + project_name[1:]
-
         if choice == "React":
-            command = f"npx create-react-app {formatted_project_name}"
+            command = f"npx create-react-app {project_name.lower()}"
         elif choice == "Next":
-            command = f"npx create-next-app {formatted_project_name}"
+            command = f"npx create-next-app {project_name.lower()}"
         elif choice == "Angular":
-            command = f"npx @angular/cli new {formatted_project_name}"
+            command = f"npx @angular/cli new {project_name.lower()}"
         else:
             sys.exit(1)
 

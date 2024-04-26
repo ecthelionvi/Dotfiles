@@ -30,22 +30,39 @@ def run_command_in_directory(command, directory):
     subprocess.run(["osascript", "-e", apple_script], check=True)
 
 
+def find_node_entry_file(directory):
+    """Searches for the entry file (app.js, index.js, server.js) in the given directory."""
+    entry_files = ["app.js", "index.js", "server.js"]
+    for file in entry_files:
+        file_path = directory / file
+        if file_path.is_file():
+            return file
+    return None
+
+
 def main():
     project_directory = find_file_in_tree(os.getcwd(), "package.json")
     index_html_directory = find_file_in_tree(os.getcwd(), "index.html")
 
     command = None
+
     if project_directory:
         try:
             # Load package.json to determine available scripts
             package_json_path = project_directory / "package.json"
             with open(package_json_path, "r") as file:
                 package_json = json.load(file)
-                scripts = package_json.get("scripts", {})
-                if "dev" in scripts:
-                    command = "npm run dev"
-                elif "start" in scripts:
-                    command = "npm start"
+            scripts = package_json.get("scripts", {})
+
+            if "dev" in scripts:
+                command = "npm run dev"
+            elif "start" in scripts:
+                command = "npm start"
+            else:
+                # Check if it's a Node.js project and run the appropriate entry file
+                entry_file = find_node_entry_file(project_directory)
+                if entry_file:
+                    command = f"node {entry_file}"
         except Exception:
             pass  # Ignore errors and attempt to fall back to live-server
 

@@ -10,5 +10,6 @@
 [init]
 	defaultBranch = main
 [alias]
-	fp = fetch --prune
-
+  fp = fetch --prune
+  undo = reset --soft HEAD~1
+  redo = reset --hard HEAD@{1}

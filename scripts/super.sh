@@ -153,12 +153,12 @@ function setup_npm() {
 
   echo "Downloading NPM package list..."
   if curl -fsSL "$NPM_PACKAGES_URL" -o "$HOME/global_packages.txt"; then
-    echo "Installing NPM packages..."
-    if npm install -g $(cat "$HOME/global_packages.txt"); then
+    echo "Installing NPM packages globally..."
+    if npm install --global --no-package-lock $(cat "$HOME/global_packages.txt"); then
       echo "NPM package setup completed."
       rm "$HOME/global_packages.txt" # Cleanup
     else
-      echo "Failed to install NPM packages. Skipping NPM package setup."
+      echo "Failed to install NPM packages globally. Skipping NPM package setup."
       return 1
     fi
   else

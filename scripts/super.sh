@@ -4,6 +4,7 @@
 REPO_URL="https://raw.githubusercontent.com/ecthelionvi/Dotfiles/main/"
 BREWFILE_URL="${REPO_URL}brew/Brewfile"
 CARGOPACKAGES_URL="${REPO_URL}cargo/CargoPackages.txt"
+NPM_PACKAGES_URL="${REPO_URL}npm/global_packages.txt"
 PIPFILE_URL="${REPO_URL}python/pip.txt"
 ZSHRC_URL="${REPO_URL}zsh/.zshrc"
 HUSHLOGIN_URL="${REPO_URL}zsh/.hushlogin"
@@ -143,6 +144,29 @@ function setup_iterm2() {
     echo "Preferences fetched and copied. Restart iTerm2 to apply changes."
 }
 
+function setup_npm() {
+  echo "Setting up NPM packages..."
+  if ! command -v npm &> /dev/null; then
+    echo "NPM not found. Skipping NPM package setup."
+    return 1
+  fi
+
+  echo "Downloading NPM package list..."
+  if curl -fsSL "$NPM_PACKAGES_URL" -o "$HOME/global_packages.txt"; then
+    echo "Installing NPM packages..."
+    if npm install -g $(cat "$HOME/global_packages.txt"); then
+      echo "NPM package setup completed."
+      rm "$HOME/global_packages.txt" # Cleanup
+    else
+      echo "Failed to install NPM packages. Skipping NPM package setup."
+      return 1
+    fi
+  else
+    echo "Failed to download NPM package list. Skipping NPM package setup."
+    return 1
+  fi
+}
+
 function prompt_user() {
   local question=$1
 
@@ -169,6 +193,10 @@ if [[ "$1" == "--interactive" ]]; then
 
   if prompt_user "Setup Python?"; then
     setup_python
+  fi
+
+  if prompt_user "Setup NPM"; then
+    setup_npm
   fi
 
   if prompt_user "Setup Zsh?"; then

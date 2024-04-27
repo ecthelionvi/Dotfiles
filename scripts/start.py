@@ -1,7 +1,6 @@
 import json
 import subprocess
 import os
-import argparse
 from pathlib import Path
 
 
@@ -15,30 +14,19 @@ def find_file_in_tree(start_path, filename):
     return None
 
 
-def run_command_in_directory(command, directory, new_tab=False):
+def run_command_in_directory(command, directory):
     """Runs the specified command in the given directory."""
-    if new_tab:
-        apple_script = f"""
-        tell application "iTerm"
-            tell current window
-                create tab with default profile
-                tell the current session
-                    write text "clear"
-                    write text "cd '{directory}' && {command}"
-                end tell
-            end tell
-        end tell
-        """
-    else:
-        apple_script = f"""
-        tell application "iTerm"
+    apple_script = f"""
+    tell application "iTerm"
+        tell current window
+            create tab with default profile
             tell the current session
                 write text "clear"
                 write text "cd '{directory}' && {command}"
             end tell
         end tell
-        """
-
+    end tell
+    """
     subprocess.run(["osascript", "-e", apple_script], check=True)
 
 
@@ -53,12 +41,6 @@ def find_node_entry_file(directory):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run project commands.")
-    parser.add_argument(
-        "-t", "--new-tab", action="store_true", help="Open command in a new tab"
-    )
-    args = parser.parse_args()
-
     project_directory = find_file_in_tree(os.getcwd(), "package.json")
     index_html_directory = find_file_in_tree(os.getcwd(), "index.html")
 
@@ -92,7 +74,7 @@ def main():
         )
 
     if command:
-        run_command_in_directory(command, project_directory, args.new_tab)
+        run_command_in_directory(command, project_directory)
     else:
         print("Unable to start project: No valid 'package.json' or 'index.html' found.")
 

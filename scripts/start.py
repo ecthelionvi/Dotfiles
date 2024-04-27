@@ -5,6 +5,10 @@ import sys
 from pathlib import Path
 
 
+def clear_screen():
+    print("\033[2J\033[H", end="")
+
+
 def find_file_in_tree(start_path, filename):
     """Searches for the nearest file moving up the directory tree."""
     current_path = Path(start_path).resolve()
@@ -79,7 +83,11 @@ def main():
         )
 
     if command:
-        run_command_in_directory(command, project_directory, new_tab=new_tab)
+        try:
+            run_command_in_directory(command, project_directory, new_tab=new_tab)
+        except KeyboardInterrupt:
+            clear_screen()
+            sys.exit(0)
     else:
         print("Unable to start project: No valid 'package.json' or 'index.html' found.")
 

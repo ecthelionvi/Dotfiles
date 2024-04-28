@@ -36,6 +36,7 @@ alias pj='py $HOME/Documents/Dotfiles/scripts/project.py'
 alias rn='py $HOME/Documents/Dotfiles/scripts/rename.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
+alias clip='pbcopy <'
 alias clear="clear && printf '\e[3J'"
 alias php='php -S localhost:8000'
 alias python='/usr/bin/python3'
@@ -63,6 +64,23 @@ function gls {
     echo "$entries" | grep -v '/$' | xargs eza --icons -1 2>/dev/null
   else
     eza --icons -1
+  fi
+}
+
+git() {
+  if [[ $1 == "revert" ]]; then
+    shift  # Remove 'revert' from the arguments list
+    python $HOME/Documents/Dotfiles/scripts/revert.py "$@"
+  elif [[ $1 == "fetch" ]]; then
+    command git fetch --prune
+  elif [[ $1 == "undo" ]]; then
+    shift  # Remove 'undo' from the arguments list
+    python $HOME/Documents/Dotfiles/scripts/undo.py "$@"
+  elif [[ $1 == "redo" ]]; then
+    shift  # Remove 'redo' from the arguments list
+    python $HOME/Documents/Dotfiles/scripts/redo.py "$@"
+  else
+    command git "$@"
   fi
 }
 
@@ -112,4 +130,3 @@ bindkey '^O' edit-command-line
 # Environment Flags
 OP_BIOMETRIC_UNLOCK_ENABLED=true
 RANGER_LOAD_DEFAULT_RC=false
-

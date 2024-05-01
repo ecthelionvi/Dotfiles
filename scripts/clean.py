@@ -1,8 +1,8 @@
 import os
 
 BLUE_TEXT = "\033[34m"
+RESET_TEXT = "\033[0m"
 GREEN_TEXT = "\033[32m"
-RESET_COLOR = "\033[0m"
 PURPLE_TEXT = "\033[35m"
 
 
@@ -11,7 +11,7 @@ def draw_boxed_message(lines, show_success=False, success_text="Success"):
     width = terminal_width - 4
     print("┌" + "─" * (width + 2) + "┐")
     for line in lines:
-        visible_line = line.replace(GREEN_TEXT, "").replace(RESET_COLOR, "")
+        visible_line = line.replace(GREEN_TEXT, "").replace(RESET_TEXT, "")
         padding = (width - len(visible_line)) // 2
         print(
             "│ "
@@ -23,7 +23,7 @@ def draw_boxed_message(lines, show_success=False, success_text="Success"):
     if show_success:
         visible_footer_length = len(success_text) + 2
         dashes_needed = width - visible_footer_length + 1
-        success_text_colored = f"{GREEN_TEXT}{success_text}{RESET_COLOR}"
+        success_text_colored = f"{GREEN_TEXT}{success_text}{RESET_TEXT}"
         print("└" + "─" * dashes_needed + " " + success_text_colored + " ─┘")
     else:
         print("└" + "─" * (width + 2) + "┘")
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     deleted_files = delete_files(files)
 
     if deleted_files:
-        file_names = [f"{GREEN_TEXT}{file}{RESET_COLOR}" for file in deleted_files]
+        file_names = [f"{GREEN_TEXT}{file}{RESET_TEXT}" for file in deleted_files]
         delete_message = f"Deleted {' + '.join(file_names)}"
         draw_boxed_message([delete_message], show_success=True, success_text="Success")
     else:

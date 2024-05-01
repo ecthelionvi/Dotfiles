@@ -2,6 +2,10 @@ import subprocess
 import sys
 import os
 
+GREEN_TEXT = "\033[92m"
+RED_TEXT = "\033[91m"
+RESET_TEXT = "\033[0m"
+
 
 def zip_folder(folder_path):
     if not os.path.isdir(folder_path):
@@ -17,8 +21,11 @@ def zip_folder(folder_path):
             subprocess.check_call(
                 ["zip", "-r", zip_file_name, folder_path], stdout=devnull
             )
+
         # Green "Zipped into" and red zip file name
-        print(f"\033[92mZipped into\033[0m \033[91m{zip_file_name}\033[0m")
+        print(
+            f"{GREEN_TEXT}Zipped into{RESET_TEXT} {RED_TEXT}{zip_file_name}{RESET_TEXT}"
+        )
     except subprocess.CalledProcessError as e:
         print(f"Error zipping folder: {e}")
     except Exception as e:

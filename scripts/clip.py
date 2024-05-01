@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 
 GREEN_TEXT = "\033[92m"
 RESET_TEXT = "\033[0m"
@@ -12,8 +13,15 @@ def copy_to_clipboard(file_path):
             # Use subprocess to send file content to pbcopy
             process = subprocess.Popen("pbcopy", stdin=subprocess.PIPE)
             process.communicate(file.read())
-            # Print success message in green
-            print(f"{GREEN_TEXT}Copied to Clipboard{RESET_TEXT}")
+
+        # Extract the file name from the file path
+        file_name = os.path.basename(file_path)
+
+        # Print success message with the file name in blue
+        print(
+            f"{GREEN_TEXT}Copied{RESET_TEXT} {BLUE_TEXT}{file_name}{RESET_TEXT} {GREEN_TEXT}to Clipboard{RESET_TEXT}"
+        )
+
     except FileNotFoundError:
         print(f"{BLUE_TEXT}{file_path}{RESET_TEXT} not found")
     except Exception as e:

@@ -55,9 +55,7 @@ if __name__ == "__main__":
 
     directory = sys.argv[1]
     if not os.path.isdir(directory):
-        print(
-            f"The provided directory {RED_TEXT}{directory}{RESET_TEXT} does not exist."
-        )
+        print(f"{RED_TEXT}{directory}{RESET_TEXT} not found")
         sys.exit(1)
 
     create_backup = questionary.confirm("Do you want to create a backup?").ask()

@@ -2,10 +2,15 @@ import subprocess
 import sys
 import os
 
+GREEN_TEXT = "\033[92m"
+BLUE_TEXT = "\033[94m"
+YELLOW_TEXT = "\033[93m"
+RESET_TEXT = "\033[0m"
+
 
 def unzip_file(zip_file_path, extract_to=None):
     if not os.path.isfile(zip_file_path):
-        print(f"The file {zip_file_path} does not exist or is not a file.")
+        print(f"{zip_file_path} not found")
         sys.exit(1)
 
     if extract_to is None:
@@ -20,8 +25,11 @@ def unzip_file(zip_file_path, extract_to=None):
             subprocess.check_call(
                 ["unzip", "-d", extract_to, zip_file_path], stdout=devnull
             )
+
         # Green "Unzipped into" and blue directory name
-        print(f"\033[92mUnzipped into\033[0m \033[94m{extract_to}\033[0m")
+        print(
+            f"{GREEN_TEXT}Unzipped into{RESET_TEXT} {BLUE_TEXT}{extract_to}{RESET_TEXT}"
+        )
     except subprocess.CalledProcessError as e:
         print(f"Error unzipping file: {e}")
     except Exception as e:
@@ -30,7 +38,9 @@ def unzip_file(zip_file_path, extract_to=None):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python unzip.py <zip_file_path> [extraction_path]")
+        print(
+            f"Usage: python unzip.py {BLUE_TEXT}<zip_file_path>{RESET_TEXT} {YELLOW_TEXT}[extraction_path]{RESET_TEXT}"
+        )
         sys.exit(1)
 
     zip_file_path = sys.argv[1]

@@ -1,7 +1,13 @@
 import os
 import sys
 
+
 def create_file_with_path(file_path):
+    # Check if the path is a directory
+    if os.path.isdir(file_path):
+        print(f"Error: '{file_path}' is a directory.")
+        return
+
     # Extract the directory path
     directory = os.path.dirname(file_path)
 
@@ -9,10 +15,14 @@ def create_file_with_path(file_path):
     if directory and not os.path.exists(directory):
         os.makedirs(directory)
 
-    # Create the file, similar to "touch"
-    # "open" with "a" option will create the file if it doesn't exist and won't truncate it if it does
-    with open(file_path, "a"):
-        pass  # Just to trigger the file creation without writing anything
+    try:
+        # Create the file, similar to "touch"
+        # "open" with "a" option will create the file if it doesn't exist and won't truncate it if it does
+        with open(file_path, "a"):
+            pass  # Just to trigger the file creation without writing anything
+    except Exception as e:
+        # Handle other exceptions that may occur
+        print(f"Failed to create or open the file '{file_path}': {str(e)}")
 
 
 if __name__ == "__main__":

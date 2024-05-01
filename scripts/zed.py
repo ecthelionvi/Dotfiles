@@ -1,6 +1,6 @@
 import subprocess
 import sys
-import questionary
+import questionary  # Import the questionary library
 
 
 def main():
@@ -25,7 +25,10 @@ def main():
 
     try:
         subprocess.run(sed_command, check=True, shell=True)
-        print("Success: The word has been replaced.")
+        # Print success message with colored parts
+        print(
+            f"\033[92mReplaced\033[0m \033[94m{target_word}\033[0m \033[92mwith\033[0m \033[93m{replacement_word}\033[0m"
+        )
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while trying to replace the word: {e}")
 

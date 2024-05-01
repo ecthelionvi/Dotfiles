@@ -1,6 +1,6 @@
 import subprocess
 import sys
-import questionary  # Import the questionary library
+import questionary
 
 
 def main():
@@ -10,7 +10,7 @@ def main():
 
     filename = sys.argv[1]
 
-    # Use questionary to ask for the target (old name) and replacement (new name) words
+    # Use questionary to ask for the old name (target) and new name (replacement)
     old_name = questionary.text("Enter the old name:").ask()
     new_name = questionary.text("Enter the new name:").ask()
 
@@ -27,7 +27,7 @@ def main():
         subprocess.run(sed_command, check=True, shell=True)
         # Print success message with colored parts
         print(
-            f"\033[92mRenamed\033[0m \033[93m{old_name}\033[0m \033[92mto\033[0m \033[91m{new_name}\033[0m"
+            f"\033[92mReplaced\033[0m \033[93m{old_name}\033[0m \033[92mwith\033[0m \033[91m{new_name}\033[0m"
         )
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while trying to replace the word: {e}")

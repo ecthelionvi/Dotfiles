@@ -34,7 +34,7 @@ def zip_folder(folder_path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python zip.py <folder_path>")
+        print(f"Usage: python zip.py {RED_TEXT}<folder_path>{RESET_TEXT}")
         sys.exit(1)
 
     folder_path = sys.argv[1]

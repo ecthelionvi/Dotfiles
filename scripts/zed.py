@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import questionary
 
 
 def main():
@@ -8,8 +9,15 @@ def main():
         sys.exit(1)
 
     filename = sys.argv[1]
-    target_word = input("Enter the target word: ")
-    replacement_word = input("Enter the replacement word: ")
+
+    # Use questionary to ask for the target and replacement words
+    target_word = questionary.text("Enter the target word:").ask()
+    replacement_word = questionary.text("Enter the replacement word:").ask()
+
+    # Check if user canceled the input
+    if target_word is None or replacement_word is None:
+        print("Input was canceled. Exiting.")
+        sys.exit(1)
 
     # Adjust the sed command for macOS compatibility
     # Use `-i ''` to edit in place without creating a backup file

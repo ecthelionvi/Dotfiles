@@ -3,10 +3,16 @@ import sys
 import subprocess
 import questionary
 
+GREEN_TEXT = "\033[92m"
+RED_TEXT = "\033[91m"
+RESET_TEXT = "\033[0m"
+
 
 def zip_folder(folder_path):
     if not os.path.isdir(folder_path):
-        print(f"The path {folder_path} is not a directory or does not exist.")
+        print(
+            f"The path {RED_TEXT}{folder_path}{RESET_TEXT} is not a directory or does not exist."
+        )
         sys.exit(1)
 
     folder_name = os.path.basename(folder_path)
@@ -44,12 +50,14 @@ def replace_text(directory, old_text, new_text):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python rzed.py <directory>")
+        print(f"Usage: python rzed.py {RED_TEXT}<directory>{RESET_TEXT}")
         sys.exit(1)
 
     directory = sys.argv[1]
     if not os.path.isdir(directory):
-        print(f"The provided directory {directory} does not exist.")
+        print(
+            f"The provided directory {RED_TEXT}{directory}{RESET_TEXT} does not exist."
+        )
         sys.exit(1)
 
     create_backup = questionary.confirm("Do you want to create a backup?").ask()
@@ -61,4 +69,6 @@ if __name__ == "__main__":
 
     # Replace text
     replace_text(directory, old_text, new_text)
-    print(f"\033[92mReplacement Complete in\033[0m \033[91m{directory}\033[0m")
+    print(
+        f"{GREEN_TEXT}Replacement Complete in{RESET_TEXT} {RED_TEXT}{directory}{RESET_TEXT}"
+    )

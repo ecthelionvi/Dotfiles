@@ -6,6 +6,7 @@ import questionary
 import hashlib
 import zipfile
 import tempfile
+import shutil
 
 # Set up the SQLite database connection
 db_path = os.path.expanduser("~/.cache/rm_backup/rm_backup.db")

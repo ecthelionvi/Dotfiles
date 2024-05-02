@@ -4,6 +4,8 @@ import sqlite3
 from datetime import datetime
 import questionary
 import hashlib
+import zipfile
+import tempfile
 
 # Set up the SQLite database connection
 db_path = os.path.expanduser("~/.cache/rm_backup/rm_backup.db")
@@ -20,7 +22,8 @@ cursor.execute(
         file_hash TEXT,
         file_data BLOB,
         timestamp TEXT,
-        undone INTEGER DEFAULT 0
+        undone INTEGER DEFAULT 0,
+        is_directory INTEGER DEFAULT 0
     )
 """
 )
@@ -63,28 +66,56 @@ def create_backup(path):
         )
         conn.commit()
     elif os.path.isdir(absolute_path):
-        print("Directory backup is not supported when storing files in the database.")
-        return
+        temp_dir = tempfile.mkdtemp()
+        zip_path = os.path.join(temp_dir, f"{os.path.basename(absolute_path)}.zip")
+        with zipfile.ZipFile(zip_path, "w") as zip_file:
+            for root, dirs, files in os.walk(absolute_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    zip_file.write(file_path, os.path.relpath(file_path, absolute_path))
+
+        with open(zip_path, "rb") as file:
+            file_data = file.read()
+        cursor.execute(
+            "INSERT INTO backups (original_path, file_data, timestamp, is_directory) VALUES (?, ?, ?, ?)",
+            (absolute_path, file_data, timestamp, 1),
+        )
+        conn.commit()
+
+        os.remove(zip_path)
+        os.rmdir(temp_dir)
 
     print(f"Backup created for: {absolute_path}")
 
 
-# Function to undo the last removal and restore the file
+# Function to undo the last removal and restore the file or directory
 def undo_last_removal():
     cursor.execute(
-        "SELECT id, original_path, file_data FROM backups WHERE undone = 0 ORDER BY id DESC LIMIT 1"
+        "SELECT id, original_path, file_data, is_directory FROM backups WHERE undone = 0 ORDER BY id DESC LIMIT 1"
     )
     result = cursor.fetchone()
 
     if result:
-        backup_id, original_path, file_data = result
+        backup_id, original_path, file_data, is_directory = result
         directory = os.path.dirname(original_path)
 
         # Create the directory if it doesn't exist
         os.makedirs(directory, exist_ok=True)
 
-        with open(original_path, "wb") as file:
-            file.write(file_data)
+        if is_directory:
+            temp_dir = tempfile.mkdtemp()
+            zip_path = os.path.join(temp_dir, f"{os.path.basename(original_path)}.zip")
+            with open(zip_path, "wb") as file:
+                file.write(file_data)
+
+            with zipfile.ZipFile(zip_path, "r") as zip_file:
+                zip_file.extractall(original_path)
+
+            os.remove(zip_path)
+            os.rmdir(temp_dir)
+        else:
+            with open(original_path, "wb") as file:
+                file.write(file_data)
 
         cursor.execute("UPDATE backups SET undone = 1 WHERE id = ?", (backup_id,))
         conn.commit()
@@ -97,14 +128,16 @@ def undo_last_removal():
 # Function to redo the last undone removal
 def redo_last_removal():
     cursor.execute(
-        "SELECT id, original_path FROM backups WHERE undone = 1 ORDER BY id DESC LIMIT 1"
+        "SELECT id, original_path, is_directory FROM backups WHERE undone = 1 ORDER BY id DESC LIMIT 1"
     )
     result = cursor.fetchone()
 
     if result:
-        backup_id, original_path = result
+        backup_id, original_path, is_directory = result
 
-        if os.path.isfile(original_path):
+        if is_directory:
+            shutil.rmtree(original_path)
+        elif os.path.isfile(original_path):
             os.remove(original_path)
 
         cursor.execute("UPDATE backups SET undone = 0 WHERE id = ?", (backup_id,))
@@ -115,40 +148,54 @@ def redo_last_removal():
         print("No undone backup found to redo.")
 
 
-# Function to restore a specific file
+# Function to restore a specific file or directory
 def restore_file():
     cursor.execute(
-        "SELECT id, original_path, timestamp FROM backups ORDER BY timestamp DESC"
+        "SELECT id, original_path, timestamp, is_directory FROM backups ORDER BY timestamp DESC"
     )
     results = cursor.fetchall()
 
     if results:
         choices = [
             f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
-            for _, original_path, timestamp in results
+            for _, original_path, timestamp, _ in results
         ]
         selected = questionary.select(
-            "Select a file to restore:", choices=choices
+            "Select a file or directory to restore:", choices=choices
         ).ask()
 
         if selected:
             backup_id = results[choices.index(selected)][0]
             cursor.execute(
-                "SELECT original_path, file_data FROM backups WHERE id = ?",
+                "SELECT original_path, file_data, is_directory FROM backups WHERE id = ?",
                 (backup_id,),
             )
             result = cursor.fetchone()
 
             if result:
-                original_path, file_data = result
+                original_path, file_data, is_directory = result
                 directory = os.path.dirname(original_path)
 
                 if directory:
                     # Create the directory if it doesn't exist
                     os.makedirs(directory, exist_ok=True)
 
-                    with open(original_path, "wb") as file:
-                        file.write(file_data)
+                    if is_directory:
+                        temp_dir = tempfile.mkdtemp()
+                        zip_path = os.path.join(
+                            temp_dir, f"{os.path.basename(original_path)}.zip"
+                        )
+                        with open(zip_path, "wb") as file:
+                            file.write(file_data)
+
+                        with zipfile.ZipFile(zip_path, "r") as zip_file:
+                            zip_file.extractall(original_path)
+
+                        os.remove(zip_path)
+                        os.rmdir(temp_dir)
+                    else:
+                        with open(original_path, "wb") as file:
+                            file.write(file_data)
 
                     cursor.execute(
                         "UPDATE backups SET undone = 1 WHERE id = ?", (backup_id,)
@@ -157,18 +204,20 @@ def restore_file():
 
                     print(f"Restored: {os.path.basename(original_path)}")
                 else:
-                    print("Invalid original file path. Unable to restore the file.")
+                    print("Invalid original path. Unable to restore.")
             else:
-                print("Backup not found for the selected file.")
+                print("Backup not found for the selected file or directory.")
         else:
-            print("No file selected for restoration.")
+            print("No file or directory selected for restoration.")
     else:
         print("No backups found to restore.")
 
 
 # Check if the script is being run with the correct arguments
 if len(sys.argv) < 2:
-    print("Usage: python rm_backup.py <file> [--undo] [--redo] [--restore]")
+    print(
+        "Usage: python rm_backup.py <file_or_directory> [--undo] [--redo] [--restore]"
+    )
     sys.exit(1)
 
 # Check if the undo, redo, or restore flag is provided
@@ -179,16 +228,18 @@ elif "--redo" in sys.argv:
 elif "--restore" in sys.argv:
     restore_file()
 else:
-    # Get the file path from the command line argument
+    # Get the file or directory path from the command line argument
     path = sys.argv[1]
 
-    # Create a backup of the file
+    # Create a backup of the file or directory
     create_backup(path)
 
-    # Remove the file
+    # Remove the file or directory
     if os.path.isfile(path):
         os.remove(path)
-        print(f"Removed: {path}")
+    elif os.path.isdir(path):
+        shutil.rmtree(path)
+    print(f"Removed: {path}")
 
 # Close the database connection
 conn.close()

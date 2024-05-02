@@ -65,7 +65,7 @@ def create_backup(path):
             "UPDATE backups SET timestamp = ? WHERE id = ?", (timestamp, backup_id)
         )
         conn.commit()
-        print(f"Updated backup timestamp for: {absolute_path}")
+        # print(f"Updated backup timestamp for: {absolute_path}")
     else:
         with open(zip_path, "rb") as file:
             zip_data = file.read()
@@ -74,7 +74,7 @@ def create_backup(path):
             (absolute_path, zip_hash, zip_data, timestamp),
         )
         conn.commit()
-        print(f"Backup created for: {absolute_path}")
+        # print(f"Backup created for: {absolute_path}")
 
     os.remove(zip_path)
     os.rmdir(temp_dir)
@@ -126,9 +126,9 @@ def restore_file():
                             (timestamp, backup_id),
                         )
                         conn.commit()
-                        print(
-                            f"File or directory already exists. Updated backup timestamp for: {os.path.basename(original_path)}"
-                        )
+                        # print(
+                        #     f"File or directory already exists. Updated backup timestamp for: {os.path.basename(original_path)}"
+                        # )
                     else:
                         # Create the directory if it doesn't exist
                         os.makedirs(original_path, exist_ok=True)

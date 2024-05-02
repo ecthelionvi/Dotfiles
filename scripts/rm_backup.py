@@ -39,9 +39,10 @@ def generate_file_hash(file_path):
 # Function to create a backup of the file or directory
 def create_backup(path):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    absolute_path = os.path.abspath(path)
 
-    if os.path.isfile(path):
-        file_hash = generate_file_hash(path)
+    if os.path.isfile(absolute_path):
+        file_hash = generate_file_hash(absolute_path)
         cursor.execute("SELECT id FROM backups WHERE file_hash = ?", (file_hash,))
         result = cursor.fetchone()
 
@@ -51,21 +52,21 @@ def create_backup(path):
                 "UPDATE backups SET timestamp = ? WHERE id = ?", (timestamp, backup_id)
             )
             conn.commit()
-            print(f"Updated backup timestamp for: {path}")
+            print(f"Updated backup timestamp for: {absolute_path}")
             return
 
-        with open(path, "rb") as file:
+        with open(absolute_path, "rb") as file:
             file_data = file.read()
         cursor.execute(
             "INSERT INTO backups (original_path, file_hash, file_data, timestamp) VALUES (?, ?, ?, ?)",
-            (path, file_hash, file_data, timestamp),
+            (absolute_path, file_hash, file_data, timestamp),
         )
         conn.commit()
-    elif os.path.isdir(path):
+    elif os.path.isdir(absolute_path):
         print("Directory backup is not supported when storing files in the database.")
         return
 
-    print(f"Backup created for: {path}")
+    print(f"Backup created for: {absolute_path}")
 
 
 # Function to undo the last removal and restore the file

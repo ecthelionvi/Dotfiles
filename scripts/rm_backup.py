@@ -6,6 +6,7 @@ import questionary
 import hashlib
 import zipfile
 import tempfile
+import shutil
 
 # Set up the SQLite database connection
 db_path = os.path.expanduser("~/.cache/rm_backup/rm_backup.db")
@@ -163,7 +164,7 @@ else:
     if os.path.isfile(path):
         os.remove(path)
     elif os.path.isdir(path):
-        os.rmdir(path)
+        shutil.rmtree(path)
     print(f"Removed: {path}")
 
 # Close the database connection

@@ -43,7 +43,6 @@ def generate_zip_hash(zip_path):
                     if not chunk:
                         break
                     sha256_hash.update(chunk)
-                    print(f"Generating hash... {sha256_hash.hexdigest()}")
 
     return sha256_hash.hexdigest()
 

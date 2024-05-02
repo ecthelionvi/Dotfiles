@@ -32,9 +32,19 @@ conn.commit()
 # Function to generate the hash of a zip file
 def generate_zip_hash(zip_path):
     sha256_hash = hashlib.sha256()
-    with open(zip_path, "rb") as file:
-        for chunk in iter(lambda: file.read(4096), b""):
-            sha256_hash.update(chunk)
+    with zipfile.ZipFile(zip_path, "r") as zip_file:
+        # Sort the file names in the zip archive
+        sorted_file_names = sorted(zip_file.namelist())
+
+        for file_name in sorted_file_names:
+            with zip_file.open(file_name, "r") as file:
+                while True:
+                    chunk = file.read(4096)
+                    if not chunk:
+                        break
+                    sha256_hash.update(chunk)
+                    print(f"Generating hash... {sha256_hash.hexdigest()}")
+
     return sha256_hash.hexdigest()
 
 

@@ -88,10 +88,14 @@ def restore_file():
     results = cursor.fetchall()
 
     if results:
-        choices = [
-            f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
-            for _, original_path, timestamp in results
-        ]
+        choices = []
+        for _, original_path, timestamp in results:
+            if os.path.basename(original_path).endswith(".zip"):
+                choice = f"{os.path.basename(original_path)[:-4]}/ (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+            else:
+                choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+            choices.append(choice)
+
         selected = questionary.select(
             "Select a file or directory to restore:", choices=choices
         ).ask()

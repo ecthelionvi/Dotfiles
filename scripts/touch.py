@@ -4,7 +4,6 @@ import sys
 BLUE_TEXT = "\033[94m"
 RED_TEXT = "\033[91m"
 RESET_TEXT = "\033[0m"
-GREEN_TEXT = "\033[32m"
 
 
 def create_file_with_path(file_path):
@@ -26,9 +25,7 @@ def create_file_with_path(file_path):
         # "open" with "a" option will create the file if it doesn't exist and won't truncate it if it does
         with open(file_path, "a"):
             pass  # Just to trigger the file creation without writing anything
-            print(
-                f"{GREEN_TEXT}Created{RESET_TEXT} {RED_TEXT}{directory+'/' if directory else ''}{BLUE_TEXT}{file_name}{RESET_TEXT}"
-            )
+            print(f"Created {RED_TEXT}{directory+'/' if directory else ''}{BLUE_TEXT}{file_name}{RESET_TEXT}")
     except Exception as e:
         # Handle other exceptions that may occur
         print(

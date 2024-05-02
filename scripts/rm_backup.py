@@ -124,7 +124,7 @@ def restore_file():
 
     if results:
         choices = [
-            f"{original_path} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+            f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
             for _, original_path, timestamp in results
         ]
         selected = questionary.select(
@@ -155,7 +155,7 @@ def restore_file():
                     )
                     conn.commit()
 
-                    print(f"Restored: {original_path}")
+                    print(f"Restored: {os.path.basename(original_path)}")
                 else:
                     print("Invalid original file path. Unable to restore the file.")
             else:

@@ -190,7 +190,7 @@ else:
         os.remove(path)
     elif os.path.isdir(path):
         shutil.rmtree(path)
-    print(f"{GREERemoved {path}")
+    print(f"Removed {path}")
 
 # Close the database connection
 conn.close()

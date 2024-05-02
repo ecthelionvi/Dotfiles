@@ -77,6 +77,10 @@ def undo_last_removal():
 
     if result:
         backup_id, original_path, file_data = result
+        directory = os.path.dirname(original_path)
+
+        # Create the directory if it doesn't exist
+        os.makedirs(directory, exist_ok=True)
 
         with open(original_path, "wb") as file:
             file.write(file_data)
@@ -133,6 +137,10 @@ def restore_file():
                 (backup_id,),
             )
             original_path, file_data = cursor.fetchone()
+            directory = os.path.dirname(original_path)
+
+            # Create the directory if it doesn't exist
+            os.makedirs(directory, exist_ok=True)
 
             with open(original_path, "wb") as file:
                 file.write(file_data)

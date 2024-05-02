@@ -152,7 +152,7 @@ def restore_file():
                                     )
                                 else:
                                     zip_file.extract(member, original_path)
-                        print(f"Restored: {os.path.basename(original_path)}")
+                        print(f"\rRestored: {os.path.basename(original_path)}", end="")
 
                     os.remove(zip_path)
                     os.rmdir(temp_dir)

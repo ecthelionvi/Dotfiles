@@ -27,8 +27,7 @@ cursor.execute(
         original_path TEXT,
         zip_hash TEXT,
         zip_data BLOB,
-        timestamp TEXT,
-        is_directory INTEGER
+        timestamp TEXT
     )
 """
 )
@@ -57,19 +56,18 @@ def generate_zip_hash(zip_path):
 def create_backup(path):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     absolute_path = os.path.abspath(path)
-    is_directory = os.path.isdir(absolute_path)
 
     temp_dir = tempfile.mkdtemp()
     zip_path = os.path.join(temp_dir, f"{os.path.basename(absolute_path)}.zip")
 
     with zipfile.ZipFile(zip_path, "w") as zip_file:
-        if is_directory:
+        if os.path.isfile(absolute_path):
+            zip_file.write(absolute_path, os.path.basename(absolute_path))
+        elif os.path.isdir(absolute_path):
             for root, dirs, files in os.walk(absolute_path):
                 for file in files:
                     file_path = os.path.join(root, file)
                     zip_file.write(file_path, os.path.relpath(file_path, absolute_path))
-        else:
-            zip_file.write(absolute_path, os.path.basename(absolute_path))
 
     zip_hash = generate_zip_hash(zip_path)
     cursor.execute("SELECT id FROM backups WHERE zip_hash = ?", (zip_hash,))
@@ -78,45 +76,38 @@ def create_backup(path):
     if result:
         backup_id = result[0]
         cursor.execute(
-            "UPDATE backups SET timestamp = ?, is_directory = ? WHERE id = ?",
-            (timestamp, is_directory, backup_id),
+            "UPDATE backups SET timestamp = ? WHERE id = ?", (timestamp, backup_id)
         )
         conn.commit()
+        # print(f"Updated backup timestamp for: {absolute_path}")
     else:
         with open(zip_path, "rb") as file:
             zip_data = file.read()
         cursor.execute(
-            "INSERT INTO backups (original_path, zip_hash, zip_data, timestamp, is_directory) VALUES (?, ?, ?, ?, ?)",
-            (
-                absolute_path,
-                zip_hash,
-                zip_data,
-                timestamp,
-                is_directory,
-            ),
+            "INSERT INTO backups (original_path, zip_hash, zip_data, timestamp) VALUES (?, ?, ?, ?)",
+            (absolute_path, zip_hash, zip_data, timestamp),
         )
         conn.commit()
+        # print(f"Backup created for: {absolute_path}")
 
     os.remove(zip_path)
     os.rmdir(temp_dir)
-    print(
-        f"Backed up {RED_TEXT}{absolute_path}/{RESET_TEXT}"
-        if is_directory
-        else f"Backed up {BLUE_TEXT}{absolute_path}{RESET_TEXT}"
-    )
 
 
 # Function to restore a specific file or directory
 def restore_file():
     cursor.execute(
-        "SELECT id, original_path, timestamp, is_directory FROM backups ORDER BY timestamp DESC"
+        "SELECT id, original_path, timestamp FROM backups ORDER BY timestamp DESC"
     )
     results = cursor.fetchall()
 
     if results:
         choices = []
-        for _, original_path, timestamp, is_directory in results:
-            choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+        for _, original_path, timestamp in results:
+            if os.path.basename(original_path).endswith(".zip"):
+                choice = f"{os.path.basename(original_path)[:-4]}/ (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+            else:
+                choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
             choices.append(choice)
 
         selected = questionary.select(
@@ -126,46 +117,51 @@ def restore_file():
         if selected:
             backup_id = results[choices.index(selected)][0]
             cursor.execute(
-                "SELECT original_path, zip_data, is_directory FROM backups WHERE id = ?",
-                (backup_id,),
+                "SELECT original_path, zip_data FROM backups WHERE id = ?", (backup_id,)
             )
             result = cursor.fetchone()
 
             if result:
-                original_path, zip_data, is_directory = result
-                temp_dir = tempfile.mkdtemp()
-                zip_path = os.path.join(
-                    temp_dir, f"{os.path.basename(original_path)}.zip"
-                )
-                with open(zip_path, "wb") as file:
-                    file.write(zip_data)
+                original_path, zip_data = result
+                directory = os.path.dirname(original_path)
 
-                if os.path.exists(original_path):
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    cursor.execute(
-                        "UPDATE backups SET timestamp = ? WHERE id = ?",
-                        (timestamp, backup_id),
+                if directory:
+                    temp_dir = tempfile.mkdtemp()
+                    zip_path = os.path.join(
+                        temp_dir, f"{os.path.basename(original_path)}.zip"
                     )
-                    conn.commit()
-                else:
-                    if is_directory:
-                        os.makedirs(original_path, exist_ok=True)
-                        with zipfile.ZipFile(zip_path, "r") as zip_file:
-                            zip_file.extractall(original_path)
-                        print(
-                            f"Restored {RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT}"
-                        )
-                    else:
-                        directory = os.path.dirname(original_path)
-                        os.makedirs(directory, exist_ok=True)
-                        with zipfile.ZipFile(zip_path, "r") as zip_file:
-                            zip_file.extract(os.path.basename(original_path), directory)
-                        print(
-                            f"Restored {BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT}"
-                        )
+                    with open(zip_path, "wb") as file:
+                        file.write(zip_data)
 
-                os.remove(zip_path)
-                os.rmdir(temp_dir)
+                    if os.path.exists(original_path):
+                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                        cursor.execute(
+                            "UPDATE backups SET timestamp = ? WHERE id = ?",
+                            (timestamp, backup_id),
+                        )
+                        conn.commit()
+                        # print(
+                        #     f"File or directory already exists. Updated backup timestamp for: {os.path.basename(original_path)}"
+                        # )
+                    else:
+                        # Create the directory if it doesn't exist
+                        os.makedirs(original_path, exist_ok=True)
+
+                        with zipfile.ZipFile(zip_path, "r") as zip_file:
+                            for member in zip_file.namelist():
+                                if member.endswith("/"):
+                                    os.makedirs(
+                                        os.path.join(original_path, member),
+                                        exist_ok=True,
+                                    )
+                                else:
+                                    zip_file.extract(member, original_path)
+                        print(f"Restored {os.path.basename(original_path)}")
+
+                    os.remove(zip_path)
+                    os.rmdir(temp_dir)
+                else:
+                    print("Invalid original path. Unable to restore.")
             else:
                 print("Backup not found for the selected file or directory.")
         else:
@@ -192,10 +188,9 @@ else:
     # Remove the file or directory
     if os.path.isfile(path):
         os.remove(path)
-        print(f"Removed {BLUE_TEXT}{path}{RESET_TEXT}")
     elif os.path.isdir(path):
         shutil.rmtree(path)
-        print(f"Removed {RED_TEXT}{path}/{RESET_TEXT}")
+    print(f"{GREERemoved {path}")
 
 # Close the database connection
 conn.close()

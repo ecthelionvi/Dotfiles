@@ -12,7 +12,6 @@ import shutil
 BLUE_TEXT = "\033[34m"
 RESET_TEXT = "\033[0m"
 RED_TEXT = "\033[91m"
-GREEN_TEXT = "\033[92m"
 
 # Set up the SQLite database connection
 db_path = os.path.expanduser("~/.cache/rm_backup/rm_backup.db")
@@ -105,10 +104,10 @@ def restore_file():
     if results:
         choices = []
         for _, original_path, timestamp in results:
-            if os.path.basename(original_path).endswith(".zip"):
-                choice = f"{os.path.basename(original_path)[:-4]}/ (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+            if os.path.isdir(original_path):
+                choice = f"{RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
             else:
-                choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+                choice = f"{BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
             choices.append(choice)
 
         selected = questionary.select(
@@ -157,9 +156,14 @@ def restore_file():
                                     )
                                 else:
                                     zip_file.extract(member, original_path)
-                        print(
-                            f"{GREEN_TEXT}Restored{RESET_TEXT} {os.path.basename(original_path)}"
-                        )
+                        if os.path.isdir(original_path):
+                            print(
+                                f"Restored {RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT}"
+                            )
+                        else:
+                            print(
+                                f"Restored {BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT}"
+                            )
 
                     os.remove(zip_path)
                     os.rmdir(temp_dir)
@@ -191,9 +195,10 @@ else:
     # Remove the file or directory
     if os.path.isfile(path):
         os.remove(path)
+        print(f"Removed {BLUE_TEXT}{path}{RESET_TEXT}")
     elif os.path.isdir(path):
         shutil.rmtree(path)
-    print(f"{GREEN_TEXT}Removed{RESET_TEXT} {path}")
+        print(f"Removed {RED_TEXT}{path}/{RESET_TEXT}")
 
 # Close the database connection
 conn.close()

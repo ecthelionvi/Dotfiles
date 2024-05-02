@@ -27,7 +27,8 @@ cursor.execute(
         original_path TEXT,
         zip_hash TEXT,
         zip_data BLOB,
-        timestamp TEXT
+        timestamp TEXT,
+        is_directory INTEGER
     )
 """
 )
@@ -76,19 +77,24 @@ def create_backup(path):
     if result:
         backup_id = result[0]
         cursor.execute(
-            "UPDATE backups SET timestamp = ? WHERE id = ?", (timestamp, backup_id)
+            "UPDATE backups SET timestamp = ?, is_directory = ? WHERE id = ?",
+            (timestamp, os.path.isdir(absolute_path), backup_id),
         )
         conn.commit()
-        # print(f"Updated backup timestamp for: {absolute_path}")
     else:
         with open(zip_path, "rb") as file:
             zip_data = file.read()
         cursor.execute(
-            "INSERT INTO backups (original_path, zip_hash, zip_data, timestamp) VALUES (?, ?, ?, ?)",
-            (absolute_path, zip_hash, zip_data, timestamp),
+            "INSERT INTO backups (original_path, zip_hash, zip_data, timestamp, is_directory) VALUES (?, ?, ?, ?, ?)",
+            (
+                absolute_path,
+                zip_hash,
+                zip_data,
+                timestamp,
+                os.path.isdir(absolute_path),
+            ),
         )
         conn.commit()
-        # print(f"Backup created for: {absolute_path}")
 
     os.remove(zip_path)
     os.rmdir(temp_dir)
@@ -97,14 +103,14 @@ def create_backup(path):
 # Function to restore a specific file or directory
 def restore_file():
     cursor.execute(
-        "SELECT id, original_path, timestamp FROM backups ORDER BY timestamp DESC"
+        "SELECT id, original_path, timestamp, is_directory FROM backups ORDER BY timestamp DESC"
     )
     results = cursor.fetchall()
 
     if results:
         choices = []
-        for _, original_path, timestamp in results:
-            if os.path.isdir(original_path):
+        for _, original_path, timestamp, is_directory in results:
+            if is_directory:
                 choice = f"{os.path.basename(original_path)}/ (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
             else:
                 choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
@@ -117,12 +123,13 @@ def restore_file():
         if selected:
             backup_id = results[choices.index(selected)][0]
             cursor.execute(
-                "SELECT original_path, zip_data FROM backups WHERE id = ?", (backup_id,)
+                "SELECT original_path, zip_data, is_directory FROM backups WHERE id = ?",
+                (backup_id,),
             )
             result = cursor.fetchone()
 
             if result:
-                original_path, zip_data = result
+                original_path, zip_data, is_directory = result
                 directory = os.path.dirname(original_path)
 
                 if directory:
@@ -140,9 +147,6 @@ def restore_file():
                             (timestamp, backup_id),
                         )
                         conn.commit()
-                        # print(
-                        #     f"File or directory already exists. Updated backup timestamp for: {os.path.basename(original_path)}"
-                        # )
                     else:
                         # Create the directory if it doesn't exist
                         os.makedirs(original_path, exist_ok=True)
@@ -156,7 +160,7 @@ def restore_file():
                                     )
                                 else:
                                     zip_file.extract(member, original_path)
-                        if os.path.isdir(original_path):
+                        if is_directory:
                             print(
                                 f"Restored {RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT}"
                             )

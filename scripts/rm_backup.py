@@ -82,6 +82,7 @@ def create_backup(path):
             "UPDATE backups SET timestamp = ?, is_directory = ? WHERE id = ?",
             (timestamp, os.path.isdir(absolute_path), backup_id),
         )
+        print("This is a file")
         conn.commit()
     else:
         with open(zip_path, "rb") as file:
@@ -96,6 +97,7 @@ def create_backup(path):
                 os.path.isdir(absolute_path),
             ),
         )
+        print("This is a directory")
         conn.commit()
 
     os.remove(zip_path)

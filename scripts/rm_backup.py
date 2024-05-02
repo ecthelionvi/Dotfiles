@@ -57,20 +57,19 @@ def generate_zip_hash(zip_path):
 def create_backup(path):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     absolute_path = os.path.abspath(path)
+    is_directory = os.path.isdir(absolute_path)
 
     temp_dir = tempfile.mkdtemp()
     zip_path = os.path.join(temp_dir, f"{os.path.basename(absolute_path)}.zip")
 
     with zipfile.ZipFile(zip_path, "w") as zip_file:
-        if os.path.isfile(absolute_path):
-            print("This is a file")
-            zip_file.write(absolute_path, os.path.basename(absolute_path))
-        elif os.path.isdir(absolute_path):
-            print("This is a directory")
+        if is_directory:
             for root, dirs, files in os.walk(absolute_path):
                 for file in files:
                     file_path = os.path.join(root, file)
                     zip_file.write(file_path, os.path.relpath(file_path, absolute_path))
+        else:
+            zip_file.write(absolute_path, os.path.basename(absolute_path))
 
     zip_hash = generate_zip_hash(zip_path)
     cursor.execute("SELECT id FROM backups WHERE zip_hash = ?", (zip_hash,))
@@ -80,9 +79,8 @@ def create_backup(path):
         backup_id = result[0]
         cursor.execute(
             "UPDATE backups SET timestamp = ?, is_directory = ? WHERE id = ?",
-            (timestamp, os.path.isdir(absolute_path), backup_id),
+            (timestamp, is_directory, backup_id),
         )
-        print("This is a file")
         conn.commit()
     else:
         with open(zip_path, "rb") as file:
@@ -94,10 +92,9 @@ def create_backup(path):
                 zip_hash,
                 zip_data,
                 timestamp,
-                os.path.isdir(absolute_path),
+                is_directory,
             ),
         )
-        print("This is a directory")
         conn.commit()
 
     os.remove(zip_path)
@@ -114,10 +111,7 @@ def restore_file():
     if results:
         choices = []
         for _, original_path, timestamp, is_directory in results:
-            if is_directory:
-                choice = f"{os.path.basename(original_path)}/ (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
-            else:
-                choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+            choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
             choices.append(choice)
 
         selected = questionary.select(

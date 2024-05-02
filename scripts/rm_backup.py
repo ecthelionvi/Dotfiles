@@ -120,6 +120,10 @@ def process_restoration(backup_id):
     full_path, name, zip_data, is_directory = result
     perform_file_extraction(full_path, name, zip_data, is_directory)
 
+    # Remove the backup entry from the database
+    cursor.execute("DELETE FROM backups WHERE id = ?", (backup_id,))
+    conn.commit()
+
 
 def perform_file_extraction(full_path, name, zip_data, is_directory):
     target_path = os.path.join(full_path, name)
@@ -174,6 +178,8 @@ def restore_file():
 
     backup_id = results[choices.index(selected)][0]
     process_restoration(backup_id)
+
+    print("Backup entry removed from the database.")
 
 
 # Check if the script is being run with the correct arguments

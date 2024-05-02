@@ -105,9 +105,9 @@ def restore_file():
         choices = []
         for _, original_path, timestamp in results:
             if os.path.isdir(original_path):
-                choice = f"{RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+                choice = f"{os.path.basename(original_path)}/ (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
             else:
-                choice = f"{BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+                choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
             choices.append(choice)
 
         selected = questionary.select(

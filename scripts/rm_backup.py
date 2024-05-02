@@ -137,19 +137,29 @@ def restore_file():
                 "SELECT original_path, file_data FROM backups WHERE id = ?",
                 (backup_id,),
             )
-            original_path, file_data = cursor.fetchone()
-            directory = os.path.dirname(original_path)
+            result = cursor.fetchone()
 
-            # Create the directory if it doesn't exist
-            os.makedirs(directory, exist_ok=True)
+            if result:
+                original_path, file_data = result
+                directory = os.path.dirname(original_path)
 
-            with open(original_path, "wb") as file:
-                file.write(file_data)
+                if directory:
+                    # Create the directory if it doesn't exist
+                    os.makedirs(directory, exist_ok=True)
 
-            cursor.execute("UPDATE backups SET undone = 1 WHERE id = ?", (backup_id,))
-            conn.commit()
+                    with open(original_path, "wb") as file:
+                        file.write(file_data)
 
-            print(f"Restored: {original_path}")
+                    cursor.execute(
+                        "UPDATE backups SET undone = 1 WHERE id = ?", (backup_id,)
+                    )
+                    conn.commit()
+
+                    print(f"Restored: {original_path}")
+                else:
+                    print("Invalid original file path. Unable to restore the file.")
+            else:
+                print("Backup not found for the selected file.")
         else:
             print("No file selected for restoration.")
     else:

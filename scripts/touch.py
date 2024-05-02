@@ -25,7 +25,9 @@ def create_file_with_path(file_path):
         # "open" with "a" option will create the file if it doesn't exist and won't truncate it if it does
         with open(file_path, "a"):
             pass  # Just to trigger the file creation without writing anything
-        print(f"Created File: {RED_TEXT}{directory}/{BLUE_TEXT}{file_name}{RESET_TEXT}")
+            print(
+                f"Created {RED_TEXT}{directory if directory else ''}{RESET_TEXT}/{BLUE_TEXT}{file_name}{RESET_TEXT}"
+            )
     except Exception as e:
         # Handle other exceptions that may occur
         print(

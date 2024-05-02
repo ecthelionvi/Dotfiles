@@ -8,11 +8,6 @@ import zipfile
 import tempfile
 import shutil
 
-
-BLUE_TEXT = "\033[34m"
-RESET_TEXT = "\033[0m"
-RED_TEXT = "\033[91m"
-
 # Set up the SQLite database connection
 db_path = os.path.expanduser("~/.cache/rm_backup/rm_backup.db")
 os.makedirs(os.path.dirname(db_path), exist_ok=True)

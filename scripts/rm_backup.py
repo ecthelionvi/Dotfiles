@@ -108,9 +108,6 @@ def restore_file():
                 directory = os.path.dirname(original_path)
 
                 if directory:
-                    # Create the directory if it doesn't exist
-                    os.makedirs(directory, exist_ok=True)
-
                     temp_dir = tempfile.mkdtemp()
                     zip_path = os.path.join(
                         temp_dir, f"{os.path.basename(original_path)}.zip"
@@ -129,8 +126,18 @@ def restore_file():
                             f"File or directory already exists. Updated backup timestamp for: {os.path.basename(original_path)}"
                         )
                     else:
+                        # Create the directory if it doesn't exist
+                        os.makedirs(original_path, exist_ok=True)
+
                         with zipfile.ZipFile(zip_path, "r") as zip_file:
-                            zip_file.extractall(directory)
+                            for member in zip_file.namelist():
+                                if member.endswith("/"):
+                                    os.makedirs(
+                                        os.path.join(original_path, member),
+                                        exist_ok=True,
+                                    )
+                                else:
+                                    zip_file.extract(member, original_path)
                         print(f"Restored: {os.path.basename(original_path)}")
 
                     os.remove(zip_path)

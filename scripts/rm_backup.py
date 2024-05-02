@@ -101,84 +101,162 @@ def create_backup(path):
 
 
 # Function to restore a specific file or directory
-def restore_file():
+# def restore_file():
+#     cursor.execute(
+#         "SELECT id, original_path, timestamp, is_directory FROM backups ORDER BY timestamp DESC"
+#     )
+#     results = cursor.fetchall()
+
+#     if results:
+#         choices = []
+#         for _, original_path, timestamp, is_directory in results:
+#             if is_directory:
+#                 choice = f"{os.path.basename(original_path)}/ (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+#             else:
+#                 choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
+#             choices.append(choice)
+
+#         selected = questionary.select(
+#             "Select a file or directory to restore:", choices=choices
+#         ).ask()
+
+#         if selected:
+#             backup_id = results[choices.index(selected)][0]
+#             cursor.execute(
+#                 "SELECT original_path, zip_data, is_directory FROM backups WHERE id = ?",
+#                 (backup_id,),
+#             )
+#             result = cursor.fetchone()
+
+#             if result:
+#                 original_path, zip_data, is_directory = result
+#                 directory = os.path.dirname(original_path)
+
+#                 if directory:
+#                     temp_dir = tempfile.mkdtemp()
+#                     zip_path = os.path.join(
+#                         temp_dir, f"{os.path.basename(original_path)}.zip"
+#                     )
+#                     with open(zip_path, "wb") as file:
+#                         file.write(zip_data)
+
+#                     if os.path.exists(original_path):
+#                         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+#                         cursor.execute(
+#                             "UPDATE backups SET timestamp = ? WHERE id = ?",
+#                             (timestamp, backup_id),
+#                         )
+#                         conn.commit()
+#                     else:
+#                         # Create the directory if it doesn't exist
+#                         os.makedirs(original_path, exist_ok=True)
+
+#                         with zipfile.ZipFile(zip_path, "r") as zip_file:
+#                             for member in zip_file.namelist():
+#                                 if member.endswith("/"):
+#                                     os.makedirs(
+#                                         os.path.join(original_path, member),
+#                                         exist_ok=True,
+#                                     )
+#                                 else:
+#                                     zip_file.extract(member, original_path)
+#                         if is_directory:
+#                             print(
+#                                 f"Restored {RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT}"
+#                             )
+#                         else:
+#                             print(
+#                                 f"Restored {BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT}"
+#                             )
+
+#                     os.remove(zip_path)
+#                     os.rmdir(temp_dir)
+#                 else:
+#                     print("Invalid original path. Unable to restore.")
+#             else:
+#                 print("Backup not found for the selected file or directory.")
+#         else:
+#             print("No file or directory selected for restoration.")
+#     else:
+#         print("No backups found to restore.")
+
+
+def format_choices(results):
+    choices = []
+    for _, path, timestamp, is_dir in results:
+        date_str = datetime.strptime(timestamp, "%Y%m%d_%H%M%S").strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        if is_dir:
+            choice = f"{os.path.basename(path)}/ (Removed: {date_str})"
+        else:
+            choice = f"{os.path.basename(path)} (Removed: {date_str})"
+        choices.append(choice)
+    return choices
+
+
+def process_restoration(backup_id):
     cursor.execute(
-        "SELECT id, original_path, timestamp, is_directory FROM backups ORDER BY timestamp DESC"
+        "SELECT original_path, zip_data, is_directory FROM backups WHERE id = ?",
+        (backup_id,),
     )
-    results = cursor.fetchall()
+    result = cursor.fetchone()
 
-    if results:
-        choices = []
-        for _, original_path, timestamp, is_directory in results:
-            if is_directory:
-                choice = f"{os.path.basename(original_path)}/ (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
-            else:
-                choice = f"{os.path.basename(original_path)} (Removed: {datetime.strptime(timestamp, '%Y%m%d_%H%M%S').strftime('%Y-%m-%d %H:%M:%S')})"
-            choices.append(choice)
+    if not result:
+        print("Backup not found for the selected file or directory.")
+        return
 
+    original_path, zip_data, is_directory = result
+    perform_file_extraction(original_path, zip_data, is_directory)
+
+
+def perform_file_extraction(original_path, zip_data, is_directory):
+    temp_dir = tempfile.mkdtemp()
+    zip_path = os.path.join(temp_dir, f"{os.path.basename(original_path)}.zip")
+    try:
+        with open(zip_path, "wb") as file:
+            file.write(zip_data)
+
+        restore_directory = os.path.dirname(original_path)
+        os.makedirs(restore_directory, exist_ok=True)
+
+        with zipfile.ZipFile(zip_path, "r") as zip_file:
+            zip_file.extractall(restore_directory)
+
+        if is_directory:
+            print(f"Restored {RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT}")
+        else:
+            print(f"Restored {BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT}")
+
+    finally:
+        os.remove(zip_path)
+        os.rmdir(temp_dir)
+
+
+def restore_file():
+    try:
+        cursor.execute(
+            "SELECT id, original_path, timestamp, is_directory FROM backups ORDER BY timestamp DESC"
+        )
+        results = cursor.fetchall()
+
+        if not results:
+            print("No backups found to restore.")
+            return
+
+        choices = format_choices(results)
         selected = questionary.select(
             "Select a file or directory to restore:", choices=choices
         ).ask()
-
-        if selected:
-            backup_id = results[choices.index(selected)][0]
-            cursor.execute(
-                "SELECT original_path, zip_data, is_directory FROM backups WHERE id = ?",
-                (backup_id,),
-            )
-            result = cursor.fetchone()
-
-            if result:
-                original_path, zip_data, is_directory = result
-                directory = os.path.dirname(original_path)
-
-                if directory:
-                    temp_dir = tempfile.mkdtemp()
-                    zip_path = os.path.join(
-                        temp_dir, f"{os.path.basename(original_path)}.zip"
-                    )
-                    with open(zip_path, "wb") as file:
-                        file.write(zip_data)
-
-                    if os.path.exists(original_path):
-                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                        cursor.execute(
-                            "UPDATE backups SET timestamp = ? WHERE id = ?",
-                            (timestamp, backup_id),
-                        )
-                        conn.commit()
-                    else:
-                        # Create the directory if it doesn't exist
-                        os.makedirs(original_path, exist_ok=True)
-
-                        with zipfile.ZipFile(zip_path, "r") as zip_file:
-                            for member in zip_file.namelist():
-                                if member.endswith("/"):
-                                    os.makedirs(
-                                        os.path.join(original_path, member),
-                                        exist_ok=True,
-                                    )
-                                else:
-                                    zip_file.extract(member, original_path)
-                        if is_directory:
-                            print(
-                                f"Restored {RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT}"
-                            )
-                        else:
-                            print(
-                                f"Restored {BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT}"
-                            )
-
-                    os.remove(zip_path)
-                    os.rmdir(temp_dir)
-                else:
-                    print("Invalid original path. Unable to restore.")
-            else:
-                print("Backup not found for the selected file or directory.")
-        else:
+        if not selected:
             print("No file or directory selected for restoration.")
-    else:
-        print("No backups found to restore.")
+            return
+
+        backup_id = results[choices.index(selected)][0]
+        process_restoration(backup_id)
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 # Check if the script is being run with the correct arguments

@@ -99,6 +99,11 @@ def create_backup(path):
 
     os.remove(zip_path)
     os.rmdir(temp_dir)
+    print(
+        f"Backed up {RED_TEXT}{absolute_path}/{RESET_TEXT}"
+        if is_directory
+        else f"Backed up {BLUE_TEXT}{absolute_path}{RESET_TEXT}"
+    )
 
 
 # Function to restore a specific file or directory

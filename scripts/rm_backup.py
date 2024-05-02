@@ -130,49 +130,39 @@ def restore_file():
 
             if result:
                 original_path, zip_data, is_directory = result
-                directory = os.path.dirname(original_path)
+                temp_dir = tempfile.mkdtemp()
+                zip_path = os.path.join(
+                    temp_dir, f"{os.path.basename(original_path)}.zip"
+                )
+                with open(zip_path, "wb") as file:
+                    file.write(zip_data)
 
-                if directory:
-                    temp_dir = tempfile.mkdtemp()
-                    zip_path = os.path.join(
-                        temp_dir, f"{os.path.basename(original_path)}.zip"
+                if os.path.exists(original_path):
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    cursor.execute(
+                        "UPDATE backups SET timestamp = ? WHERE id = ?",
+                        (timestamp, backup_id),
                     )
-                    with open(zip_path, "wb") as file:
-                        file.write(zip_data)
-
-                    if os.path.exists(original_path):
-                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                        cursor.execute(
-                            "UPDATE backups SET timestamp = ? WHERE id = ?",
-                            (timestamp, backup_id),
-                        )
-                        conn.commit()
-                    else:
-                        # Create the directory if it doesn't exist
-                        os.makedirs(original_path, exist_ok=True)
-
-                        with zipfile.ZipFile(zip_path, "r") as zip_file:
-                            for member in zip_file.namelist():
-                                if member.endswith("/"):
-                                    os.makedirs(
-                                        os.path.join(original_path, member),
-                                        exist_ok=True,
-                                    )
-                                else:
-                                    zip_file.extract(member, original_path)
-                        if is_directory:
-                            print(
-                                f"Restored {RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT}"
-                            )
-                        else:
-                            print(
-                                f"Restored {BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT}"
-                            )
-
-                    os.remove(zip_path)
-                    os.rmdir(temp_dir)
+                    conn.commit()
                 else:
-                    print("Invalid original path. Unable to restore.")
+                    if is_directory:
+                        os.makedirs(original_path, exist_ok=True)
+                        with zipfile.ZipFile(zip_path, "r") as zip_file:
+                            zip_file.extractall(original_path)
+                        print(
+                            f"Restored {RED_TEXT}{os.path.basename(original_path)}/{RESET_TEXT}"
+                        )
+                    else:
+                        directory = os.path.dirname(original_path)
+                        os.makedirs(directory, exist_ok=True)
+                        with zipfile.ZipFile(zip_path, "r") as zip_file:
+                            zip_file.extract(os.path.basename(original_path), directory)
+                        print(
+                            f"Restored {BLUE_TEXT}{os.path.basename(original_path)}{RESET_TEXT}"
+                        )
+
+                os.remove(zip_path)
+                os.rmdir(temp_dir)
             else:
                 print("Backup not found for the selected file or directory.")
         else:

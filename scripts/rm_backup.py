@@ -63,8 +63,10 @@ def create_backup(path):
 
     with zipfile.ZipFile(zip_path, "w") as zip_file:
         if os.path.isfile(absolute_path):
+            print("This is a file")
             zip_file.write(absolute_path, os.path.basename(absolute_path))
         elif os.path.isdir(absolute_path):
+            print("This is a directory")
             for root, dirs, files in os.walk(absolute_path):
                 for file in files:
                     file_path = os.path.join(root, file)

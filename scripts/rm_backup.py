@@ -35,7 +35,7 @@ def generate_zip_hash(zip_path):
     with zipfile.ZipFile(zip_path, "r") as zip_file:
         # Sort the file names in the zip archive
         sorted_file_names = sorted(zip_file.namelist())
-        
+
         for file_name in sorted_file_names:
             with zip_file.open(file_name, "r") as file:
                 while True:
@@ -44,7 +44,7 @@ def generate_zip_hash(zip_path):
                         break
                     sha256_hash.update(chunk)
                     print(f"Generating hash... {sha256_hash.hexdigest()}")
-    
+
     return sha256_hash.hexdigest()
 
 
@@ -152,7 +152,7 @@ def restore_file():
                                     )
                                 else:
                                     zip_file.extract(member, original_path)
-                        print(f"Restored: {os.path.basename(original_path)}")
+                        print(f"Restored {os.path.basename(original_path)}")
 
                     os.remove(zip_path)
                     os.rmdir(temp_dir)
@@ -186,7 +186,7 @@ else:
         os.remove(path)
     elif os.path.isdir(path):
         shutil.rmtree(path)
-    print(f"Removed: {path}")
+    print(f"Removed {path}")
 
 # Close the database connection
 conn.close()

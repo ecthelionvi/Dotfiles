@@ -8,6 +8,12 @@ import zipfile
 import tempfile
 import shutil
 
+
+BLUE_TEXT = "\033[34m"
+RESET_TEXT = "\033[0m"
+RED_TEXT = "\033[91m"
+GREEN_TEXT = "\033[92m"
+
 # Set up the SQLite database connection
 db_path = os.path.expanduser("~/.cache/rm_backup/rm_backup.db")
 os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -151,7 +157,9 @@ def restore_file():
                                     )
                                 else:
                                     zip_file.extract(member, original_path)
-                        print(f"Restored {os.path.basename(original_path)}")
+                        print(
+                            f"{GREEN_TEXT}Restored{RESET_TEXT} {os.path.basename(original_path)}"
+                        )
 
                     os.remove(zip_path)
                     os.rmdir(temp_dir)
@@ -185,7 +193,7 @@ else:
         os.remove(path)
     elif os.path.isdir(path):
         shutil.rmtree(path)
-    print(f"Removed {path}")
+    print(f"{GREEN_TEXT}Removed{RESET_TEXT} {path}")
 
 # Close the database connection
 conn.close()

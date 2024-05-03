@@ -52,7 +52,6 @@ def revert_changes():
 
         confirmation = sys.stdin.readline().strip()
         if confirmation.upper() == "Y" or confirmation == "":
-            # Directly executing Git commands
             os.system("git reset --hard HEAD && git clean -fd")
             clear_screen()
             success_message = "All local changes have been reverted."

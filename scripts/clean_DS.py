@@ -66,7 +66,7 @@ if __name__ == "__main__":
         if confirmation.upper() == "Y" or confirmation == "":
             clear_screen()
             with alive_bar(
-                title="Deleting .DS_Store Files",
+                title="Deleting .DS_Store files",
                 unknown="dots_waves",
                 stats=False,
                 monitor=False,
@@ -76,7 +76,7 @@ if __name__ == "__main__":
                 bar()
             clear_screen()
             success_message = (
-                f"Removed {GREEN_TEXT}{deleted_count}{RESET_TEXT} .DS_Store Files"
+                f"Removed {GREEN_TEXT}{deleted_count}{RESET_TEXT} .DS_Store files"
             )
             draw_boxed_message([success_message], show_success=True)
         else:

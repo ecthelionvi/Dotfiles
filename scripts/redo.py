@@ -1,7 +1,6 @@
 import os
 import sys
 
-# Define text colors
 BLUE_TEXT = "\033[34m"
 GREEN_TEXT = "\033[32m"
 RESET_COLOR = "\033[0m"
@@ -52,7 +51,6 @@ def redo_last_undo():
 
         confirmation = sys.stdin.readline().strip()
         if confirmation.upper() == "Y" or confirmation == "":
-            # Executing Git command to redo the last undo
             os.system("git reset --hard HEAD@{1}")
 
             clear_screen()

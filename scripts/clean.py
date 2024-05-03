@@ -60,4 +60,4 @@ if __name__ == "__main__":
         delete_message = f"Deleted {' + '.join(file_names)}"
         draw_boxed_message([delete_message], show_success=True, success_text="Success")
     else:
-        draw_boxed_message(["No Files Deleted"])
+        draw_boxed_message(["No files deleted"])

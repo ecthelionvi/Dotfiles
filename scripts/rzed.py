@@ -3,6 +3,7 @@ import sys
 import subprocess
 import questionary
 
+
 GREEN_TEXT = "\033[92m"
 RED_TEXT = "\033[91m"
 RESET_TEXT = "\033[0m"
@@ -18,7 +19,6 @@ def zip_folder(folder_path):
     folder_name = os.path.basename(folder_path)
     zip_file_name = f"{folder_name}_backup.zip"
 
-    # Running the zip command with suppressed output
     try:
         with open(os.devnull, "wb") as devnull:
             subprocess.check_call(
@@ -28,10 +28,10 @@ def zip_folder(folder_path):
             )
     except subprocess.CalledProcessError as e:
         print(f"Error zipping folder: {e}")
-        sys.exit(1)  # Exit if zipping fails
+        sys.exit(1)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-        sys.exit(1)  # Exit on general errors
+        sys.exit(1)
 
 
 def replace_text(directory, old_text, new_text):
@@ -50,23 +50,21 @@ def replace_text(directory, old_text, new_text):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print(f"Usage: python rzed.py {RED_TEXT}<directory>{RESET_TEXT}")
+        print("Usage: python rzed.py <directory>")
         sys.exit(1)
 
     directory = sys.argv[1]
     if not os.path.isdir(directory):
-        print(f"{RED_TEXT}{directory}{RESET_TEXT} not found")
+        print(f"{RED_TEXT}{directory}/{RESET_TEXT} not found")
         sys.exit(1)
 
     create_backup = questionary.confirm("Do you want to create a backup?").ask()
-    old_text = questionary.text("Enter the text to replace:").ask()
-    new_text = questionary.text("Enter the new text:").ask()
 
     if create_backup:
+        old_text = questionary.text("Enter the old text:").ask()
+        new_text = questionary.text("Enter the new text:").ask()
         zip_folder(directory)
-
-    # Replace text
-    replace_text(directory, old_text, new_text)
-    print(
-        f"{GREEN_TEXT}Replacement Complete in{RESET_TEXT} {RED_TEXT}{directory}{RESET_TEXT}"
-    )
+        replace_text(directory, old_text, new_text)
+        print(f"Replacement complete in {RED_TEXT}{directory}/{RESET_TEXT}")
+    else:
+        sys.exit(1)

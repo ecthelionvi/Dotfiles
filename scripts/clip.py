@@ -10,16 +10,13 @@ BLUE_TEXT = "\033[34m"
 def copy_to_clipboard(file_path):
     try:
         with open(file_path, "rb") as file:
-            # Use subprocess to send file content to pbcopy
             process = subprocess.Popen("pbcopy", stdin=subprocess.PIPE)
             process.communicate(file.read())
 
-        # Extract the file name from the file path
         file_name = os.path.basename(file_path)
 
-        # Print success message with the file name in blue
         print(
-            f"{GREEN_TEXT}Copied{RESET_TEXT} {BLUE_TEXT}{file_name}{RESET_TEXT} {GREEN_TEXT}to Clipboard{RESET_TEXT}"
+            f"{GREEN_TEXT}Copied{RESET_TEXT} {BLUE_TEXT}{file_name}{RESET_TEXT} {GREEN_TEXT}to clipboard{RESET_TEXT}"
         )
 
     except FileNotFoundError:

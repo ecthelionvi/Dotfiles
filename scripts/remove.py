@@ -1,12 +1,11 @@
 import os
 import sys
-import sqlite3
-from datetime import datetime
-import questionary
+import shutil
 import hashlib
 import zipfile
-import tempfile
-import shutil
+import sqlite3
+import questionary
+from datetime import datetime
 
 
 DEBUG = False
@@ -14,13 +13,11 @@ BLUE_TEXT = "\033[34m"
 RESET_TEXT = "\033[0m"
 RED_TEXT = "\033[91m"
 
-# Set up the SQLite database connection
 db_path = os.path.expanduser("~/.cache/remove_backup/remove_backup.db")
 os.makedirs(os.path.dirname(db_path), exist_ok=True)
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
-# Create the backup table if it doesn't exist
 cursor.execute(
     """
     CREATE TABLE IF NOT EXISTS backups (
@@ -37,11 +34,9 @@ cursor.execute(
 conn.commit()
 
 
-# Function to generate the hash of a zip file
 def generate_zip_hash(zip_path):
     sha256_hash = hashlib.sha256()
     with zipfile.ZipFile(zip_path, "r") as zip_file:
-        # Sort the file names in the zip archive
         sorted_file_names = sorted(zip_file.namelist())
 
         for file_name in sorted_file_names:
@@ -59,7 +54,7 @@ def create_backup(path):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     absolute_path = os.path.abspath(path)
     name = os.path.basename(absolute_path)
-    parent_dir = os.path.dirname(absolute_path)  # Store only the parent directory path
+    parent_dir = os.path.dirname(absolute_path)
     is_directory = os.path.isdir(absolute_path)
 
     zip_path = os.path.join(parent_dir, f"{name}.zip")
@@ -124,7 +119,6 @@ def process_restoration(backup_id):
     full_path, name, zip_data, is_directory = result
     perform_file_extraction(full_path, name, zip_data, is_directory)
 
-    # Remove the backup entry from the database
     cursor.execute("DELETE FROM backups WHERE id = ?", (backup_id,))
     conn.commit()
 
@@ -173,7 +167,7 @@ def restore_file():
     results = cursor.fetchall()
 
     if not results:
-        print("No Backups Found")
+        print("No backups found")
         return
 
     choices = format_choices(results)
@@ -193,22 +187,19 @@ def restore_file():
 def clear_cache():
     cursor.execute("DROP TABLE IF EXISTS backups")
     conn.commit()
-    print("Cache Cleared Successfully")
+    print("Cache cleared successfully")
 
 
-# Check if the script is being run with the correct arguments
 if len(sys.argv) < 2:
     print(
         "Usage: python rm_backup.py <file_or_directory> [<file_or_directory> ...] [--restore] [--clear-cache]"
     )
     sys.exit(1)
 
-# Check if the clear cache flag is provided
 if "--clear-cache" in sys.argv:
     clear_cache()
     sys.exit(0)
 
-# Check if the restore flag is provided
 if "--restore" in sys.argv:
     restore_file()
 else:
@@ -233,5 +224,4 @@ else:
         error_message = f"{' '.join(invalid_paths)} - Not Found"
         print(error_message)
 
-# Close the database connection
 conn.close()

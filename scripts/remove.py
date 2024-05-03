@@ -181,7 +181,6 @@ def restore_file():
         "Select a file or directory to restore:", choices=choices
     ).ask()
     if not selected:
-        print("No file or directory selected")
         return
 
     backup_id = results[choices.index(selected)][0]

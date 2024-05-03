@@ -16,7 +16,7 @@ def copy_to_clipboard(file_path):
         file_name = os.path.basename(file_path)
 
         print(
-            f"{GREEN_TEXT}Copied{RESET_TEXT} {BLUE_TEXT}{file_name}{RESET_TEXT} {GREEN_TEXT}to clipboard{RESET_TEXT}"
+            f"Copied {BLUE_TEXT}{file_name}{RESET_TEXT} to clipboard"
         )
 
     except FileNotFoundError:
@@ -27,6 +27,6 @@ def copy_to_clipboard(file_path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print(f"Usage: python clip.py {BLUE_TEXT}<file_path>{RESET_TEXT}")
+        print("Usage: python clip.py <file_path>")
     else:
         copy_to_clipboard(sys.argv[1])

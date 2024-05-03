@@ -32,7 +32,6 @@ eval "$(starship init zsh)"
 alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
 alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
 alias tt='noglob python3 $HOME/Documents/Dotfiles/scripts/touch.py'
-alias fuzzy='py $HOME/Documents/Dotfiles/scripts/fuzzy_match.py'
 alias cds='py $HOME/Documents/Dotfiles/scripts/clean_DS.py'
 alias trash='py $HOME/Documents/Dotfiles/scripts/trash.py'
 alias unzip='py $HOME/Documents/Dotfiles/scripts/unzip.py'
@@ -129,84 +128,7 @@ git() {
 #     fi
 # }
 
-# function dd {
-#   if [[ "$1" == "." ]]; then
-#     cd - > /dev/null || return
-#     return
-#   fi
-
-#   local initial_dir=$(pwd)  # Store the initial directory to revert if needed.
-#   local target_path="$1"
-
-#   # Handle dot-based navigation.
-#   if [[ "$target_path" == ..* ]]; then
-#     local dots="${target_path//[^.]}"
-#     local dot_count=${#dots}
-#     local up_levels=$(($dot_count - 1))
-#     local up_dir=""
-#     for ((i=0; i<up_levels; i++)); do
-#       up_dir="../$up_dir"
-#     done
-#     cd "$up_dir" 2>/dev/null || {
-#       echo "Failed to navigate: path not found"
-#       return
-#     }
-#     return
-#   fi
-
-#   # Process path components.
-#   local component
-#   local path_remainder="$target_path"
-#   while [[ "$path_remainder" =~ / ]]; do
-#     component="${path_remainder%%/*}"  # Get the first component.
-#     path_remainder="${path_remainder#*/}"  # Remove the first component from the path.
-
-#     if [[ -z "$component" ]]; then
-#       continue  # Skip empty components.
-#     fi
-
-#     if ! cd "$component" 2>/dev/null; then
-#       # Call Python script to perform fuzzy matching
-#       local closest_match=$(python3 /Users/rob/fuzzy_match.pyc "$(pwd)" "$component")
-#       if [[ -n "$closest_match" ]]; then
-#         # echo "Navigating to the closest match: $closest_match"
-#         cd "$closest_match" || {
-#           echo "Failed to navigate further from $(pwd)"
-#           cd "$initial_dir"
-#           return
-#         }
-#       else
-#         echo "Directory not found: $component in $(pwd)"
-#         cd "$initial_dir"
-#         return
-#       fi
-#     fi
-#   done
-
-#   # Process the last component if any.
-#   if [[ -n "$path_remainder" ]]; then
-#     if ! cd "$path_remainder" 2>/dev/null; then
-#       local closest_match=$(python3 /Users/rob/fuzzy_match.pyc "$(pwd)" "$path_remainder")
-#       if [[ -n "$closest_match" ]]; then
-#         # echo "Navigating to the closest match: $closest_match"
-#         cd "$closest_match" || {
-#           echo "Failed to navigate further from $(pwd)"
-#           cd "$initial_dir"
-#           return
-#         }
-#       else
-#         echo "Directory not found: $path_remainder in $(pwd)"
-#         cd "$initial_dir"
-#         return
-#       fi
-#     fi
-#   fi
-# }
-
-
 function dd {
-  declare -A cache  # Declare an associative array to store cached paths
-
   if [[ "$1" == "." ]]; then
     cd - > /dev/null || return
     return
@@ -243,44 +165,38 @@ function dd {
     fi
 
     if ! cd "$component" 2>/dev/null; then
-      if [[ -n "${cache[$component]}" ]]; then
-        cd "${cache[$component]}" || continue
-      else
-        local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy_match.py "$(pwd)" "$component")
-        if [[ -n "$closest_match" ]]; then
-          cache[$component]="$closest_match"  # Cache the result
-          cd "$closest_match" || {
-            echo "Failed to navigate further from $(pwd)"
-            cd "$initial_dir"
-            return
-          }
-        else
-          echo "Directory not found: $component in $(pwd)"
+      # Call Python script to perform fuzzy matching
+      local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy_match.pyc "$(pwd)" "$component")
+      if [[ -n "$closest_match" ]]; then
+        # echo "Navigating to the closest match: $closest_match"
+        cd "$closest_match" || {
+          echo "Failed to navigate further from $(pwd)"
           cd "$initial_dir"
           return
-        fi
+        }
+      else
+        echo "Directory not found: $component in $(pwd)"
+        cd "$initial_dir"
+        return
       fi
     fi
   done
 
+  # Process the last component if any.
   if [[ -n "$path_remainder" ]]; then
     if ! cd "$path_remainder" 2>/dev/null; then
-      if [[ -n "${cache[$path_remainder]}" ]]; then
-        cd "${cache[$path_remainder]}" || continue
-      else
-        local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy_match.py "$(pwd)" "$path_remainder")
-        if [[ -n "$closest_match" ]]; then
-          cache[$path_remainder]="$closest_match"  # Cache the result
-          cd "$closest_match" || {
-            echo "Failed to navigate further from $(pwd)"
-            cd "$initial_dir"
-            return
-          }
-        else
-          echo "Directory not found: $path_remainder in $(pwd)"
+      local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy_match.pyc "$(pwd)" "$path_remainder")
+      if [[ -n "$closest_match" ]]; then
+        # echo "Navigating to the closest match: $closest_match"
+        cd "$closest_match" || {
+          echo "Failed to navigate further from $(pwd)"
           cd "$initial_dir"
           return
-        fi
+        }
+      else
+        echo "Directory not found: $path_remainder in $(pwd)"
+        cd "$initial_dir"
+        return
       fi
     fi
   fi

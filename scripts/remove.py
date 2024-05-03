@@ -158,10 +158,12 @@ def perform_file_extraction(full_path, name, zip_data, is_directory):
 
 
 def print_restore_message(full_path, name, is_directory):
+    base_path = "/Users/rob"
+    relative_path = os.path.relpath(full_path, base_path)
     if is_directory:
-        print(f"Restored {RED_TEXT}{name}/{RESET_TEXT} to {full_path}")
+        print(f"Restored {RED_TEXT}{name}/{RESET_TEXT} to {relative_path}")
     else:
-        print(f"Restored {BLUE_TEXT}{name}{RESET_TEXT} to {full_path}")
+        print(f"Restored {BLUE_TEXT}{name}{RESET_TEXT} to {relative_path}")
 
 
 def restore_file():
@@ -171,7 +173,7 @@ def restore_file():
     results = cursor.fetchall()
 
     if not results:
-        print(f"{RED_TEXT}No Backups Found{RESET_TEXT}")
+        print("No Backups Found")
         return
 
     choices = format_choices(results)
@@ -189,19 +191,30 @@ def restore_file():
         print("Backup entry removed from the database.")
 
 
+def clear_cache():
+    cursor.execute("DROP TABLE IF EXISTS backups")
+    conn.commit()
+    print("Cache cleared successfully.")
+
+
 # Check if the script is being run with the correct arguments
 if len(sys.argv) < 2:
     print(
-        "Usage: python rm_backup.py <file_or_directory> [<file_or_directory> ...] [--restore]"
+        "Usage: python rm_backup.py <file_or_directory> [<file_or_directory> ...] [--restore] [--clear-cache]"
     )
     sys.exit(1)
+
+# Check if the clear cache flag is provided
+if "--clear-cache" in sys.argv:
+    clear_cache()
+    sys.exit(0)
 
 # Check if the restore flag is provided
 if "--restore" in sys.argv:
     restore_file()
 else:
     paths = sys.argv[1:]
-    paths = [path for path in paths if path != "--restore"]
+    paths = [path for path in paths if path != "--restore" and path != "--clear-cache"]
     removed_items = []
     invalid_paths = []
     for path in paths:
@@ -216,12 +229,10 @@ else:
         else:
             invalid_paths.append(path)
     if removed_items:
-        print(f"Removed: {' '.join(removed_items)}")
+        print(f"Removed - {' '.join(removed_items)}")
     if invalid_paths:
-        error_message = (
-            f"Error: The following paths are invalid: {', '.join(invalid_paths)}"
-        )
-        print(f"{RED_TEXT}{error_message}{RESET_TEXT}")
+        error_message = f"{' '.join(invalid_paths)} - Not Found"
+        print(error_message)
 
 # Close the database connection
 conn.close()

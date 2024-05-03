@@ -9,6 +9,7 @@ import tempfile
 import shutil
 
 
+DEBUG = False
 BLUE_TEXT = "\033[34m"
 RESET_TEXT = "\033[0m"
 RED_TEXT = "\033[91m"
@@ -88,7 +89,10 @@ def create_backup(path):
         (parent_dir, name, zip_hash, zip_data, timestamp, 1 if is_directory else 0),
     )
     conn.commit()
-    print("Zip path: ", zip_path)
+
+    if DEBUG:
+        print("Zip path: ", zip_path)
+
     os.remove(zip_path)
 
 
@@ -128,8 +132,10 @@ def process_restoration(backup_id):
 def perform_file_extraction(full_path, name, zip_data, is_directory):
     target_path = os.path.join(full_path, name)
     zip_path = os.path.join(full_path, f"{name}.zip")
-    print("Target path: ", target_path)
-    print("Zip path: ", zip_path)
+
+    if DEBUG:
+        print("Target path: ", target_path)
+        print("Zip path: ", zip_path)
 
     try:
         with open(zip_path, "wb") as file:
@@ -165,7 +171,7 @@ def restore_file():
     results = cursor.fetchall()
 
     if not results:
-        print("No backups found to restore.")
+        print("No Backups Found")
         return
 
     choices = format_choices(results)
@@ -173,13 +179,14 @@ def restore_file():
         "Select a file or directory to restore:", choices=choices
     ).ask()
     if not selected:
-        print("No file or directory selected for restoration.")
+        # print("No file or directory selected")
         return
 
     backup_id = results[choices.index(selected)][0]
     process_restoration(backup_id)
 
-    print("Backup entry removed from the database.")
+    if DEBUG:
+        print("Backup entry removed from the database.")
 
 
 # Check if the script is being run with the correct arguments

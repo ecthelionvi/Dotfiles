@@ -193,7 +193,7 @@ def restore_file():
 def clear_cache():
     cursor.execute("DROP TABLE IF EXISTS backups")
     conn.commit()
-    print("Cache cleared successfully.")
+    print("Cache Cleared Successfully")
 
 
 # Check if the script is being run with the correct arguments

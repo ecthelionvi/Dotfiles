@@ -203,15 +203,25 @@ else:
     paths = sys.argv[1:]
     paths = [path for path in paths if path != "--restore"]
     removed_items = []
+    invalid_paths = []
     for path in paths:
-        create_backup(path)
-        if os.path.isfile(path):
-            os.remove(path)
-            removed_items.append(f"{BLUE_TEXT}{path}{RESET_TEXT}")
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
-            removed_items.append(f"{RED_TEXT}{path}/{RESET_TEXT}")
-    print(f"Removed: {' '.join(removed_items)}")
+        if os.path.exists(path):
+            create_backup(path)
+            if os.path.isfile(path):
+                os.remove(path)
+                removed_items.append(f"{BLUE_TEXT}{path}{RESET_TEXT}")
+            elif os.path.isdir(path):
+                shutil.rmtree(path)
+                removed_items.append(f"{RED_TEXT}{path}/{RESET_TEXT}")
+        else:
+            invalid_paths.append(path)
+    if removed_items:
+        print(f"Removed: {' '.join(removed_items)}")
+    if invalid_paths:
+        error_message = (
+            f"Error: The following paths are invalid: {', '.join(invalid_paths)}"
+        )
+        print(f"{RED_TEXT}{error_message}{RESET_TEXT}")
 
 # Close the database connection
 conn.close()

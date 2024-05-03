@@ -200,21 +200,18 @@ if len(sys.argv) < 2:
 if "--restore" in sys.argv:
     restore_file()
 else:
-    # Get the file or directory paths from the command line arguments
     paths = sys.argv[1:]
     paths = [path for path in paths if path != "--restore"]
-
+    removed_items = []
     for path in paths:
-        # Create a backup of the file or directory
         create_backup(path)
-
-        # Remove the file or directory
         if os.path.isfile(path):
             os.remove(path)
-            print(f"Removed {BLUE_TEXT}{path}{RESET_TEXT}")
+            removed_items.append(f"{BLUE_TEXT}{path}{RESET_TEXT}")
         elif os.path.isdir(path):
             shutil.rmtree(path)
-            print(f"Removed {RED_TEXT}{path}/{RESET_TEXT}")
+            removed_items.append(f"{RED_TEXT}{path}/{RESET_TEXT}")
+    print(f"Removed: {' '.join(removed_items)}")
 
 # Close the database connection
 conn.close()

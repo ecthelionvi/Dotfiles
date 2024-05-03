@@ -15,7 +15,7 @@ RESET_TEXT = "\033[0m"
 RED_TEXT = "\033[91m"
 
 # Set up the SQLite database connection
-db_path = os.path.expanduser("~/.cache/rm_backup/rm_backup.db")
+db_path = os.path.expanduser("~/.cache/remove_backup/remove_backup.db")
 os.makedirs(os.path.dirname(db_path), exist_ok=True)
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
@@ -171,7 +171,7 @@ def restore_file():
     results = cursor.fetchall()
 
     if not results:
-        print("No Backups Found")
+        print(f"{RED_TEXT}No Backups Found{RESET_TEXT}")
         return
 
     choices = format_choices(results)
@@ -179,7 +179,7 @@ def restore_file():
         "Select a file or directory to restore:", choices=choices
     ).ask()
     if not selected:
-        # print("No file or directory selected")
+        print("No file or directory selected")
         return
 
     backup_id = results[choices.index(selected)][0]

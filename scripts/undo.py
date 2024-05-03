@@ -52,7 +52,6 @@ def undo_last_commit():
 
         confirmation = sys.stdin.readline().strip()
         if confirmation.upper() == "Y" or confirmation == "":
-            # Executing Git command to undo the last commit
             os.system("git reset --soft HEAD~1")
 
             clear_screen()

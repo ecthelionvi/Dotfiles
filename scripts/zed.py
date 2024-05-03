@@ -11,7 +11,7 @@ RESET_TEXT = "\033[0m"
 
 def main():
     if len(sys.argv) != 2:
-        print(f"Usage: python zed.py {BLUE_TEXT}<file>{RESET_TEXT}")
+        print("Usage: python zed.py <file>")
         sys.exit(1)
 
     filename = sys.argv[1]
@@ -24,9 +24,8 @@ def main():
 
         try:
             subprocess.run(sed_command, check=True, shell=True)
-            # Print success message with colored parts
             print(
-                f"{GREEN_TEXT}Replaced{RESET_TEXT} {YELLOW_TEXT}{old_name}{RESET_TEXT} {GREEN_TEXT}with{RESET_TEXT} {RED_TEXT}{new_name}{RESET_TEXT}"
+                f"Replaced {YELLOW_TEXT}{old_name}{RESET_TEXT} with {RED_TEXT}{new_name}{RESET_TEXT}"
             )
         except subprocess.CalledProcessError as e:
             print(f"An error occurred while trying to replace the word: {e}")

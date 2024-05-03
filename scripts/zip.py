@@ -15,17 +15,13 @@ def zip_folder(folder_path):
     folder_name = os.path.basename(folder_path)
     zip_file_name = f"{folder_name}.zip"
 
-    # Running the zip command with suppressed output
     try:
         with open(os.devnull, "wb") as devnull:
             subprocess.check_call(
                 ["zip", "-r", zip_file_name, folder_path], stdout=devnull
             )
 
-        # Green "Zipped into" and red zip file name
-        print(
-            f"{GREEN_TEXT}Zipped into{RESET_TEXT} {RED_TEXT}{zip_file_name}{RESET_TEXT}"
-        )
+        print(f"Zipped into {RED_TEXT}{zip_file_name}{RESET_TEXT}")
     except subprocess.CalledProcessError as e:
         print(f"Error zipping folder: {e}")
     except Exception as e:
@@ -34,7 +30,7 @@ def zip_folder(folder_path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print(f"Usage: python zip.py {RED_TEXT}<folder_path>{RESET_TEXT}")
+        print("Usage: python zip.py <folder_path>")
         sys.exit(1)
 
     folder_path = sys.argv[1]

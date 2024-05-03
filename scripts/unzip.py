@@ -19,14 +19,12 @@ def unzip_file(zip_file_path, extract_to=None):
     if not os.path.exists(extract_to):
         os.makedirs(extract_to)
 
-    # Running the unzip command with suppressed output
     try:
         with open(os.devnull, "wb") as devnull:
             subprocess.check_call(
                 ["unzip", "-d", extract_to, zip_file_path], stdout=devnull
             )
 
-        # Green "Unzipped into" and blue directory name
         print(
             f"{GREEN_TEXT}Unzipped into{RESET_TEXT} {BLUE_TEXT}{extract_to}{RESET_TEXT}"
         )
@@ -39,7 +37,7 @@ def unzip_file(zip_file_path, extract_to=None):
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print(
-            f"Usage: python unzip.py {BLUE_TEXT}<zip_file_path>{RESET_TEXT} {YELLOW_TEXT}[extraction_path]{RESET_TEXT}"
+            "Usage: python unzip.py <zip_file_path> [extraction_path]"
         )
         sys.exit(1)
 

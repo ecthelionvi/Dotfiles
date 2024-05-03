@@ -10,7 +10,6 @@ def clear_screen():
 
 
 def find_file_in_tree(start_path, filename):
-    """Searches for the nearest file moving up the directory tree."""
     current_path = Path(start_path).resolve()
     for parent in [current_path] + list(current_path.parents):
         potential_path = parent / filename
@@ -20,7 +19,6 @@ def find_file_in_tree(start_path, filename):
 
 
 def run_command_in_directory(command, directory, new_tab=True):
-    """Runs the specified command in the given directory."""
     if new_tab:
         apple_script = f"""
         tell application "iTerm"
@@ -39,7 +37,6 @@ def run_command_in_directory(command, directory, new_tab=True):
 
 
 def find_node_entry_file(directory):
-    """Searches for the entry file (app.js, index.js, server.js) in the given directory."""
     entry_files = ["app.js", "index.js", "server.js"]
     for file in entry_files:
         file_path = directory / file
@@ -58,7 +55,6 @@ def main():
 
     if project_directory:
         try:
-            # Load package.json to determine available scripts
             package_json_path = project_directory / "package.json"
             with open(package_json_path, "r") as file:
                 package_json = json.load(file)
@@ -68,18 +64,16 @@ def main():
             elif "start" in scripts:
                 command = "npm start"
             else:
-                # Check if it's a Node.js project and run the appropriate entry file
                 entry_file = find_node_entry_file(project_directory)
                 if entry_file:
                     command = f"node {entry_file}"
         except Exception:
-            pass  # Ignore errors and attempt to fall back to live-server
+            pass
 
-    # Fallback to live-server if command isn't set and index.html is found
     if command is None and index_html_directory is not None:
         command = "live-server"
         project_directory = (
-            index_html_directory  # Use the directory where index.html was found
+            index_html_directory
         )
 
     if command:

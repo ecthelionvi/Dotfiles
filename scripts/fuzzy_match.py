@@ -13,19 +13,23 @@ def get_closest_match(search_dir, search_query):
         ]
         query_length = len(search_query)
 
-        # Filter directories based on character match and length similarity
-        filtered_dirs = [
-            d
-            for d in dirs
-            if abs(len(d) - query_length)
-            <= max(1, query_length // 3)  # Loose length similarity
-            or d.lower().startswith(search_query.lower())  # Strong start similarity
+        # Filter directories prioritizing start similarity
+        start_similarity_dirs = [
+            d for d in dirs if d.lower().startswith(search_query.lower())
         ]
 
+        # If no directories are found with start similarity, then check for length similarity as a fallback
+        if not start_similarity_dirs:
+            start_similarity_dirs = [
+                d
+                for d in dirs
+                if abs(len(d) - query_length) <= max(1, query_length // 3)
+            ]
+
         # Use Levenshtein distance (WRatio) to find the best match in the filtered list
-        if filtered_dirs:
+        if start_similarity_dirs:
             best_match = process.extractOne(
-                search_query, filtered_dirs, scorer=fuzz.WRatio
+                search_query, start_similarity_dirs, scorer=fuzz.WRatio
             )
             if best_match:
                 print(best_match[0])  # Output the best match

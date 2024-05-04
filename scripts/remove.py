@@ -13,7 +13,7 @@ BLUE_TEXT = "\033[34m"
 RESET_TEXT = "\033[0m"
 RED_TEXT = "\033[91m"
 
-db_path = os.path.expanduser("~/.cache/remove_backup/remove_backup.db")
+db_path = os.path.expanduser("~/.cache/remove/remove_backup.db")
 os.makedirs(os.path.dirname(db_path), exist_ok=True)
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()

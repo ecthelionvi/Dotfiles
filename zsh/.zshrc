@@ -56,7 +56,6 @@ alias path='realpath'
 alias dd='noglob dd'
 alias hm='cd $HOME'
 alias py='python3'
-# alias rm='rm -rf'
 alias cc='clear'
 alias lv.='lv .'
 alias gls='gls'
@@ -88,15 +87,15 @@ jobs() {
 
 git() {
   if [[ $1 == "revert" ]]; then
-    shift  # Remove 'revert' from the arguments list
+    shift
     python $HOME/Documents/Dotfiles/scripts/revert.py "$@"
   elif [[ $1 == "fetch" ]]; then
     command git fetch --prune
   elif [[ $1 == "undo" ]]; then
-    shift  # Remove 'undo' from the arguments list
+    shift
     python $HOME/Documents/Dotfiles/scripts/undo.py "$@"
   elif [[ $1 == "redo" ]]; then
-    shift  # Remove 'redo' from the arguments list
+    shift
     python $HOME/Documents/Dotfiles/scripts/redo.py "$@"
   else
     command git "$@"
@@ -134,7 +133,7 @@ function dd {
     return
   fi
 
-  local initial_dir=$(pwd)  # Store the initial directory to revert if needed.
+  local initial_dir=$(pwd)
   local target_path="$1"
 
   # Handle dot-based navigation.
@@ -157,18 +156,16 @@ function dd {
   local component
   local path_remainder="$target_path"
   while [[ "$path_remainder" =~ / ]]; do
-    component="${path_remainder%%/*}"  # Get the first component.
-    path_remainder="${path_remainder#*/}"  # Remove the first component from the path.
+    component="${path_remainder%%/*}"
+    path_remainder="${path_remainder#*/}"
 
     if [[ -z "$component" ]]; then
-      continue  # Skip empty components.
+      continue
     fi
 
     if ! cd "$component" 2>/dev/null; then
-      # Call Python script to perform fuzzy matching
-      local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy_match.pyc "$(pwd)" "$component")
+      local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy.py "$(pwd)" "$component")
       if [[ -n "$closest_match" ]]; then
-        # echo "Navigating to the closest match: $closest_match"
         cd "$closest_match" || {
           echo "Failed to navigate further from $(pwd)"
           cd "$initial_dir"
@@ -185,9 +182,8 @@ function dd {
   # Process the last component if any.
   if [[ -n "$path_remainder" ]]; then
     if ! cd "$path_remainder" 2>/dev/null; then
-      local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy_match.pyc "$(pwd)" "$path_remainder")
+      local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy.py "$(pwd)" "$path_remainder")
       if [[ -n "$closest_match" ]]; then
-        # echo "Navigating to the closest match: $closest_match"
         cd "$closest_match" || {
           echo "Failed to navigate further from $(pwd)"
           cd "$initial_dir"
@@ -223,3 +219,4 @@ bindkey '^O' edit-command-line
 # Environment Flags
 OP_BIOMETRIC_UNLOCK_ENABLED=true
 RANGER_LOAD_DEFAULT_RC=false
+

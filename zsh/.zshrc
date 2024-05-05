@@ -41,8 +41,8 @@ alias st='py $HOME/Documents/Dotfiles/scripts/start.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 alias zed='py $HOME/Documents/Dotfiles/scripts/zed.py'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
-alias dotfiles='dd $HOME/Documents/Dotfiles/'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
+alias dotfiles='cd $HOME/Documents/Dotfiles/'
 alias clear="clear && printf '\e[3J'"
 alias php='php -S localhost:8000'
 alias python='/usr/bin/python3'
@@ -153,4 +153,6 @@ bindkey '^O' edit-command-line
 # Environment Flags
 OP_BIOMETRIC_UNLOCK_ENABLED=true
 RANGER_LOAD_DEFAULT_RC=false
+
+
 

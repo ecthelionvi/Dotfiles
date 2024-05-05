@@ -12,9 +12,6 @@ export HISTFILE=$HOME/.cache/zsh/zsh_history
 export VISUAL=$HOME/.local/bin/lvim
 export EDITOR=$HOME/.local/bin/lvim
 
-# Language
-setopt CORRECT
-
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -44,6 +41,7 @@ alias st='py $HOME/Documents/Dotfiles/scripts/start.py'
 alias ch='py $HOME/Documents/Dotfiles/scripts/clean.py'
 alias zed='py $HOME/Documents/Dotfiles/scripts/zed.py'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
+alias dotfiles='dd $HOME/Documents/Dotfiles/'
 alias zip='py $HOME/Documents/Dotfiles/scripts/zip.py'
 alias clear="clear && printf '\e[3J'"
 alias php='php -S localhost:8000'
@@ -62,19 +60,18 @@ alias gls='gls'
 alias cat='bat'
 
 ### Function Definitions ###
-function gls {
-  if git rev-parse --git-dir > /dev/null 2>&1; then
-    local entries=$(git ls-tree --name-only HEAD | sed 's:/$::' | xargs -I {} sh -c 'if [ -d "{}" ]; then echo "{}/"; else echo "{}"; fi')
-
-    echo "$entries" | grep '/$' | sed 's:/$::' | xargs -I {} eza --icons -1 -d {} 2>/dev/null
-
-    echo "$entries" | grep -v '/$' | xargs eza --icons -1 2>/dev/null
-  else
-    eza --icons -1
-  fi
+function silent() {
+  set +e
+  "$@" 2>/dev/null
+  clear
 }
 
-jobs() {
+function run_clear() {
+    "$@"
+    clear
+}
+
+function jobs() {
   if [[ $1 == "-e" ]]; then
     command crontab -e
   elif [[ $1 == "-l" ]]; then
@@ -85,7 +82,7 @@ jobs() {
 
 }
 
-git() {
+function git() {
   if [[ $1 == "revert" ]]; then
     shift
     python $HOME/Documents/Dotfiles/scripts/revert.py "$@"
@@ -102,31 +99,6 @@ git() {
   fi
 }
 
-# function dd {
-#     if [[ "$1" == "." ]]; then
-#         cd - > /dev/null || return
-#         return
-#     fi
-
-#     local cleaned_path=$(echo "$1" | sed 's/\[\[.*\]\]//g')
-#     local dots="${cleaned_path//[^.]}"
-#     local up_levels=$((${#dots} - 1))
-#     
-#     if [[ $up_levels -gt 0 ]]; then
-#         local new_path="${1#$dots}"
-#         new_path="${new_path#/}"
-#         local i=0
-#         local up_dir=""
-#         while [[ $i -lt $up_levels ]]; do
-#             up_dir="../$up_dir"
-#             i=$((i+1))
-#         done
-#         cd "$up_dir$new_path" || return
-#     else
-#         cd "$1" || return
-#     fi
-# }
-
 function dd {
   if [[ "$1" == "." ]]; then
     cd - > /dev/null || return
@@ -135,78 +107,40 @@ function dd {
 
   local initial_dir=$(pwd)
   local target_path="$1"
+  local python_script="$HOME/Documents/Dotfiles/scripts/fuzzy.py"
 
-  # Handle dot-based navigation.
   if [[ "$target_path" == ..* ]]; then
-    local dots="${target_path//[^.]}"
-    local dot_count=${#dots}
+    local dot_count=${#target_path}
     local up_levels=$(($dot_count - 1))
-    local up_dir=""
-    for ((i=0; i<up_levels; i++)); do
-      up_dir="../$up_dir"
-    done
-    cd "$up_dir" 2>/dev/null || {
-      echo "Failed to navigate: path not found"
-      return
-    }
+    local up_dir=$(printf '../%.0s' $(seq 1 $up_levels))
+    cd "$up_dir" 2>/dev/null || { echo "Failed to navigate: path not found"; return; }
     return
   fi
 
-  # Process path components.
+  change_dir_or_fuzzy_match() {
+    local component="$1"
+    if ! cd "$component" 2>/dev/null; then
+      local closest_match=$(python3 "$python_script" "$(pwd)" "$component")
+      if [[ -n "$closest_match" ]]; then
+        cd "$closest_match" || { echo "Failed to navigate further from $(pwd)"; cd "$initial_dir"; return 1; }
+      else
+        echo "Directory not found: $component in $(pwd)"
+        cd "$initial_dir"
+        return 1
+      fi
+    fi
+  }
+
   local component
   local path_remainder="$target_path"
   while [[ "$path_remainder" =~ / ]]; do
     component="${path_remainder%%/*}"
     path_remainder="${path_remainder#*/}"
-
-    if [[ -z "$component" ]]; then
-      continue
-    fi
-
-    if ! cd "$component" 2>/dev/null; then
-      local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy.py "$(pwd)" "$component")
-      if [[ -n "$closest_match" ]]; then
-        cd "$closest_match" || {
-          echo "Failed to navigate further from $(pwd)"
-          cd "$initial_dir"
-          return
-        }
-      else
-        echo "Directory not found: $component in $(pwd)"
-        cd "$initial_dir"
-        return
-      fi
-    fi
+    [[ -z "$component" ]] && continue
+    change_dir_or_fuzzy_match "$component" || return
   done
 
-  # Process the last component if any.
-  if [[ -n "$path_remainder" ]]; then
-    if ! cd "$path_remainder" 2>/dev/null; then
-      local closest_match=$(python3 $HOME/Documents/Dotfiles/scripts/fuzzy.py "$(pwd)" "$path_remainder")
-      if [[ -n "$closest_match" ]]; then
-        cd "$closest_match" || {
-          echo "Failed to navigate further from $(pwd)"
-          cd "$initial_dir"
-          return
-        }
-      else
-        echo "Directory not found: $path_remainder in $(pwd)"
-        cd "$initial_dir"
-        return
-      fi
-    fi
-  fi
-}
-
-function run_clear() {
-    $@
-    clear
-}
-
-function silent() {
-  set +e
-  "$@" 2>/dev/null
-  clear
+  [[ -n "$path_remainder" ]] && change_dir_or_fuzzy_match "$path_remainder"
 }
 
 ## Key Bindings ###

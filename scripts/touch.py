@@ -59,9 +59,7 @@ def create_item(path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print(
-            "Usage: python touch.py <path/to/file_or_directory> [<file_or_directory> ...]"
-        )
+        print("Usage: python touch.py <file_or_directory> [<file_or_directory> ...]")
     else:
         created_items = []
         existing_items = []

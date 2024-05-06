@@ -34,6 +34,10 @@ cursor.execute(
 conn.commit()
 
 
+def clear_screen():
+    print("\033[2J\033[H", end="")
+
+
 def generate_zip_hash(zip_path):
     sha256_hash = hashlib.sha256()
     with zipfile.ZipFile(zip_path, "r") as zip_file:
@@ -175,6 +179,7 @@ def restore_file():
         "Select a file or directory to restore:", choices=choices
     ).ask()
     if not selected:
+        clear_screen()
         return
 
     backup_id = results[choices.index(selected)][0]
@@ -219,9 +224,9 @@ else:
         else:
             invalid_paths.append(path)
     if removed_items:
-        print(f"Removed - {' '.join(removed_items)}")
+        print(f"Removed: {', '.join(removed_items)}")
     if invalid_paths:
-        error_message = f"{' '.join(invalid_paths)} - Not Found"
+        error_message = f"{' '.join(invalid_paths)} not found"
         print(error_message)
 
 conn.close()

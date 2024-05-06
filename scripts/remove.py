@@ -195,9 +195,11 @@ def clear_cache():
 
 if len(sys.argv) < 2:
     print(
-        "Usage: python rm_backup.py <file_or_directory> [<file_or_directory> ...] [--restore] [--clear-cache]"
+        "Usage: python rm_backup.py <file_or_directory> [<file_or_directory> ...] [--restore] [--clear-cache] [--no-backup]"
     )
     sys.exit(1)
+
+no_backup = "--no-backup" in sys.argv
 
 if "--clear-cache" in sys.argv:
     clear_cache()
@@ -207,24 +209,34 @@ if "--restore" in sys.argv:
     restore_file()
 else:
     paths = sys.argv[1:]
-    paths = [path for path in paths if path != "--restore" and path != "--clear-cache"]
+    paths = [
+        path
+        for path in paths
+        if path != "--restore" and path != "--clear-cache" and path != "--no-backup"
+    ]
     removed_items = []
     invalid_paths = []
     for path in paths:
         if os.path.exists(path):
-            create_backup(path)
-            if os.path.isfile(path):
-                os.remove(path)
-                removed_items.append(f"{BLUE_TEXT}{path}{RESET_TEXT}")
-            elif os.path.isdir(path):
-                shutil.rmtree(path)
-                removed_items.append(f"{RED_TEXT}{path}/{RESET_TEXT}")
+            if not no_backup:
+                create_backup(path)
+                if os.path.isfile(path):
+                    os.remove(path)
+                    removed_items.append(f"{BLUE_TEXT}{path}{RESET_TEXT}")
+                elif os.path.isdir(path):
+                    shutil.rmtree(path)
+                    removed_items.append(f"{RED_TEXT}{path}/{RESET_TEXT}")
+            else:
+                if os.path.isfile(path):
+                    os.remove(path)
+                    removed_items.append(f"{BLUE_TEXT}{path}{RESET_TEXT}")
+                elif os.path.isdir(path):
+                    shutil.rmtree(path)
+                    removed_items.append(f"{RED_TEXT}{path}/{RESET_TEXT}")
         else:
             invalid_paths.append(path)
     if removed_items:
         print(f"Removed: {' '.join(removed_items)}")
     if invalid_paths:
-        error_message = f"{' '.join(invalid_paths)} - Not Found"
+        error_message = f"{' '.join(invalid_paths)} not found"
         print(error_message)
-
-conn.close()

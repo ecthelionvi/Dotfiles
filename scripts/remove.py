@@ -222,7 +222,7 @@ else:
         else:
             invalid_paths.append(path)
     if removed_items:
-        print(f"Removed - {' '.join(removed_items)}")
+        print(f"Removed: {' '.join(removed_items)}")
     if invalid_paths:
         error_message = f"{' '.join(invalid_paths)} - Not Found"
         print(error_message)

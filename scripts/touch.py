@@ -59,19 +59,19 @@ if __name__ == "__main__":
                 failed_items.append(item)
 
         if created_items:
-            print("Created:", ", ".join(created_items))
+            print("Created:", " ".join(created_items))
 
         if existing_items:
             if len(existing_items) == 1:
-                print(", ".join(existing_items), "already exists")
+                print(" ".join(existing_items), "already exists")
             else:
-                print(", ".join(existing_items), "already exist")
+                print(" ".join(existing_items), "already exist")
 
         if directory_items:
             if len(directory_items) == 1:
-                print(", ".join(directory_items), "is a directory")
+                print(" ".join(directory_items), "is a directory")
             else:
-                print(", ".join(directory_items), "are directories")
+                print(" ".join(directory_items), "are directories")
 
         if failed_items:
-            print("Failed to create or open:", ", ".join(failed_items))
+            print("Failed to create or open:", " ".join(failed_items))

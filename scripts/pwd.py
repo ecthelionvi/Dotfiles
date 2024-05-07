@@ -10,6 +10,9 @@ def copy_pwd_to_clipboard(file_path=None):
     try:
         # Determine the path to use
         if file_path:
+            if not os.path.exists(file_path):
+                print(f"{file_path} not found")
+                return
             pwd = os.path.realpath(file_path)
         else:
             pwd = os.path.realpath(os.getcwd())
@@ -20,6 +23,7 @@ def copy_pwd_to_clipboard(file_path=None):
 
         # Success output
         print(f"Copied {GREEN_TEXT}{pwd}{RESET_TEXT} to clipboard")
+
     except Exception as e:
         # Error handling
         print(f"An error occurred: {e}")

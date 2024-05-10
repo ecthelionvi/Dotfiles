@@ -7,7 +7,7 @@ def get_closest_match(named_dirs, search_query):
     try:
         # Use Levenshtein distance (WRatio) to find the best match in the named directories
         best_match = process.extractOne(
-            search_query, named_dirs.keys(), scorer=fuzz.WRatio, score_cutoff=75
+            search_query, named_dirs.keys(), scorer=fuzz.WRatio, score_cutoff=70
         )
         if best_match:
             print(named_dirs[best_match[0]])  # Output the corresponding path of the best match

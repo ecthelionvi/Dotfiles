@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 
-DEBUG = True
+DEBUG = False
 
 
 def find_best_match(directory, target):

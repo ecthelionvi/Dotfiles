@@ -130,7 +130,6 @@ if __name__ == "__main__":
         target_path = sys.argv[1]
         result = dd(target_path)
         if result is None:
-            print("No matching directory found.", file=sys.stderr)
             sys.exit(1)
     else:
         print("Usage: python dd.py <target_path>")

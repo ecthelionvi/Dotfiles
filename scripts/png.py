@@ -1,6 +1,7 @@
 import os
 import sys
 from PIL import Image
+from halo import Halo
 from concurrent.futures import ThreadPoolExecutor
 
 RESET_TEXT = "\033[0m"
@@ -27,6 +28,7 @@ def convert_files(files):
         results = list(executor.map(convert_to_png, files))
     converted_files = [file for file in results if file is not None]
     if converted_files:
+        spinner.stop()
         print(f"Converted: {' '.join(converted_files)} to PNG")
     else:
         print("No image files found or converted.")
@@ -51,12 +53,16 @@ def print_usage():
 
 if __name__ == "__main__":
     if len(sys.argv) == 1 or (len(sys.argv) == 2 and sys.argv[1] == "--all"):
+        spinner = Halo(text="Converting", spinner="dots")
+        spinner.start()
         convert_all_to_png()
     elif len(sys.argv) > 1:
         file_paths = [
             os.path.join(os.getcwd(), f) for f in sys.argv[1:] if not f.startswith("--")
         ]
         if file_paths:
+            spinner = Halo(text="Converting", spinner="dots")
+            spinner.start()
             convert_files(file_paths)
         else:
             print_usage()

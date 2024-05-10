@@ -10,7 +10,10 @@ def find_best_match(directory, target):
     closest_match = subprocess.run(
         ["python3", python_script, directory, target], capture_output=True, text=True
     ).stdout.strip()
-    return os.path.join(directory, closest_match)
+    if closest_match:
+        return os.path.join(directory, closest_match)
+    else:
+        return None
 
 
 def find_best_match_dirs(target):
@@ -20,7 +23,10 @@ def find_best_match_dirs(target):
     closest_match_dirs = subprocess.run(
         ["python3", python_script_dirs, target], capture_output=True, text=True
     ).stdout.strip()
-    return closest_match_dirs
+    if closest_match_dirs:
+        return closest_match_dirs
+    else:
+        return None
 
 
 def dd(target_path):
@@ -73,34 +79,31 @@ def dd(target_path):
         if DEBUG:
             print(f"[DEBUG] Searching for component: {component}", file=sys.stderr)
 
-        # Check if the component matches a named directory
-        if component.lower() in named_dirs:
-            named_dir_path = named_dirs[component.lower()]
-            if os.path.isdir(named_dir_path):
+        # Perform fuzzy matching on named directories
+        fuzzy_match_dirs = find_best_match_dirs(component)
+        if fuzzy_match_dirs:
+            if DEBUG:
+                print(
+                    f"[DEBUG] Fuzzy match found in named directories: {fuzzy_match_dirs}",
+                    file=sys.stderr,
+                )
 
-                if DEBUG:
-                    print(
-                        f"[DEBUG] Navigating to named directory: {named_dir_path}",
-                        file=sys.stderr,
-                    )
+            current_dir = fuzzy_match_dirs
+            os.chdir(
+                current_dir
+            )  # Change the current directory to the fuzzy-matched named directory
 
-                current_dir = named_dir_path
-                os.chdir(
-                    current_dir
-                )  # Change the current directory to the named directory
+            if DEBUG:
+                print(
+                    f"[DEBUG] Current directory changed to: {current_dir}",
+                    file=sys.stderr,
+                )
 
-                if DEBUG:
-                    print(
-                        f"[DEBUG] Current directory changed to: {current_dir}",
-                        file=sys.stderr,
-                    )
+            continue
 
-                continue
-
-        # If not a named directory, perform fuzzy matching
+        # If not a fuzzy match in named directories, perform fuzzy matching on current directory
         best_match = find_best_match(current_dir, component)
-        if best_match and os.path.isdir(best_match):
-
+        if best_match:
             if DEBUG:
                 print(f"[DEBUG] Best match found: {best_match}", file=sys.stderr)
 
@@ -116,14 +119,18 @@ def dd(target_path):
                 )
         else:
             print(f"No matching directory found for: {component}", file=sys.stderr)
-            return
+            return None
 
     print(current_dir)
+    return current_dir
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         target_path = sys.argv[1]
-        dd(target_path)
+        result = dd(target_path)
+        if result is None:
+            print("No matching directory found.", file=sys.stderr)
+            sys.exit(1)
     else:
-        print("Please provide a target path as an argument.")
+        print("Usage: python dd.py <target_path>")

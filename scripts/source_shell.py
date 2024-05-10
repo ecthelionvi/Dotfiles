@@ -7,8 +7,5 @@ def clear_screen():
 # Source .zshrc
 os.system("source ~/.zshrc")
 
-# Execute zsh
-subprocess.run(["zsh"])
-
 # Clear screen
 clear_screen()

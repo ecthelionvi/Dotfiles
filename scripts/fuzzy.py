@@ -31,7 +31,7 @@ def get_closest_match(search_dir, search_query):
         # Use Levenshtein distance (WRatio) to find the best match in the filtered list
         if start_similarity_dirs:
             best_match = process.extractOne(
-                search_query, start_similarity_dirs, scorer=fuzz.WRatio, score_cutoff=70
+                search_query, start_similarity_dirs, scorer=fuzz.WRatio, score_cutoff=50
             )
             if best_match:
                 print(best_match[0])  # Output the best match

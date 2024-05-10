@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 
-DEBUG = False
+DEBUG = True
 
 
 def find_best_match(directory, target):
@@ -72,6 +72,34 @@ def dd(target_path):
     path_components = target_path.split("/")
     current_dir = initial_dir
 
+    # Handle the first component separately
+    if path_components:
+        first_component = path_components[0]
+        if first_component:
+            if DEBUG:
+                print(f"[DEBUG] Searching for first component: {first_component}", file=sys.stderr)
+
+            # Perform fuzzy matching on named directories for the first component
+            fuzzy_match_dirs = find_best_match_dirs(first_component)
+            if fuzzy_match_dirs:
+                if DEBUG:
+                    print(
+                        f"[DEBUG] Fuzzy match found in named directories for the first component: {fuzzy_match_dirs}",
+                        file=sys.stderr,
+                    )
+
+                current_dir = fuzzy_match_dirs
+                os.chdir(current_dir)  # Change the current directory to the fuzzy-matched named directory
+
+                if DEBUG:
+                    print(
+                        f"[DEBUG] Current directory changed to: {current_dir}",
+                        file=sys.stderr,
+                    )
+
+                path_components = path_components[1:]  # Remove the first component from the path components
+
+    # Handle the subsequent components
     for component in path_components:
         if not component:
             continue
@@ -88,29 +116,30 @@ def dd(target_path):
                     file=sys.stderr,
                 )
 
-            current_dir = fuzzy_match_dirs
-            os.chdir(
-                current_dir
-            )  # Change the current directory to the fuzzy-matched named directory
+            # Check if the fuzzy-matched named directory is a direct subdirectory of the current directory
+            if os.path.dirname(fuzzy_match_dirs) == current_dir:
+                current_dir = fuzzy_match_dirs
+                os.chdir(current_dir)  # Change the current directory to the fuzzy-matched named directory
 
-            if DEBUG:
-                print(
-                    f"[DEBUG] Current directory changed to: {current_dir}",
-                    file=sys.stderr,
-                )
+                if DEBUG:
+                    print(
+                        f"[DEBUG] Current directory changed to: {current_dir}",
+                        file=sys.stderr,
+                    )
 
-            continue
+                continue
+            else:
+                if DEBUG:
+                    print(f"[DEBUG] The fuzzy-matched named directory '{fuzzy_match_dirs}' is not a direct subdirectory of the current directory '{current_dir}'", file=sys.stderr)
 
-        # If not a fuzzy match in named directories, perform fuzzy matching on current directory
+        # If not a fuzzy match in named directories or not a direct subdirectory, perform fuzzy matching on current directory
         best_match = find_best_match(current_dir, component)
         if best_match:
             if DEBUG:
                 print(f"[DEBUG] Best match found: {best_match}", file=sys.stderr)
 
             current_dir = best_match
-            os.chdir(
-                current_dir
-            )  # Change the current directory to the matched directory
+            os.chdir(current_dir)  # Change the current directory to the matched directory
 
             if DEBUG:
                 print(

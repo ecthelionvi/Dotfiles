@@ -10,7 +10,6 @@ def convert_to_png(file_path):
     try:
         if not os.path.exists(file_path):
             return False
-
         image = Image.open(file_path)
         png_file = os.path.splitext(file_path)[0] + ".png"
         image.save(png_file, "PNG")
@@ -29,7 +28,6 @@ def convert_all_to_png():
         image_files = [
             f for f in files if os.path.splitext(f)[1].lower() in image_extensions
         ]
-
         converted_files = []
         invalid_files = []
 
@@ -41,19 +39,19 @@ def convert_all_to_png():
                 invalid_files.append(file)
 
         print_conversion_message(converted_files, invalid_files)
+
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
 def print_conversion_message(converted_files, invalid_files):
-    if converted_files:
-        print(f"Converted: {' '.join(converted_files)} to PNG")
-
     if invalid_files:
         invalid_files_str = " ".join(invalid_files)
         print(f"{invalid_files_str} not converted")
 
-    if not converted_files and not invalid_files:
+    if converted_files:
+        print(f"Converted: {' '.join(converted_files)} to PNG")
+    elif not invalid_files:
         print("No image files found")
 
 
@@ -70,7 +68,6 @@ if __name__ == "__main__":
     elif len(sys.argv) >= 2:
         converted_files = []
         invalid_files = []
-
         for file_path in sys.argv[1:]:
             if file_path == "--all":
                 print_usage()
@@ -79,7 +76,6 @@ if __name__ == "__main__":
                 converted_files.append(f"{YELLOW_TEXT}{file_path}{RESET_TEXT}")
             else:
                 invalid_files.append(file_path)
-
         print_conversion_message(converted_files, invalid_files)
     else:
         print_usage()

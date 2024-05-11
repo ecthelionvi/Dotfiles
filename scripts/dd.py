@@ -80,7 +80,7 @@ def dd(target_path):
                 print(f"[DEBUG] Searching for first component: {first_component}", file=sys.stderr)
 
             # Perform fuzzy matching on named directories for the first component
-            fuzzy_match_dirs = find_best_match_dirs(first_component)
+            fuzzy_match_dirs = find_best_match_dirs(first_component.lower())
             if fuzzy_match_dirs:
                 if DEBUG:
                     print(

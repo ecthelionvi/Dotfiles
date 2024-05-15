@@ -5,7 +5,6 @@ RESET_TEXT = "\033[0m"
 GREEN_TEXT = "\033[32m"
 PURPLE_TEXT = "\033[35m"
 
-
 def draw_boxed_message(lines, show_success=False, success_text="Success"):
     terminal_width = os.get_terminal_size().columns
     width = terminal_width - 4
@@ -47,9 +46,10 @@ def delete_files(file_paths):
 
 
 if __name__ == "__main__":
+    # Dynamically construct paths using os.path.expanduser
     files = [
-        "/Users/rob/.cache/lvim/lvim.shada",
-        "/Users/rob/.cache/lvim/project_nvim/project_history",
+        os.path.expanduser("~/.cache/lvim/lvim.shada"),
+        os.path.expanduser("~/.cache/lvim/project_nvim/project_history"),
     ]
 
     clear_screen()

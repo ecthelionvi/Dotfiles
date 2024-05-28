@@ -8,6 +8,14 @@ GREEN_TEXT = "\033[92m"
 RED_TEXT = "\033[91m"
 RESET_TEXT = "\033[0m"
 
+ignore_folders = [
+    ".git",
+    ".vscode",
+    "__pycache__",
+    "node_modules",
+    ".idea",
+]
+
 
 def zip_folder(folder_path):
     if not os.path.isdir(folder_path):
@@ -36,6 +44,7 @@ def zip_folder(folder_path):
 
 def replace_text(directory, old_text, new_text):
     for subdir, dirs, files in os.walk(directory):
+        dirs[:] = [d for d in dirs if d not in ignore_folders]
         for file in files:
             filepath = os.path.join(subdir, file)
             try:
@@ -67,4 +76,9 @@ if __name__ == "__main__":
         replace_text(directory, old_text, new_text)
         print(f"Replacement complete in {RED_TEXT}{directory}/{RESET_TEXT}")
     else:
-        sys.exit(1)
+        old_text = questionary.text("Enter the old text:").ask()
+        new_text = questionary.text("Enter the new text:").ask()
+        replace_text(directory, old_text, new_text)
+        print(f"Replacement complete in {RED_TEXT}{directory}/{RESET_TEXT}")
+
+    sys.exit(1)

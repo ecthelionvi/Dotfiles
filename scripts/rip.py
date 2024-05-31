@@ -3,7 +3,20 @@ import sys
 
 # List of directories and files to ignore
 IGNORE_DIRS = {".git", "node_modules", "venv", ".idea", ".vscode", "vendor"}
-IGNORE_FILES = {".DS_Store", "Dockerfile", "Makefile", "go.mod", "go.sum"}
+IGNORE_FILES = {
+    ".DS_Store",
+    "Dockerfile",
+    "Makefile",
+    "go.mod",
+    "go.sum",
+    "yarn.lock",
+    "package-lock.json",
+    "composer.lock",
+    ".gitignore",
+    ".gitattributes",
+    ".editorconfig",
+    ".env",
+}
 IGNORE_EXTENSIONS = {".yaml", ".yml"}
 
 

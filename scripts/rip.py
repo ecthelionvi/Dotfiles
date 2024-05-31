@@ -2,8 +2,8 @@ import os
 import sys
 
 # List of directories and files to ignore
-IGNORE_DIRS = {".git", "node_modules", "venv", ".idea", ".vscode"}
-IGNORE_FILES = {".DS_Store", "Dockerfile"}
+IGNORE_DIRS = {".git", "node_modules", "venv", ".idea", ".vscode", "vendor"}
+IGNORE_FILES = {".DS_Store", "Dockerfile", "Makefile", "go.mod", "go.sum"}
 IGNORE_EXTENSIONS = {".yaml", ".yml"}
 
 

@@ -2,7 +2,21 @@ import os
 import sys
 
 # List of directories and files to ignore
-IGNORE_DIRS = {".git", "node_modules", "venv", ".idea", ".vscode", "vendor"}
+IGNORE_DIRS = {
+    ".git",
+    "node_modules",
+    "venv",
+    ".idea",
+    ".vscode",
+    "vendor",
+    "dist",
+    "build",
+    "out",
+    "target",
+    "test",
+    "ios",
+    "android",
+}
 IGNORE_FILES = {
     ".DS_Store",
     "Dockerfile",
@@ -16,8 +30,43 @@ IGNORE_FILES = {
     ".gitattributes",
     ".editorconfig",
     ".env",
+    "main",
+    "Dockerfile",
 }
-IGNORE_EXTENSIONS = {".yaml", ".yml"}
+IGNORE_EXTENSIONS = {
+    ".yaml",
+    ".yml",
+    ".json",
+    ".xml",
+    ".toml",
+    ".lock",
+    ".md",
+    ".txt",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".svg",
+    ".ico",
+    ".plist",
+    ".pdf",
+    ".lock",
+    ".metadata",
+    "html",
+    ".css",
+    ".scss",
+    ".less",
+    ".sass",
+    "pbxproj",
+    "storyboard",
+    ".strings",
+    ".swift",
+    ".h",
+    "xcsettings",
+    ".p12",
+    "podfile",
+    "podfile.lock",
+}
 
 
 def copy_repo_contents_to_file(repo_path, output_file):

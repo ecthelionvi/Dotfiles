@@ -60,6 +60,34 @@ alias ch='py $SCRIPTS/clean.py'
 alias png='py $SCRIPTS/png.py'
 alias zed='py $SCRIPTS/zed.py'
 alias zip='py $SCRIPTS/zip.py'
+alias rip='py $SCRIPTS/rip.py'
+
+swap() {
+    # Run the Python script
+    py "$SCRIPTS/swap.py"
+    
+    # Execute the SSH agent, suppress its output
+    eval "$(ssh-agent -s)" >/dev/null 2>&1
+    
+    # Add the SSH key, suppress output
+    ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
+    
+    # Test SSH connection with GitHub
+    github_output=$(ssh -T git@github.com 2>&1)
+    if echo "$github_output" | grep -q "You've successfully authenticated"; then
+        echo "$github_output"
+    else
+        echo "GitHub SSH test failed."
+    fi
+    
+    # Test SSH connection with GitLab
+    gitlab_output=$(ssh -T git@gitlab.com 2>&1)
+    if echo "$gitlab_output" | grep -q "Welcome to GitLab"; then
+        echo "$gitlab_output"
+    else
+        echo "GitLab SSH test failed."
+    fi
+}
 
 ### Function Definitions ###
 function silent() {
@@ -87,42 +115,88 @@ function realpath() {
   command python3 $SCRIPTS/pwd.py "$1"
 }
 
+# function git() {
+#   if [[ $1 == "revert" ]]; then
+#     shift
+#     python3 $HOME/Documents/Dotfiles/scripts/revert.py "$@"
+#   elif [[ $1 == "fetch" ]]; then
+#     command git fetch --prune
+#   elif [[ $1 == "undo" ]]; then
+#     shift
+#     python3 $HOME/Documents/Dotfiles/scripts/undo.py "$@"
+#   elif [[ $1 == "redo" ]]; then
+#     shift
+#     python3 $HOME/Documents/Dotfiles/scripts/redo.py "$@"
+#   else
+#     command git "$@"
+#   fi
+# }
+
 function git() {
   if [[ $1 == "revert" ]]; then
     shift
     python3 $HOME/Documents/Dotfiles/scripts/revert.py "$@"
   elif [[ $1 == "fetch" ]]; then
-    command git fetch --prune
+    command git fetch --all --prune
   elif [[ $1 == "undo" ]]; then
     shift
     python3 $HOME/Documents/Dotfiles/scripts/undo.py "$@"
   elif [[ $1 == "redo" ]]; then
     shift
     python3 $HOME/Documents/Dotfiles/scripts/redo.py "$@"
+  elif [[ $1 == "prune" ]]; then
+    command git branch --delete --gone
+  elif [[ $1 == "log" ]]; then
+    command git log --pretty=format:"%h%x09%an%x09%ad%x09%s" --date=format:"%Y-%m-%d %H:%M:%S"
   else
     command git "$@"
   fi
 }
 
-function dd() {
+# function dd() {
+#   if [[ "$1" == "." ]]; then
+#     cd - > /dev/null || return
+#     return
+#   fi
+
+#   local python_script="$HOME/Documents/Dotfiles/scripts/dd.py"
+#   local target_path="$1"
+
+#   local output=$(python3 "$python_script" "$target_path")
+#   local exit_code=$?
+
+#   if [[ $exit_code -eq 0 ]]; then
+#     cd "$output" || { echo "Failed to navigate to: $output"; return 1; }
+#   else
+#     echo "$output"
+#     return 1
+#   fi
+# }
+
+
+cd() {
+
   if [[ "$1" == "." ]]; then
-    cd - > /dev/null || return
+    builtin cd - > /dev/null || return
     return
   fi
 
-  local python_script="$HOME/Documents/Dotfiles/scripts/dd.py"
-  local target_path="$1"
+  builtin cd "$@" 2>/dev/null
 
-  local output=$(python3 "$python_script" "$target_path")
-  local exit_code=$?
+  if [[ $? -ne 0 ]]; then
+    local output
+    output=$(python3 "$HOME/Documents/Dotfiles/scripts/dd.py" "$1")
+    local exit_code=$?
 
-  if [[ $exit_code -eq 0 ]]; then
-    cd "$output" || { echo "Failed to navigate to: $output"; return 1; }
-  else
-    echo "$output"
-    return 1
+    if [[ $exit_code -eq 0 ]]; then
+      builtin cd "$output" || echo "Failed to navigate to: $output"
+    else
+      echo "$output"
+      return 1
+    fi
   fi
 }
+
 
 ## Key Bindings ###
 export FUNCNEST=500
@@ -136,3 +210,7 @@ OP_BIOMETRIC_UNLOCK_ENABLED=true
 RANGER_LOAD_DEFAULT_RC=false
 
 
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

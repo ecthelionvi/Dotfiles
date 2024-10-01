@@ -30,39 +30,35 @@ eval "$(starship init zsh)"
 alias fd="fd --hidden --exclude node_modules/ --exclude .git/ --exclude Library/ --exclude __pycache__/ --exclude .cache/"
 alias rg="rg --hidden --glob=!node_modules/ --glob=!.git/ --glob=!Library/ --glob=!__pycache__/ --glob=!.cache/"
 alias cc="clear && printf '\e[3J'"
-alias php='php -S localhost:8000'
-alias python='/usr/bin/python3'
 alias ran='run_clear ranger'
 alias zsh="lv $HOME/.zshrc"
 alias ls='eza --icons -1'
 alias lv='run_clear lvim'
-alias mkdir='mkdir -p'
 alias path='realpath'
 alias dd='noglob dd'
 alias hm='cd $HOME'
-alias py='python3'
-alias lv.='lv .'
-alias gls='gls'
 alias cat='bat'
 
 ### Scripts ###
-alias rm='py $SCRIPTS/remove.py --no-backup'
 alias tt='noglob python3 $SCRIPTS/touch.py'
 alias cds='py $SCRIPTS/clean_DS.py'
-alias trash='py $SCRIPTS/trash.py'
-alias unzip='py $SCRIPTS/unzip.py'
-alias pj='py $SCRIPTS/project.py'
 alias clip='py $SCRIPTS/clip.py'
 alias rzed='py $SCRIPTS/rzed.py'
 alias rn='py $SCRIPTS/rename.py'
-alias st='py $SCRIPTS/start.py'
 alias ch='py $SCRIPTS/clean.py'
-alias png='py $SCRIPTS/png.py'
 alias zed='py $SCRIPTS/zed.py'
 alias zip='py $SCRIPTS/zip.py'
-alias rip='py $SCRIPTS/rip.py'
 
-swap() {
+
+function py() {
+    python3 "$@"
+}
+
+function python() {
+    /usr/bin/python3 "$@"
+}
+
+function swap() {
     # Run the Python script
     py "$SCRIPTS/swap.py"
     
@@ -120,61 +116,74 @@ function realpath() {
 #     shift
 #     python3 $HOME/Documents/Dotfiles/scripts/revert.py "$@"
 #   elif [[ $1 == "fetch" ]]; then
-#     command git fetch --prune
+#     command git fetch --all --prune
 #   elif [[ $1 == "undo" ]]; then
 #     shift
 #     python3 $HOME/Documents/Dotfiles/scripts/undo.py "$@"
 #   elif [[ $1 == "redo" ]]; then
 #     shift
 #     python3 $HOME/Documents/Dotfiles/scripts/redo.py "$@"
+#   elif [[ $1 == "prune" ]]; then
+#     command git branch --delete --gone
+#   elif [[ $1 == "log" ]]; then
+#     command git log --pretty=format:"%h%x09%an%x09%ad%x09%s" --date=format:"%Y-%m-%d %H:%M:%S"
+#   elif [[ $1 == "email" ]]; then
+#     command git config user.email
 #   else
 #     command git "$@"
 #   fi
 # }
 
+
 function git() {
-  if [[ $1 == "revert" ]]; then
-    shift
-    python3 $HOME/Documents/Dotfiles/scripts/revert.py "$@"
-  elif [[ $1 == "fetch" ]]; then
-    command git fetch --all --prune
-  elif [[ $1 == "undo" ]]; then
-    shift
-    python3 $HOME/Documents/Dotfiles/scripts/undo.py "$@"
-  elif [[ $1 == "redo" ]]; then
-    shift
-    python3 $HOME/Documents/Dotfiles/scripts/redo.py "$@"
-  elif [[ $1 == "prune" ]]; then
-    command git branch --delete --gone
-  elif [[ $1 == "log" ]]; then
-    command git log --pretty=format:"%h%x09%an%x09%ad%x09%s" --date=format:"%Y-%m-%d %H:%M:%S"
-  else
-    command git "$@"
-  fi
+    case "$1" in
+        "email")
+            command git config user.email
+            ;;
+        "fetch")
+            command git fetch --all --prune
+            command git branch --delete --gone
+            ;;
+        "redo")
+            echo -n "Are you sure you want to redo? This will restore the last undone commit. (y/n) "
+            read confirm
+            if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+                command git reset --hard $(git rev-parse --verify HEAD@{1})
+                echo "Last undone commit has been restored."
+            else
+                echo "Redo cancelled."
+            fi
+            ;;
+        "undo")
+            echo -n "Are you sure you want to undo the last commit? This will unstage changes. (y/n) "
+            read confirm
+            if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+                command git reset HEAD~1
+                echo "Last commit undone. Changes are now unstaged."
+            else
+                echo "Undo cancelled."
+            fi
+            ;;
+        "revert")
+            shift
+            echo -n "Are you sure you want to revert? This will create a new commit to undo changes. (y/n) "
+            read confirm
+            if [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]]; then
+                command git revert "$@"
+            else
+                echo "Revert cancelled."
+            fi
+            ;;
+        "log")
+            command git log --pretty=format:"%h%x09%an%x09%ad%x09%s" --date=format:"%Y-%m-%d %H:%M:%S"
+            ;;
+        *)
+            command git "$@"
+            ;;
+    esac
 }
 
-# function dd() {
-#   if [[ "$1" == "." ]]; then
-#     cd - > /dev/null || return
-#     return
-#   fi
-
-#   local python_script="$HOME/Documents/Dotfiles/scripts/dd.py"
-#   local target_path="$1"
-
-#   local output=$(python3 "$python_script" "$target_path")
-#   local exit_code=$?
-
-#   if [[ $exit_code -eq 0 ]]; then
-#     cd "$output" || { echo "Failed to navigate to: $output"; return 1; }
-#   else
-#     echo "$output"
-#     return 1
-#   fi
-# }
-
-
-cd() {
+function cd() {
 
   if [[ "$1" == "." ]]; then
     builtin cd - > /dev/null || return
@@ -197,7 +206,6 @@ cd() {
   fi
 }
 
-
 ## Key Bindings ###
 export FUNCNEST=500
 
@@ -208,9 +216,3 @@ bindkey '^O' edit-command-line
 # Environment Flags
 OP_BIOMETRIC_UNLOCK_ENABLED=true
 RANGER_LOAD_DEFAULT_RC=false
-
-
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
